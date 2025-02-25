@@ -1,0 +1,48 @@
+body {
+	line-height: 1;
+	background-color: #121216;
+	margin: 0;
+	color: #FFFFFF;
+}
+
+a {
+	text-decoration: none;
+}
+
+button{
+	padding: 0;
+	border: none;
+	background: none;
+	text-decoration: none;
+	font: inherit;
+}
+
+ul,
+ol,
+li {
+	list-style: none;
+}
+
+
+/* ============================================== */
+
+[class*=-container]{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0px 15px;
+}
+@media (max-width: 1199.98px){
+    [class*=-container]{
+        max-width: 970px;
+    }
+}
+@media (max-width: 990.98px){
+    [class*=-container]{
+        max-width: 750px;
+    }
+}
+@media (max-width: 767.98px){
+    [class*=-container]{
+        max-width: none;
+    }
+}
