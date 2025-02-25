@@ -58,6 +58,7 @@ li {
     left: 0;
     width: 100%;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    margin-bottom: 5vh;
 }
 .header-container {
     display: flex;
@@ -128,4 +129,54 @@ li {
     font-size: 1.2rem;
     color: #fff;
     font-weight: 500;
+}
+
+/* ============================================== */
+.student_table{
+    margin-left: 3vw;
+    margin-right: 1vw;
+}
+.student_table__control{
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+}
+.describe__heading {
+    margin-bottom: 0;
+    color: #101828;
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 28px; /* 155.556% */
+}
+.descpibe__paragraph {
+    margin-top: 0.5rem;
+    color: #667085;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 142.857% */
+}
+
+.table__add_student {
+    background-color: #0070FF;
+    display: flex;
+    align-items: center; 
+    padding: 8px 12px; 
+    border-radius: 5px; 
+    gap: 8px;
+    margin: 10px;
+}
+.add_student_plus {
+    width: 20px;
+    height: 20px;
+}
+.add_student_describe {
+    margin: 0;
+    padding: 0;
+    color: #FFF;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px; /* 142.857% */
 }

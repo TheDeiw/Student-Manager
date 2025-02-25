@@ -15,7 +15,7 @@
 	<div>
 		<header class="header">
 			<div class="header-container">
-				<div class="header__logo"> <h1>Student Manager</h1></div>
+				<a href="" class="header__logo"> <h1>Student Manager</h1></a>
 				<div class="header__account_control">
 					<div class="account_control__notification"><img class="notification_bell" src="img/Notification-bell.svg" alt="Notification-bell"></div>
 					<div class="account_control__account">
@@ -25,29 +25,37 @@
 				</div>
 			</div>
 		</header>
-		<div class="wrapper">
-			<main>
-				<aside>
-					<nav class="menu__container">
-						<ul class="menu__list">
-							<li class="menu__item">
-								<a href="" class="menu__link">Dashboard</a>
-							</li>
-							<li class="menu__item selected">
-								<a href="" class="menu__link">Students</a>
-							</li>
-							<li class="menu__item">
-								<a href="" class="menu__link">Tasks</a>
-							</li>
-						</ul>
-					</nav>
-				</aside>
 
-				<section class="student_table">
+		<main class="wrapper">
+			<aside>
+				<nav class="menu__container">
+					<ul class="menu__list">
+						<li class="menu__item">
+							<a href="" class="menu__link">Dashboard</a>
+						</li>
+						<li class="menu__item selected">
+							<a href="" class="menu__link">Students</a>
+						</li>
+						<li class="menu__item">
+							<a href="" class="menu__link">Tasks</a>
+						</li>
+					</ul>
+				</nav>
+			</aside>
 
-				</section>
-			</main>
-		</div>
+			<section class="student_table">
+				<div class="student_table__control">
+					<div class="table__describe">
+						<h2 class="describe__heading">Students</h2>
+						<p class="descpibe__paragraph">Here you can manage all data about students</p>
+					</div>
+					<button class="table__add_student">
+						<img class="add_student_plus" src="img/plus.svg">
+						<p class="add_student_describe">Add Student</p>
+					</button>
+				</div>
+			</section>
+		</main>
 
 		<footer></footer>
 	</div>
