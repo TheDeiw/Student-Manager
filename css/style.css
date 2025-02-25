@@ -1,8 +1,7 @@
 body {
 	line-height: 1;
-	background-color: #121216;
 	margin: 0;
-	color: #FFFFFF;
+    font-family: 'Inter';
 }
 
 a {
@@ -46,3 +45,45 @@ li {
         max-width: none;
     }
 }
+
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px, 0px;
+}
+.header__logo{
+    color: #3e8fda;
+}
+.header__account_control{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+}
+.notification_bell{
+    width: 35px;
+    /*box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;*/
+}
+.account_control__account{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+.account__image {
+    height: 40px;
+    width: 40px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+}
+
