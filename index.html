@@ -20,7 +20,7 @@
 					<div class="account_control__notification"><img class="notification_bell" src="img/Notification-bell.svg" alt="Notification-bell"></div>
 					<div class="account_control__account">
 						<div class="account__image"></div>
-						<div class="account__name"> TheDeiw</div>
+						<div class="account__name">TheDeiw</div>
 					</div>
 				</div>
 			</div>
@@ -30,14 +30,28 @@
 			<aside>
 				<nav class="menu__container">
 					<ul class="menu__list">
+						<li class="menu__item arrow">
+							<button onclick=toggleSidebar() id="toggle-btn" class="menu_arrow">
+							  <img src="img/nav/Arrow.svg" class="menu__icon_arrow"  alt="Arrow">
+							</button>
+						 </li>
 						<li class="menu__item">
-							<a href="" class="menu__link">Dashboard</a>
+							<a href="" class="menu__link">
+								<img class="menu__icon" src="img/nav/Dashboard.svg" alt="Dashboard">
+								<span>Dashboard</span>
+							</a>
 						</li>
 						<li class="menu__item selected">
-							<a href="" class="menu__link">Students</a>
+							<a href="" class="menu__link">
+								<img class="menu__icon" src="img/nav/Students.png" alt="Students">
+								<span>Students</span>
+							</a>
 						</li>
 						<li class="menu__item">
-							<a href="" class="menu__link">Tasks</a>
+							<a href="" class="menu__link">
+								<img class="menu__icon" src="img/nav/Tasks.svg" alt="Tasks">
+								<span>Tasks</span>
+							</a>
 						</li>
 					</ul>
 				</nav>
@@ -54,10 +68,20 @@
 						<p class="add_student_describe">Add Student</p>
 					</button>
 				</div>
+
+				<table class="main_table">
+					<thead>
+						<th>
+							
+						</th>
+					</thead>
+				</table>
 			</section>
 		</main>
 
 		<footer></footer>
 	</div>
+
+	<script src="js/side_menu.js"></script>
 </body>
 </html>

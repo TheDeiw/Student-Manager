@@ -48,8 +48,9 @@ li {
 
 /* ============================================== */
 .wrapper{
-    display: grid;
-    grid-template-columns: 1fr 5fr;
+    /*display: grid;
+    grid-template-columns: 1fr 5fr;*/
+    display: flex;
 }
 
 /* ============================================== */
@@ -58,7 +59,7 @@ li {
     left: 0;
     width: 100%;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    margin-bottom: 5vh;
+    /*margin-bottom: 5vh;*/
 }
 .header-container {
     display: flex;
@@ -94,18 +95,67 @@ li {
 }
 
 /* ============================================== */
+aside{
+    padding: 0;
+    margin: 0;
+}
 .menu__container{
-    margin: 1rem;
-    padding: 0.5rem;
+    /*margin: 1rem;
+    padding: 0.5rem;*/
+    top: 0;
     background-color: #0d7de6;
+    position: sticky;
     border-radius: 5px;
+    height: 100vh;
+    padding-left: 0;
+    padding: 5px 1em;
+    align-self: start;
+    overflow: hidden;
+    text-wrap: nowrap;
+    width: 200px; /* Початкова ширина */
+    min-width: 50px; /* Мінімальна ширина */
+    transition: all 300ms ease-in-out;
+}
+
+.menu__container.close{
+    width: 45px;
+    padding: 5px;
+    height: 100vh; /* Забезпечуємо однакову висоту */
+    overflow: hidden; /* Запобігає зайвому прокручуванню */
+}
+
+.menu_arrow{
+    margin-left: auto;
+    padding: 10px;
+    border: none;
+    border-radius: .5em;
+    background: none;
+    cursor: pointer;
+}
+
+.menu__item.arrow{
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.menu__icon_arrow{
+    width: 30px;
+    height: 30px;
+    transform: rotate(0deg);
+    transition: 300ms ease-in-out;
+}
+.menu__icon_arrow.close{
+    transform: rotate(180deg);
+    transition: 300ms ease-in-out;
 }
 
 .menu__list{
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.5em;
+    transition: 300ms ease-in-out;
 }
 
 .menu__item{
@@ -121,14 +171,25 @@ li {
     background-color: #0a569e;
     border-radius: 10px;
 }
-
-.menu__link{
-    display: block;
-    height: 100%;
-    padding: 1rem;
+.menu__icon{
+    width: 25px;
+    height: 25px;
+    margin-right: 1em;
+}
+.menu__link {
+    display: flex;
+    align-items: center;
     font-size: 1.2rem;
     color: #fff;
     font-weight: 500;
+    padding: 1em;
+    transition: 300ms ease-in-out;
+    /*gap: 1em; /* Автоматичний відступ між іконкою та текстом */
+}
+
+.menu__container.close .menu__link {
+    /*margin-left: 0; /* При закритому меню прибираємо відступ */
+    padding-left: 12px;
 }
 
 /* ============================================== */
