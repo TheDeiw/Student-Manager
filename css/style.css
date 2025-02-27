@@ -24,8 +24,11 @@ li {
 
 
 /* ============================================== */
-
 [class*=-container]{
+    margin: 0 auto;
+    padding: 0px 30px;
+}
+/*[class*=-container]{
     max-width: 1200px;
     margin: 0 auto;
     padding: 0px 15px;
@@ -44,12 +47,10 @@ li {
     [class*=-container]{
         max-width: none;
     }
-}
+}*/
 
 /* ============================================== */
 .wrapper{
-    /*display: grid;
-    grid-template-columns: 1fr 5fr;*/
     display: flex;
 }
 
@@ -59,13 +60,14 @@ li {
     left: 0;
     width: 100%;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    /*margin-bottom: 5vh;*/
+    
 }
 .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px, 0px;
+    background-color: #FCFCFD;
 }
 .header__logo{
     color: #3e8fda;
@@ -78,7 +80,6 @@ li {
 }
 .notification_bell{
     width: 35px;
-    /*box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;*/
 }
 .account_control__account{
     display: flex;
@@ -100,8 +101,6 @@ aside{
     margin: 0;
 }
 .menu__container{
-    /*margin: 1rem;
-    padding: 0.5rem;*/
     top: 0;
     background-color: #0d7de6;
     position: sticky;
@@ -184,11 +183,9 @@ aside{
     font-weight: 500;
     padding: 1em;
     transition: 300ms ease-in-out;
-    /*gap: 1em; /* Автоматичний відступ між іконкою та текстом */
 }
 
 .menu__container.close .menu__link {
-    /*margin-left: 0; /* При закритому меню прибираємо відступ */
     padding-left: 12px;
 }
 
@@ -196,6 +193,7 @@ aside{
 .student_table{
     margin-left: 3vw;
     margin-right: 1vw;
+    width: 100%;
 }
 .student_table__control{
     display: flex;
@@ -220,14 +218,19 @@ aside{
 }
 
 .table__add_student {
-    background-color: #0070FF;
+    background-color: #0d7de6;
     display: flex;
-    align-items: center; 
-    padding: 8px 12px; 
-    border-radius: 5px; 
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 5px;
     gap: 8px;
     margin: 10px;
+    transition: all ease-in-out 0.2s;
 }
+.table__add_student:hover{
+    background-color: #0c65b9;
+}
+
 .add_student_plus {
     width: 20px;
     height: 20px;
@@ -241,3 +244,58 @@ aside{
     font-weight: 500;
     line-height: 20px; /* 142.857% */
 }
+
+/* ============================================== */
+.main_table{
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-top: 1rem;
+}
+
+.main_table thead tr{
+    border-bottom: 1px solid #EAECF0;
+    background: #FCFCFD;
+    color: #667085;
+    font-size: 1rem;
+    font-style: normal;
+    
+    line-height: 18px; 
+}
+
+.main_table th{
+    padding: 0.5rem;
+    text-align: center;
+    font-weight: 450;
+    /*padding: 12px 24px;*/
+}
+
+.main_table tbody tr{
+    border-bottom: 1px solid #EAECF0;
+}
+
+.main_table td{
+    font-weight:600;
+    line-height: 20px; /* 142.857% */
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.table__active_cirtle{
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #9c9c9c;
+    display: inline-block;
+}
+
+.table__active_cirtle.active{
+    background-color: #31f044;
+}
+
+.table__icon{
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
