@@ -143,6 +143,7 @@ aside{
     height: 30px;
     transform: rotate(0deg);
     transition: 300ms ease-in-out;
+    user-select: none;
 }
 .menu__icon_arrow.close{
     transform: rotate(180deg);
@@ -174,6 +175,7 @@ aside{
     width: 25px;
     height: 25px;
     margin-right: 1em;
+    user-select: none;
 }
 .menu__link {
     display: flex;
@@ -234,6 +236,7 @@ aside{
 .add_student_plus {
     width: 20px;
     height: 20px;
+    user-select: none;
 }
 .add_student_describe {
     margin: 0;
@@ -259,7 +262,6 @@ aside{
     color: #667085;
     font-size: 1rem;
     font-style: normal;
-    
     line-height: 18px; 
 }
 
@@ -297,5 +299,10 @@ aside{
     width: 30px;
     height: 30px;
     cursor: pointer;
+    user-select: none;
 }
 
+.table__cell_control{
+    display: flex;
+    justify-content: center;
+}

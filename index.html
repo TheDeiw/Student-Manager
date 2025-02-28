@@ -7,6 +7,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+	<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 
 	<link rel="stylesheet" href="css/style.css">
 	<title>Student-Manager</title>
@@ -31,7 +32,7 @@
 				<nav class="menu__container">
 					<ul class="menu__list">
 						<li class="menu__item arrow">
-							<button onclick=toggleSidebar() id="toggle-btn" class="menu_arrow">
+							<button  id="toggle-btn" class="menu_arrow">
 							  <img src="img/nav/Arrow.svg" class="menu__icon_arrow"  alt="Arrow">
 							</button>
 						 </li>
@@ -87,11 +88,13 @@
 							<td>Group 1</td>
 							<td>Chekhovskyi Dmytro</td>
 							<td>M</td>
-							<td>01/01/2000</td>
+							<td>01.01.2000</td>
 							<td><span class="table__active_cirtle active"></span></td>
 							<td>
-								<button class="table__edit"><img class="table__icon" src="img/table/edit.svg"></button>
-								<button class="table__delete"><img class="table__icon" src="img/table/delete.svg"></button>
+								<div class="table__cell_control">
+									<button class="table__edit"><img class="table__icon" src="img/table/edit.svg"></button>
+									<button class="table__delete"><img class="table__icon" src="img/table/delete.svg"></button>
+								</div>
 							</td>
 						</tr>
 					</tbody>
@@ -103,5 +106,6 @@
 	</div>
 
 	<script src="js/side_menu.js"></script>
+	<script src="js/table_control.js"></script>
 </body>
 </html>
