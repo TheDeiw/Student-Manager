@@ -1,4 +1,12 @@
+let form_addStudent = document.querySelector('.form__add_student');
+
+function CloseForm(){
+	form_addStudent.classList.remove('active');
+}
+
 document.querySelector('.table__add_student').addEventListener('click', function(){
+	form_addStudent.classList.toggle('active');
+
 	let tableBody = document.querySelector('.main_table tbody');
 
 	let newRow = document.createElement('tr');
