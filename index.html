@@ -10,6 +10,7 @@
 	<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/forms.css">
 	<title>Student-Manager</title>
 </head>
 <body>
@@ -101,6 +102,42 @@
 				</table>
 			</section>
 		</main>
+
+		<div class="form__add_student">
+			<div class="form__add_student_container">
+				<div class="form__add_student_control">
+					<h2 class="form__add_student_heading">Add Student</h2>
+					<button class="form__add_student_close">
+						<img class="form__add_student_close_icon" src="img/close.svg" alt="Close">
+					</button>
+				</div>
+				<form class="form__add_student_form">
+					<div class="form__add_student_group">
+						<label for="group" class="form__add_student_label">Group</label>
+						<input type="text" id="group" class="form__add_student_input">
+					</div>
+					<div class="form__add_student_group">
+						<label for="name" class="form__add_student_label">First name</label>
+						<input type="text" id="first_name" class="form__add_student_input">
+					</div>
+					<div class="form__add_student_group">
+						<label for="name" class="form__add_student_label">Last Name</label>
+						<input type="text" id="last_name" class="form__add_student_input">
+					</div>
+					<div class="form__add_student_group">
+						<label for="name" class="form__add_student_label">Gender</label>
+						<select id="gender" class="form__add_student_input">
+							<option value="M">Male</option>
+							<option value="F">Femake</option>
+						</select>
+					</div>
+					<div class="form__add_student_group">
+						<label for="name" class="form__add_student_label">Birthday</label>
+						<input type="date" id="birthday" class="form__add_student_input">
+					</div>
+				</form>
+			</div>
+		</div>
 
 		<footer></footer>
 	</div>
