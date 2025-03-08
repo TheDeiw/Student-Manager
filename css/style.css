@@ -309,6 +309,7 @@ aside{
     height: 30px;
     cursor: pointer;
     user-select: none;
+    opacity: 0.5;
 }
 
 .table__cell_control{

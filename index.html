@@ -74,7 +74,7 @@
 				<table class="main_table">
 					<thead>
 						<tr>
-							<th>Checkbox</th>
+							<th><input onclick="toggleCheckboxes()" type="checkbox"></th>
 							<th>Group</th>
 							<th>Name</th>
 							<th>Gender</th>
@@ -85,7 +85,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td><input type="checkbox"></td>
+							<td><input type="checkbox" class="row-checkbox"></td>
 							<td>Group 1</td>
 							<td>Chekhovskyi Dmytro</td>
 							<td>M</td>
@@ -114,7 +114,10 @@
 				<form class="form__add_student_form">
 					<div class="form__add_student_group">
 						<label for="group" class="form__add_student_label">Group</label>
-						<input type="text" id="group" class="form__add_student_input">
+						<select id="group" class="form__add_student_input">
+							<option value="PZ-22">PZ-22</option>
+							<option value="PZ-24">PZ-24</option>
+						</select>
 					</div>
 					<div class="form__add_student_group">
 						<label for="name" class="form__add_student_label">First name</label>
@@ -128,7 +131,7 @@
 						<label for="name" class="form__add_student_label">Gender</label>
 						<select id="gender" class="form__add_student_input">
 							<option value="M">Male</option>
-							<option value="F">Femake</option>
+							<option value="F">Female</option>
 						</select>
 					</div>
 					<div class="form__add_student_group">
@@ -136,6 +139,10 @@
 						<input type="date" id="birthday" class="form__add_student_input">
 					</div>
 				</form>
+				<div class="form__add_student_buttons">
+					<button class="form__add_student_button">OK</button>
+					<button onclick="CreateStudent()" class="form__add_student_button">Create</button>
+				</div>
 			</div>
 		</div>
 

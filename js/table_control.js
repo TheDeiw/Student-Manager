@@ -6,11 +6,23 @@ function CloseForm(){
 
 document.querySelector('.table__add_student').addEventListener('click', function(){
 	form_addStudent.classList.toggle('active');
+})
 
+function toggleCheckboxes() {
+	const selectAllCheckbox = document.querySelector(".main_table thead input[type='checkbox']");
+	const allCheckboxes = document.querySelectorAll(".main_table tbody .row-checkbox");
+
+	allCheckboxes.forEach(checkbox => {
+		 checkbox.checked = selectAllCheckbox.checked;
+	});
+}
+
+function CreateStudent(){
+	// Find main elements in table
 	let tableBody = document.querySelector('.main_table tbody');
-
 	let newRow = document.createElement('tr');
 
+	// Cool funtcion to create cell
 	function createCell(content){
 		let td = document.createElement("td");
         if (typeof content === "string") {
@@ -21,29 +33,36 @@ document.querySelector('.table__add_student').addEventListener('click', function
         return td;
 	}
 
-	// 1️⃣ Checkbox
+	// Checkbox
 	let checkbox = document.createElement("input");
 	checkbox.type = "checkbox";
+	checkbox.classList.add("row-checkbox");
 	newRow.appendChild(createCell(checkbox));
 
-	// 2️⃣ Group
-	newRow.appendChild(createCell("Group 2"));
+	// Group
+	let groupSelect = document.getElementById('group').value;
+	newRow.appendChild(createCell(groupSelect));
 
-	// 3️⃣ Name
-	newRow.appendChild(createCell("Newsaaaaaaaaaaaaaaaaa User"));
+	// Name
+	let firstNnameInput = document.getElementById('first_name').value;
+	let lastNameInput = document.getElementById('last_name').value;
+	let nameInput = firstNnameInput + " " + lastNameInput;
+	newRow.appendChild(createCell(nameInput));
 
-	// 4️⃣ Gender
-	newRow.appendChild(createCell("M"));
+	// Gender
+	let genderSelect = document.getElementById('gender').value;
+	newRow.appendChild(createCell(genderSelect));
 
-	// 5️⃣ Birthday
-	newRow.appendChild(createCell("15.05.1995"));
+	// Birthday
+	let birthdayInput = document.getElementById('birthday').value;
+	newRow.appendChild(createCell(birthdayInput));
 
-	// 6️⃣ Status (Активний круг)
+	// Status
 	let statusSpan = document.createElement("span");
 	statusSpan.classList.add("table__active_cirtle");
 	newRow.appendChild(createCell(statusSpan));
 
-	// 7️⃣ Option (Кнопки Редагувати / Видалити)
+	// Option
 	let optionsDiv = document.createElement("div");
 	optionsDiv.classList.add("table__cell_control");
 
@@ -68,5 +87,4 @@ document.querySelector('.table__add_student').addEventListener('click', function
 
 	// Додаємо рядок у таблицю
 	tableBody.appendChild(newRow);
-
-})
+}
