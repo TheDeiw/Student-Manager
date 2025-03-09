@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="Student-Manager. JS-DataManager. Labwork for 'Internet Programming'">\
+	<meta name="description" content="Student-Manager. JS-DataManager. Labwork for 'Internet Programming'">
 	<meta name="author" content="Chekhovskyi Dmytro (TheDeiw)">
 	<meta name="keywords" content="Student-Manager, JS-DataManager">
 
@@ -106,12 +106,12 @@
 			</section>
 		</main>
 
-		<div class="form__add_student">
-			<div class="form__add_student_container">
+		<div class="form__add_student modal_window_style">
+			<div class="form__add_student_container modal_window_container">
 				<div class="form__add_student_control">
 					<h2 class="form__add_student_heading">Add Student</h2>
-					<button onclick="CloseForm()" class="form__add_student_close">
-						<img class="form__add_student_close_icon" src="img/close.svg" alt="Close">
+					<button onclick="CloseForm()" class="form__student_close">
+						<img class="form__student_close_icon" src="img/close.svg" alt="Close">
 					</button>
 				</div>
 				<form class="form__add_student_form">
@@ -149,6 +149,25 @@
 			</div>
 		</div>
 
+		<div class="form__delete_student modal_window_style">
+			<div class="form__delete_student_container modal_window_container">
+				<div class="form__delete_student_control">
+					<h2 class="form__delete_student_heading">Delete Student</h2>
+					<button onclick="CloseForm()" class="form__student_close">
+						<img class="form__student_close_icon" src="img/close.svg" alt="Close">
+					</button>
+				</div>
+				<div class="form__delete_student_text">
+					<p class="form__delete_student_paragraph">Are you sure you want to delete this student?</p>
+					<p class="form__delete_student_paragraph" id="delete_name"></p>
+
+				</div>
+				<div class="form__delete_student_buttons">
+					<button class="form__delete_student_button">Cancel</button>
+					<button id="delete_student_btn" class="form__delete_student_button">Delete</button>
+				</div>
+			</div>
+		</div>
 		<footer></footer>
 	</div>
 

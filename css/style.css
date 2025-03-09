@@ -66,14 +66,14 @@ li {
     top: 0;
     left: 0;
     width: 100%;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    box-shadow: rgba(0, 0, 0, 0.20) 0px 5px 15px;
     
 }
 .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0px;
+    /*padding: 10px, 0px;*/
     background-color: #FCFCFD;
 }
 .header__logo{
