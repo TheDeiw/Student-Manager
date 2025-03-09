@@ -1,22 +1,59 @@
-let form_addStudent = document.querySelector('.form__add_student');
+// Checkboxes Logic
+document.addEventListener("DOMContentLoaded", function () {
+	const mainCheckbox = document.querySelector(".main_table thead input[type='checkbox']");
+	const tbody = document.querySelector(".main_table tbody");
 
+	// Делегований обробник для змін дочірніх чекбоксів
+	tbody.addEventListener("change", function (event) {
+		 if (event.target.matches("input[type='checkbox']")) {
+			  const row = event.target.closest("tr");
+			  const icons = row.querySelectorAll(".table__icon");
+			  
+			  if (event.target.checked) {
+					icons.forEach(icon => icon.classList.add("active"));
+			  } else {
+					icons.forEach(icon => icon.classList.remove("active"));
+			  }
+			  updateSelectAllState();
+		 }
+	});
+
+	// Обробник для головного чекбокса
+	mainCheckbox.addEventListener("change", function () {
+		 const targetState = mainCheckbox.checked;
+		 const allChildCheckboxes = document.querySelectorAll(".main_table tbody input[type='checkbox']");
+
+		 allChildCheckboxes.forEach(childCheckbox => {
+			  if (childCheckbox.checked !== targetState) {
+					childCheckbox.click();
+			  }
+		 });
+		 updateSelectAllState();
+	});
+});
+
+function updateSelectAllState() {
+	const mainCheckbox = document.querySelector(".main_table thead input[type='checkbox']");
+	const allChildCheckboxes = document.querySelectorAll(".main_table tbody input[type='checkbox']");
+
+	const allChecked = [...allChildCheckboxes].every(cb => cb.checked);
+	const someChecked = [...allChildCheckboxes].some(cb => cb.checked);
+
+	mainCheckbox.checked = allChecked;
+	mainCheckbox.indeterminate = !allChecked && someChecked;
+}
+
+// Form Logic
+let form_addStudent = document.querySelector('.form__add_student');
 function CloseForm(){
 	form_addStudent.classList.remove('active');
 }
-
 document.querySelector('.table__add_student').addEventListener('click', function(){
 	form_addStudent.classList.toggle('active');
 })
 
-function toggleCheckboxes() {
-	const selectAllCheckbox = document.querySelector(".main_table thead input[type='checkbox']");
-	const allCheckboxes = document.querySelectorAll(".main_table tbody .row-checkbox");
 
-	allCheckboxes.forEach(checkbox => {
-		 checkbox.checked = selectAllCheckbox.checked;
-	});
-}
-
+// Creating student
 function CreateStudent(){
 	// Find main elements in table
 	let tableBody = document.querySelector('.main_table tbody');
@@ -36,7 +73,7 @@ function CreateStudent(){
 	// Checkbox
 	let checkbox = document.createElement("input");
 	checkbox.type = "checkbox";
-	checkbox.classList.add("row-checkbox");
+	//checkbox.classList.add("row-checkbox");
 	newRow.appendChild(createCell(checkbox));
 
 	// Group
@@ -83,7 +120,6 @@ function CreateStudent(){
 	optionsDiv.appendChild(editButton);
 	optionsDiv.appendChild(deleteButton);
 	newRow.appendChild(createCell(optionsDiv));
-
 
 	// Додаємо рядок у таблицю
 	tableBody.appendChild(newRow);
