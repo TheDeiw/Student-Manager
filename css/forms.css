@@ -113,14 +113,13 @@ input[type="checkbox"] {
    /* Remove most all native input styles */
    appearance: none;
    /* Not removed via appearance */
-   margin: 0;
-   
+   margin: auto;
    cursor: pointer;
    font: inherit;
    color: currentColor;
-   width: 1.12em;
-   height: 1.152em;
-   border: 0.12em solid currentColor;
+   width: 1.15em;
+   height: 1.15em;
+   border: 0.13em solid currentColor;
    border-radius: 0.25em;
    transform: translateY(-0.075em);
  
