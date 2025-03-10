@@ -34,6 +34,7 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+   margin-bottom: 1rem;
 }
 .form__add_student_heading {
 	margin-top: auto;
@@ -51,43 +52,55 @@
 	margin: auto;
 	width: 70%;
    max-width: 500px;
+   display: flex;
+   flex-direction: column;
+	justify-content: space-between;
 }
 .form__add_student_group {
-	margin-top: 10px;
-	margin-bottom: 10px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-.form__add_student_label {
-	font-weight: 450;
-}
-.form__add_student_input {
-   width: 55%; 
+   display: flex;
+   flex-direction: column; 
+   align-items: flex-start;
+   margin-top: 10px;
+   margin-bottom: 10px;
 }
 
+/* Опис (label) */
+.form__add_student_label {
+   font-size: 14px;
+   color: #777;
+   margin-bottom: 4px;
+}
+
+.form__add_student_input {
+   width: 100%;
+   max-width: 500px;
+   font-size: 16px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   box-shadow: none;
+   transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+
 input[type="text"]{
+   box-sizing: border-box;
 	font-size: 16px;
     line-height: 28px;
-    border: unset;
-	 padding: 2px 4px;
+    border: 1px solid #ccc;
+    padding: 0.3em 1em;
     border-radius: 4px;
-    outline-color: rgb(84 105 212 / 0.5);
+    outline-color: rgb(84 105 212 / 0.7);
     background-color: rgb(255, 255, 255);
-    box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(60, 66, 87, 0.16) 0px 0px 0px 1px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px;
+    box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px, 
+
 }
 
 input[type="date"]{
+   box-sizing: border-box;
 	font-size: 16px;
     line-height: 28px;
     border: unset;
-	 padding: 2px 4px;
+    padding: 0.3em 1em;
     border-radius: 4px;
     outline-color: rgb(84 105 212 / 0.5);
     background-color: rgb(255, 255, 255);
@@ -99,9 +112,9 @@ select{
    box-sizing: border-box;
 	font-size: 16px;
    width: 100%;
-    line-height: 28px;
+   line-height: 28px;
+   padding: 0.5em 1em;
     border: unset;
-	 padding: 6px 16px;
     border-radius: 4px;
     outline-color: rgb(84 105 212 / 0.5);
     background-color: rgb(255, 255, 255);
@@ -110,9 +123,7 @@ select{
 }
 
 input[type="checkbox"] {
-   /* Remove most all native input styles */
    appearance: none;
-   /* Not removed via appearance */
    margin: auto;
    cursor: pointer;
    font: inherit;
@@ -149,10 +160,11 @@ input[type="checkbox"] {
    display: flex;
    justify-content: space-around;
    margin: 30px auto 0 auto;
+   gap: 10px;
 }
 
 .form__add_student_button {
-   flex: 1; /* Рівномірний розподіл ширини */
+   flex: 1;
    font-size: 16px;
    font-weight: bold;
    padding: 10px;
@@ -175,15 +187,3 @@ input[type="checkbox"] {
    transform: translateY(1px);
 }
 
-.form__add_student_button:first-child {
-   margin-right: 10px;
-   background-color: rgb(200, 50, 50); /* Інший колір для першої кнопки */
-}
-
-.form__add_student_button:first-child:hover {
-   background-color: rgb(180, 40, 40);
-}
-
-.form__add_student_button:first-child:active {
-   background-color: rgb(160, 30, 30);
-}

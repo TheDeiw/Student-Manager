@@ -66,7 +66,7 @@ li {
     top: 0;
     left: 0;
     width: 100%;
-    box-shadow: rgba(0, 0, 0, 0.20) 0px 5px 15px;
+    box-shadow: rgba(0, 0, 0, 0.10) 0px 5px 15px;
     
 }
 .header-container {
@@ -314,6 +314,9 @@ aside{
     cursor: not-allowed;
     opacity: 0.3;
     user-select: none;
+}
+.table__icon.active:hover{
+    filter: drop-shadow(0 0 2px rgba(88, 111, 244, 0.5));
 }
 
 .table__cell_control{
