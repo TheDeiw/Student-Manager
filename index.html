@@ -25,10 +25,49 @@
 			<div class="header-container">
 				<a href="" class="header__logo"> <h1>Student Manager</h1></a>
 				<div class="header__account_control">
-					<div class="account_control__notification"><img class="notification_bell" src="img/Notification-bell.svg" alt="Notification-bell"></div>
-					<div class="account_control__account">
-						<div class="account__image"></div>
-						<div class="account__name">TheDeiw</div>
+					<div class="account_control__notification">
+						<span id="notification_sign"></span><img class="notification_bell" src="img/header/Notification-bell.svg" alt="Notification-bell">
+						<div class="notification__messages">
+							<div class="notification__massage">
+								<div class="message__icon"></div>
+								<div class="message__text">
+									<h3 class="message_text__header">Teacher</h3>
+									<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+								</div>
+							</div>
+							<div class="notification__massage">
+								<div class="message__icon"></div>
+								<div class="message__text">
+									<h3 class="message_text__header">Teacher</h3>
+									<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit....</p>
+								</div>
+							</div>
+							<div class="notification__massage">
+								<div class="message__icon"></div>
+								<div class="message__text">
+									<h3 class="message_text__header">Teacher</h3>
+									<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="account_control__user">
+						<div class="account_control__account">
+							<div class="account__image"><img src="img/header/Avatar.jpg" alt="" class="account__avatar"></div>
+							<div class="account__name">Chekhovskyi</div>
+						</div>
+						<div class="account_control__dropdown">
+							<a href="">
+								<div class="dropdown__item">
+								 	<img class="dropdown__icon" src="img/header/Profile.svg" alt="Profile-link">Profile
+								</div>
+							</a>
+							<a href="">
+								<div class="dropdown__item">
+									 <img class="dropdown__icon" src="img/header/Logout.svg" alt="LogOut-link">Log Out
+								</div>
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -100,7 +139,7 @@
 							<td>
 								<div class="table__cell_control">
 									<button class="table__edit"><img class="table__icon" src="img/table/edit.svg"></button>
-									<button class="table__delete"><img class="table__icon" src="img/table/delete.svg"></button>
+									<button onclick="openDeleteStudentForm(tr)" class="table__delete"><img class="table__icon" src="img/table/delete.svg"></button>
 								</div>
 							</td>
 						</tr> -->
@@ -110,64 +149,63 @@
 		</main>
 
 		<div class="form__add_student modal_window_style">
-			<div class="form__add_student_container modal_window_container">
-				<div class="form__add_student_control">
-					<h2 class="form__add_student_heading">Add Student</h2>
-					<button onclick="CloseForm()" class="form__student_close">
-						<img class="form__student_close_icon" src="img/close.svg" alt="Close">
+			<div class="modal_window_container">
+				<div class="modal_windows__control">
+					<h2 class="modal_control__heading">Add Student</h2>
+					<button onclick="CloseForm()" class="modal_control__close">
+						<img class="modal_control__close_icon" src="img/close.svg" alt="Close">
 					</button>
 				</div>
-				<form class="form__add_student_form">
-					<div class="form__add_student_group">
-						<label for="group" class="form__add_student_label">Group</label>
-						<select id="group" class="form__add_student_input">
+				<form class="modal_window__form">
+					<div class="form__student_group">
+						<label for="group" class="form__student_label">Group</label>
+						<select id="group" class="form__student_input">
 							<option value="PZ-22">PZ-22</option>
 							<option value="PZ-24">PZ-24</option>
 						</select>
 					</div>
-					<div class="form__add_student_group">
-						<label for="name" class="form__add_student_label">First name</label>
-						<input type="text" id="first_name" class="form__add_student_input">
+					<div class="form__student_group">
+						<label for="name" class="form__student_label">First name</label>
+						<input type="text" id="first_name" class="form__student_input">
 					</div>
-					<div class="form__add_student_group">
-						<label for="name" class="form__add_student_label">Last Name</label>
-						<input type="text" id="last_name" class="form__add_student_input">
+					<div class="form__student_group">
+						<label for="name" class="form__student_label">Last Name</label>
+						<input type="text" id="last_name" class="form__student_input">
 					</div>
-					<div class="form__add_student_group">
-						<label for="name" class="form__add_student_label">Gender</label>
-						<select id="gender" class="form__add_student_input">
+					<div class="form__student_group">
+						<label for="name" class="form__student_label">Gender</label>
+						<select id="gender" class="form__student_input">
 							<option value="M">Male</option>
 							<option value="F">Female</option>
 						</select>
 					</div>
-					<div class="form__add_student_group">
-						<label for="name" class="form__add_student_label">Birthday</label>
-						<input type="date" id="birthday" class="form__add_student_input">
+					<div class="form__student_group">
+						<label for="name" class="form__student_label">Birthday</label>
+						<input type="date" id="birthday" class="form__student_input">
 					</div>
 				</form>
-				<div class="form__add_student_buttons">
-					<button class="form__add_student_button">OK</button>
-					<button onclick="CreateStudent()" class="form__add_student_button">Create</button>
+				<div class="form__student_buttons">
+					<button class="form__student_button">OK</button>
+					<button onclick="CreateStudent()" class="form__student_button">Create</button>
 				</div>
 			</div>
 		</div>
 
 		<div class="form__delete_student modal_window_style">
-			<div class="form__delete_student_container modal_window_container">
-				<div class="form__delete_student_control">
-					<h2 class="form__delete_student_heading">Delete Student</h2>
-					<button onclick="CloseForm()" class="form__student_close">
-						<img class="form__student_close_icon" src="img/close.svg" alt="Close">
+			<div class="modal_window_container">
+				<div class="modal_windows__control">
+					<h2 class="modal_control__heading">Delete Student</h2>
+					<button onclick="CloseForm()" class="modal_control__close">
+						<img class="modal_control__close_icon" src="img/close.svg" alt="Close">
 					</button>
 				</div>
 				<div class="form__delete_student_text">
-					<p class="form__delete_student_paragraph">Are you sure you want to delete this student?</p>
-					<p class="form__delete_student_paragraph" id="delete_name"></p>
+					<p class="form__delete_student_paragraph">Are you sure you want to delete user <b><span class="form__delete_student_paragraph" id="delete_name"></span></b></p>
 
 				</div>
-				<div class="form__delete_student_buttons">
-					<button class="form__delete_student_button">Cancel</button>
-					<button id="delete_student_btn" class="form__delete_student_button">Delete</button>
+				<div class="form__student_buttons">
+					<button class="form__student_button">Cancel</button>
+					<button id="delete_student_btn" class="form__student_button">Delete</button>
 				</div>
 			</div>
 		</div>

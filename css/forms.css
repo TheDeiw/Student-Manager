@@ -30,64 +30,77 @@
    border: 2px solid blue; 
    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
-.form__add_student_control {
+.modal_windows__control {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+   margin-bottom: 1rem;
 }
-.form__add_student_heading {
+.modal_control__heading {
 	margin-top: auto;
 	margin-bottom: auto;
 }
-.form__student_close {
+.modal_control__close {
 	margin-top: 0;
 	cursor: pointer;
 }
-.form__student_close_icon {
+.modal_control__close_icon {
 	width: 30px;
 	height: 30px;
 }
-.form__add_student_form {
+.modal_window__form {
 	margin: auto;
 	width: 70%;
    max-width: 500px;
-}
-.form__add_student_group {
-	margin-top: 10px;
-	margin-bottom: 10px;
-	display: flex;
+   display: flex;
+   flex-direction: column;
 	justify-content: space-between;
-	align-items: center;
 }
-.form__add_student_label {
-	font-weight: 450;
-}
-.form__add_student_input {
-   width: 55%; 
+.form__student_group {
+   display: flex;
+   flex-direction: column; 
+   align-items: flex-start;
+   margin-top: 10px;
+   margin-bottom: 10px;
 }
 
+/* Опис (label) */
+.form__student_label {
+   font-size: 14px;
+   color: #777;
+   margin-bottom: 4px;
+}
+
+.form__student_input {
+   width: 100%;
+   max-width: 500px;
+   font-size: 16px;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   box-shadow: none;
+   transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+
 input[type="text"]{
+   box-sizing: border-box;
 	font-size: 16px;
     line-height: 28px;
-    border: unset;
-	 padding: 2px 4px;
+    border: 1px solid #ccc;
+    padding: 0.3em 1em;
     border-radius: 4px;
-    outline-color: rgb(84 105 212 / 0.5);
+    outline-color: rgb(84 105 212 / 0.7);
     background-color: rgb(255, 255, 255);
-    box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(60, 66, 87, 0.16) 0px 0px 0px 1px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px;
+    box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px, 
+
 }
 
 input[type="date"]{
+   box-sizing: border-box;
 	font-size: 16px;
     line-height: 28px;
     border: unset;
-	 padding: 2px 4px;
+    padding: 0.3em 1em;
     border-radius: 4px;
     outline-color: rgb(84 105 212 / 0.5);
     background-color: rgb(255, 255, 255);
@@ -99,9 +112,9 @@ select{
    box-sizing: border-box;
 	font-size: 16px;
    width: 100%;
-    line-height: 28px;
+   line-height: 28px;
+   padding: 0.5em 1em;
     border: unset;
-	 padding: 6px 16px;
     border-radius: 4px;
     outline-color: rgb(84 105 212 / 0.5);
     background-color: rgb(255, 255, 255);
@@ -110,16 +123,14 @@ select{
 }
 
 input[type="checkbox"] {
-   /* Remove most all native input styles */
    appearance: none;
-   /* Not removed via appearance */
    margin: auto;
    cursor: pointer;
    font: inherit;
    color: currentColor;
    width: 1.15em;
    height: 1.15em;
-   border: 0.13em solid currentColor;
+   border: 0.15em solid currentColor;
    border-radius: 0.25em;
    transform: translateY(-0.075em);
  
@@ -144,46 +155,35 @@ input[type="checkbox"] {
    transform: scale(1);
  }
 
-.form__add_student_buttons {
+.form__student_buttons {
    width: 50%;
    display: flex;
    justify-content: space-around;
    margin: 30px auto 0 auto;
+   gap: 10px;
 }
 
-.form__add_student_button {
-   flex: 1; /* Рівномірний розподіл ширини */
+.form__student_button {
+   flex: 1;
    font-size: 16px;
    font-weight: bold;
    padding: 10px;
    border: none;
    border-radius: 6px;
-   background-color: rgb(84, 105, 212);
+   background-color: #0d7de6;
    color: white;
    cursor: pointer;
    transition: background-color 0.3s ease, transform 0.2s ease;
    box-shadow: rgba(60, 66, 87, 0.16) 0px 2px 4px;
 }
 
-.form__add_student_button:hover {
+.form__student_button:hover {
    background-color: rgb(60, 80, 190);
    transform: translateY(-2px);
 }
 
-.form__add_student_button:active {
+.form__student_button:active {
    background-color: rgb(50, 70, 160);
    transform: translateY(1px);
 }
 
-.form__add_student_button:first-child {
-   margin-right: 10px;
-   background-color: rgb(200, 50, 50); /* Інший колір для першої кнопки */
-}
-
-.form__add_student_button:first-child:hover {
-   background-color: rgb(180, 40, 40);
-}
-
-.form__add_student_button:first-child:active {
-   background-color: rgb(160, 30, 30);
-}
