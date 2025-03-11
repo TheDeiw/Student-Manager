@@ -17,12 +17,20 @@
 
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/forms.css">
+	<link rel="stylesheet" href="css/adaptability.css">
 	<title>Student-Manager</title>
 </head>
 <body>
 	<div>
 		<header class="header">
 			<div class="header-container">
+				<button class="nav_burger">
+					<div class="nav_icon">
+						<span></span>
+						<span></span>
+						<span></span>
+					 </div>
+				</button>
 				<a href="" class="header__logo"> <h1>Student Manager</h1></a>
 				<div class="header__account_control">
 					<div class="account_control__notification">
@@ -115,36 +123,23 @@
 						<p class="add_student_describe">Add Student</p>
 					</button>
 				</div>
-
-				<table class="main_table">
-					<thead>
-						<tr>
-							<th><input  type="checkbox"></th>
-							<th>Group</th>
-							<th>Name</th>
-							<th>Gender</th>
-							<th>Birthday</th>
-							<th>Status</th>
-							<th>Option</th>
-						</tr>
-					</thead>
-					<tbody>
-						<!-- <tr>
-							<td><input type="checkbox"></td>
-							<td>Group 1</td>
-							<td>Chekhovskyi Dmytro</td>
-							<td>M</td>
-							<td>01.01.2000</td>
-							<td><span class="table__active_cirtle active"></span></td>
-							<td>
-								<div class="table__cell_control">
-									<button class="table__edit"><img class="table__icon" src="img/table/edit.svg"></button>
-									<button onclick="openDeleteStudentForm(tr)" class="table__delete"><img class="table__icon" src="img/table/delete.svg"></button>
-								</div>
-							</td>
-						</tr> -->
-					</tbody>
-				</table>
+				<div class="table_wrapper">
+					<table class="main_table">
+						<thead>
+							<tr>
+								<th><input  type="checkbox"></th>
+								<th>Group</th>
+								<th>Name</th>
+								<th>Gender</th>
+								<th>Birthday</th>
+								<th>Status</th>
+								<th>Option</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+				
 			</section>
 		</main>
 

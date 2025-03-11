@@ -2,7 +2,7 @@ html{
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden; 
+    overflow: auto; 
 }
 
 body {
@@ -35,12 +35,12 @@ li {
     margin: 0 auto;
     padding: 0px 30px;
 }
-/*[class*=-container]{
+/* [class*=-container]{
     max-width: 1200px;
     margin: 0 auto;
     padding: 0px 15px;
-}
-@media (max-width: 1199.98px){
+} */
+/* @media (max-width: 1199.98px){
     [class*=-container]{
         max-width: 970px;
     }
@@ -49,12 +49,12 @@ li {
     [class*=-container]{
         max-width: 750px;
     }
-}
+} */
 @media (max-width: 767.98px){
     [class*=-container]{
-        max-width: none;
+        padding: 0px 10px;
     }
-}*/
+}
 
 /* ============================================== */
 .wrapper{
@@ -63,6 +63,9 @@ li {
 
 
 /* HEADER ============================================== */
+.nav_burger{
+    display: none;
+}
 .header {
     top: 0;
     left: 0;
@@ -406,6 +409,7 @@ aside{
     border-collapse: collapse;
     border-spacing: 0;
     margin-top: 1rem;
+    overflow-x: auto;
 }
 
 .main_table thead tr{
@@ -459,7 +463,9 @@ aside{
     user-select: none;
 }
 .table__icon.active:hover{
-    filter: drop-shadow(0 0 2px rgba(88, 111, 244, 0.5));
+    /*filter: drop-shadow(0 0 2px rgba(88, 111, 244, 0.5));*/
+    background-color: #eeefff;
+    border-radius: 5px;
 }
 
 .table__cell_control{
