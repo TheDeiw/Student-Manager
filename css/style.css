@@ -61,7 +61,8 @@ li {
     display: flex;
 }
 
-/* ============================================== */
+
+/* HEADER ============================================== */
 .header {
     top: 0;
     left: 0;
@@ -78,19 +79,14 @@ li {
 .header__logo{
     color: #0d7de6;
 }
-.header__account_control{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-}
 
+/* NOTIFICATION --------------------------------- */
 .account_control__notification{
     position: relative;
 }
 .notification_bell{
     width: 35px;
-    padding: 0.5rem;
+    padding: 0.5rem 0.7rem;
     border-radius: 15px;
     transition: all ease-in-out 0.2s;
     cursor: pointer;
@@ -102,13 +98,86 @@ li {
 #notification_sign{
     position: absolute;
     background-color: #e60d0d;
-    right: 5px;
+    right: 10px;
     top: 5px;
     width: 12px;
     height: 12px;
     border-radius: 5px;
 }
 
+.notification__messages{
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+    position: absolute;
+    top: 100%;
+    width: 15vw;
+    min-width: 200px;
+    max-width: 300px;
+    background-color: #fff;
+    border: #0d7de6 2px solid;
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 0.5rem;
+    z-index: 100;
+}
+
+.notification__massage {
+    width: 100%;
+    margin: 0;
+    padding: 0.5rem;
+    background-color: #eeefff;
+    transition: all 0.1s ease-in-out;
+    box-sizing: border-box;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: top;
+    cursor: pointer;
+    gap: 0.5rem;
+    margin-bottom: 5px
+}
+.message__icon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: #bbb;
+}
+.message__text {
+    flex: 1;
+}
+.message_text__header {
+    font-size: 1rem;
+    margin: 5px 0px;
+    font-weight: 600;
+    line-height: 20px; /* 142.857% */
+}
+.message_text__text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #667085;
+    line-height: 1; /* 142.857% */
+    margin: 0;
+    font-weight: 400;
+}
+
+.account_control__notification:hover .notification__messages,
+.notification__messages:hover {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ACCOUNT --------------------------------- */
+.header__account_control{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+.account_control__user{
+    position: relative;
+}
 
 .account_control__account{
     display: flex;
@@ -120,6 +189,7 @@ li {
     border-radius: 25px;
     color: #0d7de6;
     font-weight: 500;
+    cursor: pointer;
 }
 .account__image {
     height: 40px;
@@ -134,6 +204,47 @@ li {
     border-radius: 50%;
 }
 
+
+.account_control__dropdown {
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+    width: 80%;
+    position: absolute;
+    padding: 0.2rem;
+    border: #eeefff 2px solid;
+    background-color: #FFF;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+}
+.dropdown__item {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 5px;
+    color: #667085;
+    font-weight: 750;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+.dropdown__item:hover{
+    background-color: #eeefff;
+}
+.dropdown__icon {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+}
+
+.account_control__user:hover .account_control__dropdown,
+.account_control__dropdown:hover {
+    opacity: 1;
+    visibility: visible;
+}
 /* ============================================== */
 aside{
     padding: 0;
@@ -299,10 +410,8 @@ aside{
 
 .main_table thead tr{
     border-bottom: 1px solid #EAECF0;
-    background: #FCFCFD;
-    /*background: #eeefff;*/
+    background: #f9f9fd;
     color: #667085;
-    /*color: #0d7de6;*/
     font-size: 1rem;
     font-style: normal;
     line-height: 18px; 
