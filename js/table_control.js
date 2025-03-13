@@ -142,5 +142,6 @@ function CreateStudent(){
 
    // Додаємо рядок у таблицю
    tableBody.appendChild(newRow);
+   CloseForm();
 }
 

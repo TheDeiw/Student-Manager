@@ -1,3 +1,7 @@
+html{
+    overflow: hidden;
+}
+
 body {
     line-height: 1;
     margin: 0;
@@ -239,6 +243,7 @@ li {
     font-weight: 500;
     cursor: pointer;
     margin-bottom: 5px;
+    text-wrap: nowrap;
 }
 
 .dropdown__item:hover {
@@ -268,7 +273,7 @@ aside {
     background-color: #0d7de6;
     position: sticky;
     border-radius: 5px;
-    height: 100vh;
+    height: calc(100vh - 74px);
     padding-left: 0;
     padding: 5px 1em;
     align-self: start;
@@ -282,7 +287,7 @@ aside {
 .menu__container.close {
     width: 45px;
     padding: 5px;
-    height: 100vh;
+    /*height: 100vh;*/
     overflow: hidden;
 }
 
@@ -370,6 +375,7 @@ aside {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 10px;
 }
 
 .describe__heading {
@@ -412,6 +418,7 @@ aside {
 }
 
 .add_student_describe {
+    text-wrap: nowrap;
     margin: 0;
     padding: 0;
     color: #FFF;

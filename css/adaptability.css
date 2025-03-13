@@ -84,7 +84,30 @@
     padding: 0;
   }
 
+  .account_control__dropdown {
+    right: 0;
+    width: 30vw;
+  }
+
   /* TABLE --------------------------------------------------------------- */
+  .table__describe{
+    width: 50%;
+  }
+
+  .describe__heading {
+    font-size: 1.1rem;
+  }
+
+  .descpibe__paragraph {
+    margin-top: 0;
+    font-size: 0.8rem;
+  }
+
+  .table__add_student{
+    
+    margin: 5px;
+  }
+
   .student_table {
     width: 100%;
     box-sizing: border-box;
@@ -103,15 +126,6 @@
     margin: 0;
   }
 
-  .describe__heading {
-    font-size: 1.1rem;
-  }
-
-  .descpibe__paragraph {
-    margin-top: 0;
-    font-size: 0.8rem;
-  }
-
   .table__add_student {
     padding: 5px 8px;
     margin: 5px;
@@ -119,11 +133,6 @@
 
   .menu__item.arrow {
     display: none;
-  }
-
-  .account_control__dropdown {
-    right: 0;
-    width: 30vw;
   }
 
   .menu__container {
