@@ -1,9 +1,9 @@
 .modal_window_style {
-	/*display: none;*/
 	opacity: 0;
+   margin: 0;
    visibility: hidden;
-	width: 100%;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 	position: fixed;
 	opacity: 0;
 	top: 0;
@@ -23,11 +23,11 @@
    left: 50%;
    transform: translate(-50%, -50%);
    width: 90%;
-   max-width: 500px; 
+   width: min(500px, 70vw);
    background-color: white;
    padding: 20px;
-   border-radius: 10px; 
-   border: 2px solid blue; 
+   border-radius: 10px;
+   border: 2px solid blue;
    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 .modal_windows__control {
