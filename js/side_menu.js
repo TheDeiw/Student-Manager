@@ -11,4 +11,5 @@ function toggleSidebar(){
 
 icon.addEventListener('click', (event) => {
   icon.classList.toggle("open");
+  sidebar.classList.toggle('active');
 });
