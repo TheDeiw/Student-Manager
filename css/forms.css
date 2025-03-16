@@ -10,6 +10,7 @@
    left: 0;
    background-color: rgb(0, 0, 0, 0.5);
    transition: all 0.2s ease;
+   z-index: 1000;
 }
 
 .modal_window_style.active {
@@ -110,9 +111,15 @@ input[type="date"] {
    border: unset;
    padding: 0.3em 1em;
    border-radius: 4px;
+   color: #bbb;
    outline-color: rgb(84 105 212 / 0.5);
    background-color: rgb(255, 255, 255);
    box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px;
+}
+
+input[type="date"]:focus,
+input[type="date"]:valid {
+    color: black;
 }
 
 select {
@@ -124,10 +131,14 @@ select {
    padding: 0.5em 1em;
    border: unset;
    border-radius: 4px;
+   color: #bbb;
    outline-color: rgb(84 105 212 / 0.5);
    background-color: rgb(255, 255, 255);
    box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px;
-
+}
+select:focus,
+select:valid {
+    color: black;
 }
 
 input[type="checkbox"] {
@@ -141,7 +152,7 @@ input[type="checkbox"] {
    border: 0.15em solid currentColor;
    border-radius: 0.25em;
    transform: translateY(-0.075em);
-
+   
    display: grid;
    place-content: center;
 }

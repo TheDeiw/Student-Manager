@@ -107,6 +107,19 @@ li {
     width: 12px;
     height: 12px;
     border-radius: 5px;
+    z-index: 900;
+}
+
+@keyframes shake {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-15deg); }
+    40% { transform: rotate(15deg); }
+    60% { transform: rotate(-10deg); }
+    80% { transform: rotate(10deg); }
+}
+
+.notification_bell.clicked {
+    animation: shake 0.5s ease-in-out;
 }
 
 .notification__messages {

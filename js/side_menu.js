@@ -13,3 +13,12 @@ icon.addEventListener('click', (event) => {
   icon.classList.toggle("open");
   sidebar.classList.toggle('active');
 });
+
+document.querySelector(".notification_bell").addEventListener("mousedown", function() {
+  this.classList.add("clicked");
+
+  // Видаляємо клас після завершення анімації, щоб можна було повторити
+  setTimeout(() => {
+      this.classList.remove("clicked");
+  }, 500); // Час відповідає тривалості анімації
+});

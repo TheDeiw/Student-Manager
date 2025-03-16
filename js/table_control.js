@@ -40,13 +40,14 @@ function updateSelectAllState() {
    const someChecked = [...allChildCheckboxes].some(cb => cb.checked);
 
    mainCheckbox.checked = allChecked;
-   mainCheckbox.indeterminate = !allChecked && someChecked;
+   //mainCheckbox.indeterminate = !allChecked && someChecked;
 }
 
 // Form Logic
 function CloseForm(){
    let allForms = document.querySelectorAll('.modal_window_style');
    allForms.forEach(form => form.classList.remove('active'));
+   ClearInputForms();
 }
 document.querySelector('.table__add_student').addEventListener('click', function(){
    let form_addStudent = document.querySelector('.form__add_student');
@@ -145,3 +146,6 @@ function CreateStudent(){
    CloseForm();
 }
 
+function ClearInputForms(){
+   document.querySelectorAll('input, select').forEach(form => form.value = "");
+}
