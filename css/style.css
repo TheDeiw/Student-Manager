@@ -1,4 +1,4 @@
-html{
+html {
     overflow: hidden;
 }
 
@@ -26,7 +26,6 @@ li {
     list-style: none;
 }
 
-/* ============================================== */
 [class*=-container] {
     margin: 0 auto;
     padding: 0px 30px;
@@ -111,11 +110,27 @@ li {
 }
 
 @keyframes shake {
-    0%, 100% { transform: rotate(0deg); }
-    20% { transform: rotate(-15deg); }
-    40% { transform: rotate(15deg); }
-    60% { transform: rotate(-10deg); }
-    80% { transform: rotate(10deg); }
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    20% {
+        transform: rotate(-15deg);
+    }
+
+    40% {
+        transform: rotate(15deg);
+    }
+
+    60% {
+        transform: rotate(-10deg);
+    }
+
+    80% {
+        transform: rotate(10deg);
+    }
 }
 
 .notification_bell.clicked {
@@ -210,7 +225,7 @@ li {
     background-color: #eeefff;
     padding: 0.5rem 0.7rem;
     border-radius: 25px;
-    color: #0d7de6;
+    color: #0D75DE;
     font-weight: 500;
     cursor: pointer;
 }
@@ -283,7 +298,7 @@ aside {
 
 .menu__container {
     top: 0;
-    background-color: #0d7de6;
+    background-color: #0D75DE;
     position: sticky;
     border-radius: 5px;
     height: calc(100vh - 74px);
@@ -382,6 +397,8 @@ aside {
     margin-left: 3vw;
     margin-right: 1vw;
     width: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
 }
 
 .student_table__control {
@@ -410,7 +427,7 @@ aside {
 }
 
 .table__add_student {
-    background-color: #0d7de6;
+    background-color: #0D75DE;
     display: flex;
     align-items: center;
     padding: 8px 12px;
@@ -509,4 +526,36 @@ aside {
 .table__cell_control {
     display: flex;
     justify-content: center;
+}
+
+
+/* ============================================================================================ */
+.pagination {
+    align-self: end;
+    margin: auto;
+}
+
+.pagination__list {
+    padding: 10px;
+    display: flex;
+}
+
+.pagination_list__item {
+    margin: 5px;
+}
+
+.item__content {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    padding: 5px 4px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    border: 1px solid #DFE3E8;
+    background: #FFF;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
 }

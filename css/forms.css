@@ -9,7 +9,7 @@
    top: 0;
    left: 0;
    background-color: rgb(0, 0, 0, 0.5);
-   transition: all 0.2s ease;
+   transition: all 0.2s ease-in;
    z-index: 1000;
 }
 
@@ -17,7 +17,7 @@
    display: block;
    visibility: visible;
    opacity: 1;
-   transition: all 0.2s ease;
+   /*transition: all 0.2s ease;*/
 }
 
 .modal_window_container {
