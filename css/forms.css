@@ -1,64 +1,73 @@
 .modal_window_style {
-	/*display: none;*/
-	opacity: 0;
+   opacity: 0;
+   margin: 0;
    visibility: hidden;
-	width: 100%;
-	height: 100%;
-	position: fixed;
-	opacity: 0;
-	top: 0;
-	left: 0;
-	background-color: rgb(0, 0, 0, 0.5);
-	transition: all 0.2s ease;
+   width: 100vw;
+   height: 100vh;
+   position: fixed;
+   opacity: 0;
+   top: 0;
+   left: 0;
+   background-color: rgb(0, 0, 0, 0.5);
+   transition: all 0.2s ease-in;
+   z-index: 1000;
 }
+
 .modal_window_style.active {
-	display: block;
+   display: block;
    visibility: visible;
-	opacity: 1;
-	transition: all 0.2s ease;
+   opacity: 1;
+   /*transition: all 0.2s ease;*/
 }
+
 .modal_window_container {
-	position: absolute;
+   position: absolute;
    top: 50%;
    left: 50%;
    transform: translate(-50%, -50%);
    width: 90%;
-   max-width: 500px; 
+   width: min(500px, 70vw);
    background-color: white;
    padding: 20px;
-   border-radius: 10px; 
-   border: 2px solid blue; 
+   border-radius: 10px;
+   border: 2px solid blue;
    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
+
 .modal_windows__control {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
    margin-bottom: 1rem;
 }
+
 .modal_control__heading {
-	margin-top: auto;
-	margin-bottom: auto;
+   margin-top: auto;
+   margin-bottom: auto;
 }
+
 .modal_control__close {
-	margin-top: 0;
-	cursor: pointer;
+   margin-top: 0;
+   cursor: pointer;
 }
+
 .modal_control__close_icon {
-	width: 30px;
-	height: 30px;
+   width: 30px;
+   height: 30px;
 }
+
 .modal_window__form {
-	margin: auto;
-	width: 70%;
+   margin: auto;
+   width: 70%;
    max-width: 500px;
    display: flex;
    flex-direction: column;
-	justify-content: space-between;
+   justify-content: space-between;
 }
+
 .form__student_group {
    display: flex;
-   flex-direction: column; 
+   flex-direction: column;
    align-items: flex-start;
    margin-top: 10px;
    margin-bottom: 10px;
@@ -82,44 +91,54 @@
 }
 
 
-input[type="text"]{
+input[type="text"] {
    box-sizing: border-box;
-	font-size: 16px;
-    line-height: 28px;
-    border: 1px solid #ccc;
-    padding: 0.3em 1em;
-    border-radius: 4px;
-    outline-color: rgb(84 105 212 / 0.7);
-    background-color: rgb(255, 255, 255);
-    box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px, 
+   font-size: 16px;
+   line-height: 28px;
+   border: 1px solid #ccc;
+   padding: 0.3em 1em;
+   border-radius: 4px;
+   outline-color: rgb(84 105 212 / 0.7);
+   background-color: rgb(255, 255, 255);
+   box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px,
 
 }
 
-input[type="date"]{
+input[type="date"] {
    box-sizing: border-box;
-	font-size: 16px;
-    line-height: 28px;
-    border: unset;
-    padding: 0.3em 1em;
-    border-radius: 4px;
-    outline-color: rgb(84 105 212 / 0.5);
-    background-color: rgb(255, 255, 255);
-    box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px;
+   font-size: 16px;
+   line-height: 28px;
+   border: unset;
+   padding: 0.3em 1em;
+   border-radius: 4px;
+   color: #bbb;
+   outline-color: rgb(84 105 212 / 0.5);
+   background-color: rgb(255, 255, 255);
+   box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px;
 }
 
-select{
+input[type="date"]:focus,
+input[type="date"]:valid {
+    color: black;
+}
+
+select {
    display: block;
    box-sizing: border-box;
-	font-size: 16px;
+   font-size: 16px;
    width: 100%;
    line-height: 28px;
    padding: 0.5em 1em;
-    border: unset;
-    border-radius: 4px;
-    outline-color: rgb(84 105 212 / 0.5);
-    background-color: rgb(255, 255, 255);
-    box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px;
-
+   border: unset;
+   border-radius: 4px;
+   color: #bbb;
+   outline-color: rgb(84 105 212 / 0.5);
+   background-color: rgb(255, 255, 255);
+   box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px;
+}
+select:focus,
+select:valid {
+    color: black;
 }
 
 input[type="checkbox"] {
@@ -133,12 +152,12 @@ input[type="checkbox"] {
    border: 0.15em solid currentColor;
    border-radius: 0.25em;
    transform: translateY(-0.075em);
- 
+   
    display: grid;
    place-content: center;
- }
- 
- input[type="checkbox"]::before {
+}
+
+input[type="checkbox"]::before {
    content: "";
    width: 0.65em;
    height: 0.65em;
@@ -149,11 +168,11 @@ input[type="checkbox"] {
    box-shadow: inset 1em 1em var(--form-control-color);
    /* Windows High Contrast Mode */
    background-color: #0a569e;
- }
- 
- input[type="checkbox"]:checked::before {
+}
+
+input[type="checkbox"]:checked::before {
    transform: scale(1);
- }
+}
 
 .form__student_buttons {
    width: 50%;
@@ -186,4 +205,3 @@ input[type="checkbox"] {
    background-color: rgb(50, 70, 160);
    transform: translateY(1px);
 }
-

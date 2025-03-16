@@ -1,0 +1,164 @@
+@media (max-width: 767.98px) {
+  html, body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+  /* ============================================== */
+  .wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: calc(100% - 55px);
+    margin: 0;
+    padding: 0;
+  }
+
+  /* HEADER ============================================== */
+  .nav_burger {
+    display: block;
+    background-color: #0d7de6;
+    border-radius: 5px;
+  }
+
+  .nav_icon {
+    width: 25px;
+    height: 25px;
+    margin: 5px 5px;
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .nav_icon span {
+    background-color: #FFF;
+    position: absolute;
+    border-radius: 2px;
+    transition: .3s cubic-bezier(.8, .5, .2, 1.4);
+    width: 100%;
+    height: 4px;
+    transition-duration: 500ms
+  }
+
+  .nav_icon span:nth-child(1) {
+    top: 0px;
+    left: 0px;
+  }
+
+  .nav_icon span:nth-child(2) {
+    top: 43%;
+    left: 0px;
+    opacity: 1;
+  }
+
+  .nav_icon span:nth-child(3) {
+    bottom: 0px;
+    left: 0px;
+  }
+
+  .nav_icon.open span:nth-child(1) {
+    transform: rotate(45deg);
+    top: 45%;
+  }
+
+  .nav_icon.open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav_icon.open span:nth-child(3) {
+    transform: rotate(-45deg);
+    top: 45%;
+  }
+
+  .account__name {
+    display: none;
+  }
+
+  h1 {
+    font-size: 1.1rem;
+  }
+
+  /* NOTIFICATION / ACCOUNT --------------------------------------------------------------- */
+  .header__account_control {
+    gap: 10px;
+  }
+
+  .account_control__account {
+    padding: 0;
+  }
+
+  .account_control__dropdown {
+    right: 0;
+    width: 30vw;
+  }
+
+  /* TABLE --------------------------------------------------------------- */
+  .table__describe{
+    width: 50%;
+  }
+
+  .describe__heading {
+    font-size: 1.1rem;
+  }
+
+  .descpibe__paragraph {
+    margin-top: 0;
+    font-size: 0.8rem;
+  }
+
+  .table__add_student{
+    margin: 5px;
+  }
+
+  .student_table {
+    width: 100%;
+    
+    box-sizing: border-box;
+    /* display: grid;
+    grid-template-rows: auto 1fr auto; */
+    margin: 0;
+    padding: 10px;
+  }
+
+  .table_wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .main_table {
+    width: 767px;
+    margin: 0;
+  }
+
+  .table__add_student {
+    padding: 5px 8px;
+    margin: 5px;
+  }
+
+  .menu__item.arrow {
+    display: none;
+  }
+
+  .menu__container {
+    width: 100%;
+    position: absolute;
+    height: calc(100% - 55px);
+    box-sizing: border-box;
+    /*background-color: #f9f9fd;*/
+    top: 55px;
+    z-index: 1000;
+    left: -100%;
+    transition: all 0.4s ease-in-out;
+  }
+
+  .menu__container.active {
+    left: 0;
+    background-color: #0d7de6;
+  }
+
+  .pagination__list{
+    padding: 2px;
+  }
+
+}

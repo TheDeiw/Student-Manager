@@ -13,20 +13,28 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-	<link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico?">
 
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/forms.css">
+	<link rel="stylesheet" href="css/adaptability.css">
 	<title>Student-Manager</title>
 </head>
 <body>
-	<div>
 		<header class="header">
 			<div class="header-container">
+				<button class="nav_burger" aria-label="Menu opener">
+					<div class="nav_icon">
+						<span></span>
+						<span></span>
+						<span></span>
+					 </div>
+				</button>
 				<a href="" class="header__logo"> <h1>Student Manager</h1></a>
 				<div class="header__account_control">
 					<div class="account_control__notification">
-						<span id="notification_sign"></span><img class="notification_bell" src="img/header/Notification-bell.svg" alt="Notification-bell">
+						<a href="messages.html"> <span id="notification_sign"></span><img class="notification_bell" src="img/header/Notification-bell.svg" alt="Notification-bell"></a>
 						<div class="notification__messages">
 							<div class="notification__massage">
 								<div class="message__icon"></div>
@@ -79,24 +87,24 @@
 					<ul class="menu__list">
 						<li class="menu__item arrow">
 							<button  id="toggle-btn" class="menu_arrow">
-							  <img src="img/nav/Arrow.svg" class="menu__icon_arrow"  alt="Arrow">
+							  <img src="img/nav/Arrow.svg" class="menu__icon_arrow"  alt="Menu opener button">
 							</button>
 						 </li>
 						<li class="menu__item">
-							<a href="" class="menu__link">
-								<img class="menu__icon" src="img/nav/Dashboard.svg" alt="Dashboard">
+							<a href="dashboard.html" class="menu__link">
+								<img class="menu__icon" src="img/nav/Dashboard.svg" alt="Icon - link to page 'Dashboard'">
 								<span>Dashboard</span>
 							</a>
 						</li>
 						<li class="menu__item selected">
-							<a href="" class="menu__link">
-								<img class="menu__icon" src="img/nav/Students.png" alt="Students">
+							<a href="index.html" class="menu__link">
+								<img class="menu__icon" src="img/nav/Students.png" alt="Icon - link to page 'Students'">
 								<span>Students</span>
 							</a>
 						</li>
 						<li class="menu__item">
-							<a href="" class="menu__link">
-								<img class="menu__icon" src="img/nav/Tasks.svg" alt="Tasks">
+							<a href="tasks.html" class="menu__link">
+								<img class="menu__icon" src="img/nav/Tasks.svg" alt="Icon - link to page 'Tasks'">
 								<span>Tasks</span>
 							</a>
 						</li>
@@ -111,40 +119,41 @@
 						<p class="descpibe__paragraph">Here you can manage all data about students</p>
 					</div>
 					<button class="table__add_student">
-						<img class="add_student_plus" src="img/plus.svg">
+						<img class="add_student_plus" src="img/plus.svg" alt="Plus sign for adding button">
 						<p class="add_student_describe">Add Student</p>
 					</button>
 				</div>
-
-				<table class="main_table">
-					<thead>
-						<tr>
-							<th><input  type="checkbox"></th>
-							<th>Group</th>
-							<th>Name</th>
-							<th>Gender</th>
-							<th>Birthday</th>
-							<th>Status</th>
-							<th>Option</th>
-						</tr>
-					</thead>
-					<tbody>
-						<!-- <tr>
-							<td><input type="checkbox"></td>
-							<td>Group 1</td>
-							<td>Chekhovskyi Dmytro</td>
-							<td>M</td>
-							<td>01.01.2000</td>
-							<td><span class="table__active_cirtle active"></span></td>
-							<td>
-								<div class="table__cell_control">
-									<button class="table__edit"><img class="table__icon" src="img/table/edit.svg"></button>
-									<button onclick="openDeleteStudentForm(tr)" class="table__delete"><img class="table__icon" src="img/table/delete.svg"></button>
-								</div>
-							</td>
-						</tr> -->
-					</tbody>
-				</table>
+				<div class="table_wrapper">
+					<table class="main_table">
+						<thead>
+							<tr>
+								<th scope="col"><input type="checkbox" aria-label="Turn on all checkboxes"></th>
+								<th scope="col">Group</th>
+								<th scope="col">Name</th>
+								<th scope="col">Gender</th>
+								<th scope="col">Birthday</th>
+								<th scope="col">Status</th>
+								<th scope="col">Option</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+				
+				<div class="pagination">
+					<ul class="pagination__list">
+						<li class="pagination_list__item"><button class="item__content" aria-label="Previous page in table"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+							<path d="M8.84 7.41L13.42 12L8.84 16.59L10.25 18L16.25 12L10.25 6L8.84 7.41Z" fill="#C4CDD5" transform="rotate(180 12 12)"/>
+					  </svg>
+					  </button></li>
+						<li class="pagination_list__item"><button class="item__content">1</button></li>
+						<li class="pagination_list__item"><button class="item__content">2</button></li>
+						<li class="pagination_list__item"><button class="item__content">3</button></li>
+						<li class="pagination_list__item"><button class="item__content" aria-label="Next page in table"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+							<path d="M8.84 7.41L13.42 12L8.84 16.59L10.25 18L16.25 12L10.25 6L8.84 7.41Z" fill="#C4CDD5"/>
+							</svg></button></li>
+					</ul>
+				</div>
 			</section>
 		</main>
 
@@ -159,8 +168,11 @@
 				<form class="modal_window__form">
 					<div class="form__student_group">
 						<label for="group" class="form__student_label">Group</label>
-						<select id="group" class="form__student_input">
+						<select required id="group" class="form__student_input">
+							<option value="" disabled hidden selected> Select group </option>
+							<option value="PZ-22">PZ-21</option>
 							<option value="PZ-22">PZ-22</option>
+							<option value="PZ-22">PZ-23</option>
 							<option value="PZ-24">PZ-24</option>
 						</select>
 					</div>
@@ -174,7 +186,8 @@
 					</div>
 					<div class="form__student_group">
 						<label for="name" class="form__student_label">Gender</label>
-						<select id="gender" class="form__student_input">
+						<select required id="gender" class="form__student_input">
+							<option value="" disabled hidden selected> Select gender </option>
 							<option value="M">Male</option>
 							<option value="F">Female</option>
 						</select>
@@ -185,7 +198,7 @@
 					</div>
 				</form>
 				<div class="form__student_buttons">
-					<button class="form__student_button">OK</button>
+					<button onclick="CloseForm()" class="form__student_button">Cancel</button>
 					<button onclick="CreateStudent()" class="form__student_button">Create</button>
 				</div>
 			</div>
@@ -210,7 +223,6 @@
 			</div>
 		</div>
 		<footer></footer>
-	</div>
 
 	<script src="js/side_menu.js"></script>
 	<script src="js/table_control.js"></script>

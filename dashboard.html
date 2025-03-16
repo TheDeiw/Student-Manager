@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Student-Manager. JS-DataManager. Labwork for 'Internet Programming'">
+	<meta name="author" content="Chekhovskyi Dmytro (TheDeiw)">
+	<meta name="keywords" content="Student-Manager, JS-DataManager">
+	<meta name="google" content="notranslate">
+	<meta property="og:image" content="img/favicon.ico">
+	<meta property="og:title" content="Student-Manager">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico?">
+
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/forms.css">
+	<link rel="stylesheet" href="css/adaptability.css">
+	<title>Student-Manager</title>
+</head>
+<body>
+	<div>
+		<header class="header">
+			<div class="header-container">
+				<button class="nav_burger">
+					<div class="nav_icon">
+						<span></span>
+						<span></span>
+						<span></span>
+					 </div>
+				</button>
+				<a href="" class="header__logo"> <h1>Student Manager</h1></a>
+				<div class="header__account_control">
+					<div class="account_control__notification">
+						<span id="notification_sign"></span><img class="notification_bell" src="img/header/Notification-bell.svg" alt="Notification-bell">
+						<div class="notification__messages">
+							<div class="notification__massage">
+								<div class="message__icon"></div>
+								<div class="message__text">
+									<h3 class="message_text__header">Teacher</h3>
+									<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+								</div>
+							</div>
+							<div class="notification__massage">
+								<div class="message__icon"></div>
+								<div class="message__text">
+									<h3 class="message_text__header">Teacher</h3>
+									<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit....</p>
+								</div>
+							</div>
+							<div class="notification__massage">
+								<div class="message__icon"></div>
+								<div class="message__text">
+									<h3 class="message_text__header">Teacher</h3>
+									<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="account_control__user">
+						<div class="account_control__account">
+							<div class="account__image"><img src="img/header/Avatar.jpg" alt="" class="account__avatar"></div>
+							<div class="account__name">Chekhovskyi</div>
+						</div>
+						<div class="account_control__dropdown">
+							<a href="">
+								<div class="dropdown__item">
+								 	<img class="dropdown__icon" src="img/header/Profile.svg" alt="Profile-link">Profile
+								</div>
+							</a>
+							<a href="">
+								<div class="dropdown__item">
+									 <img class="dropdown__icon" src="img/header/Logout.svg" alt="LogOut-link">Log Out
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<main class="wrapper">
+			<aside>
+				<nav class="menu__container">
+					<ul class="menu__list">
+						<li class="menu__item arrow">
+							<button  id="toggle-btn" class="menu_arrow">
+							  <img src="img/nav/Arrow.svg" class="menu__icon_arrow"  alt="Arrow">
+							</button>
+						 </li>
+						<li class="menu__item selected">
+							<a href="" class="menu__link">
+								<img class="menu__icon" src="img/nav/Dashboard.svg" alt="Dashboard">
+								<span>Dashboard</span>
+							</a>
+						</li>
+						<li class="menu__item ">
+							<a href="index.html" class="menu__link">
+								<img class="menu__icon" src="img/nav/Students.png" alt="Students">
+								<span>Students</span>
+							</a>
+						</li>
+						<li class="menu__item">
+							<a href="tasks.html" class="menu__link">
+								<img class="menu__icon" src="img/nav/Tasks.svg" alt="Tasks">
+								<span>Tasks</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</aside>
+		</main>
+
+	<script src="js/side_menu.js"></script>
+</body>
+</html>
