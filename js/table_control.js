@@ -139,6 +139,12 @@ document.querySelector('#create_student_btn').addEventListener("click", () => {
    let birthdayInput = document.getElementById('birthday').value;
    newRow.appendChild(createCell(birthdayInput));
 
+   if (groupSelect == '' || firstNnameInput == '' || lastNameInput == '' || genderSelect == '' || birthdayInput == ''){
+      alert("There are empty fields");
+      newRow.remove();
+      return;
+   }
+
    // Status
    let statusSpan = document.createElement("span");
    statusSpan.classList.add("table__active_cirtle");
