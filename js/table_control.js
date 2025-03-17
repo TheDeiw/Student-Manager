@@ -68,7 +68,7 @@ function openDeleteStudentForm(newRow){
 
 
 // Creating student
-function CreateStudent(){
+document.querySelector('#create_student_btn').addEventListener("click", () => {
    // Find main elements in table
    let tableBody = document.querySelector('.main_table tbody');
    let newRow = document.createElement('tr');
@@ -144,7 +144,7 @@ function CreateStudent(){
    // Додаємо рядок у таблицю
    tableBody.appendChild(newRow);
    CloseForm();
-}
+})
 
 function ClearInputForms(){
    document.querySelectorAll('input, select').forEach(form => form.value = "");
