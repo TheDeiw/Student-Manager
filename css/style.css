@@ -165,7 +165,7 @@ li {
     border-radius: 5px;
     display: flex;
     justify-content: space-between;
-    align-items: top;
+    /*align-items: top;*/
     cursor: pointer;
     gap: 0.5rem;
     margin-bottom: 5px
@@ -225,7 +225,7 @@ li {
     background-color: #eeefff;
     padding: 0.5rem 0.7rem;
     border-radius: 25px;
-    color: #0D75DE;
+    color: #0C6BCA;
     font-weight: 500;
     cursor: pointer;
 }
@@ -528,7 +528,18 @@ aside {
     justify-content: center;
 }
 
-
+.visually-hidden { 
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  
 /* ============================================================================================ */
 .pagination {
     align-self: end;

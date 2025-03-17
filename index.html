@@ -127,7 +127,7 @@
 					<table class="main_table">
 						<thead>
 							<tr>
-								<th scope="col"><input type="checkbox" aria-label="Turn on all checkboxes"></th>
+								<th scope="col"><input type="checkbox" aria-label="Turn on all checkboxes"> <span class="visually-hidden">Select All</span></th>
 								<th scope="col">Group</th>
 								<th scope="col">Name</th>
 								<th scope="col">Gender</th>
@@ -177,15 +177,15 @@
 						</select>
 					</div>
 					<div class="form__student_group">
-						<label for="name" class="form__student_label">First name</label>
+						<label for="first_name" class="form__student_label">First name</label>
 						<input type="text" id="first_name" class="form__student_input">
 					</div>
 					<div class="form__student_group">
-						<label for="name" class="form__student_label">Last Name</label>
+						<label for="last_name" class="form__student_label">Last Name</label>
 						<input type="text" id="last_name" class="form__student_input">
 					</div>
 					<div class="form__student_group">
-						<label for="name" class="form__student_label">Gender</label>
+						<label for="gender" class="form__student_label">Gender</label>
 						<select required id="gender" class="form__student_input">
 							<option value="" disabled hidden selected> Select gender </option>
 							<option value="M">Male</option>
@@ -193,7 +193,7 @@
 						</select>
 					</div>
 					<div class="form__student_group">
-						<label for="name" class="form__student_label">Birthday</label>
+						<label for="birthday" class="form__student_label">Birthday</label>
 						<input type="date" id="birthday" class="form__student_input">
 					</div>
 				</form>
