@@ -17,8 +17,12 @@ icon.addEventListener('click', (event) => {
 document.querySelector(".notification_bell").addEventListener("mousedown", function() {
   this.classList.add("clicked");
 
-  // Видаляємо клас після завершення анімації, щоб можна було повторити
   setTimeout(() => {
       this.classList.remove("clicked");
-  }, 500); // Час відповідає тривалості анімації
+  }, 500); 
+});
+
+const redSign = document.querySelector(".notification_sign");
+document.querySelector(".notification_bell").addEventListener("click", function() {
+  redSign.classList.toggle("active");
 });

@@ -97,8 +97,11 @@ li {
 .notification_bell:hover {
     background-color: #eeefff;
 }
-
-#notification_sign {
+.notification_sign{
+    display: none;
+}
+.notification_sign.active {
+    display: block;
     position: absolute;
     background-color: #e60d0d;
     right: 10px;
