@@ -426,6 +426,14 @@ aside {
     line-height: 20px;
 }
 
+.table__control_buttons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px;
+    gap: 0.5rem;
+}
+
 .table__add_student {
     background-color: #0D75DE;
     display: flex;
@@ -433,8 +441,8 @@ aside {
     padding: 8px 12px;
     border-radius: 5px;
     gap: 8px;
-    margin: 10px;
     transition: all ease-in-out 0.2s;
+    cursor: pointer;
 }
 
 .table__add_student:hover {
@@ -458,6 +466,33 @@ aside {
     line-height: 20px;
 }
 
+.table__delete_student {
+    width: 100%;
+    background-color: #6f6f6f;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    transition: all ease-in-out 0.2s;
+}
+
+.table__delete_student.active{
+    background-color: #0D75DE;
+    cursor: pointer;
+}
+
+.table__delete_student.active:hover {
+    background-color: #0c65b9;
+}
+.delete_student_describe {
+    text-wrap: nowrap;
+    margin: 0;
+    padding: 0;
+    color: #FFF;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+}
 /* ============================================================================================ */
 .main_table {
     width: 100%;

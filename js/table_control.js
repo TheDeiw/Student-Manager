@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
        });
        updateSelectAllState();
    });
+
+
 });
 
 function updateSelectAllState() {
@@ -37,10 +39,20 @@ function updateSelectAllState() {
    const allChildCheckboxes = document.querySelectorAll(".main_table tbody input[type='checkbox']");
 
    const allChecked = [...allChildCheckboxes].every(cb => cb.checked);
-   const someChecked = [...allChildCheckboxes].some(cb => cb.checked);
-
    mainCheckbox.checked = allChecked;
-   //mainCheckbox.indeterminate = !allChecked && someChecked;
+
+   const numberOfChecked = [...allChildCheckboxes].filter(cb => cb.checked).length;
+   console.log(numberOfChecked);
+   const deleteButton = document.querySelector(".table__delete_student");
+   
+   if (numberOfChecked == 0){
+      deleteButton.classList.toggle("active", false);
+      document.querySelector(".delete_student_describe").innerHTML = "Delete (0)";
+   } else {
+      deleteButton.classList.toggle("active", true);
+      document.querySelector(".delete_student_describe").innerHTML = `Delete (${numberOfChecked})`;
+   }
+   
 }
 
 // Form Logic
@@ -52,11 +64,12 @@ function CloseForm(){
 document.querySelector('.table__add_student').addEventListener('click', function(){
    let form_addStudent = document.querySelector('.form__add_student');
    form_addStudent.classList.toggle('active');
-})
+});
 
 function openDeleteStudentForm(newRow){
    let deleteButton = document.querySelector('#delete_student_btn');
    document.querySelector('.form__delete_student').classList.add('active');
+   document.querySelector('.form__delete_student_paragraph').textContent = "Are you sure you want to delete user ";
    document.querySelector('#delete_name').textContent = newRow.children[2].textContent;
 
    deleteButton.addEventListener('click', function(){
@@ -65,7 +78,25 @@ function openDeleteStudentForm(newRow){
    })
 }
 
+document.querySelector('.table__delete_student').addEventListener("click", function(event) {
+   if (this.classList.contains("active")){
+      const checkedRows = [...document.querySelectorAll(".main_table tbody input[type='checkbox']")]
+      .filter(cb => cb.checked)         // Фільтруємо лише вибрані чекбокси
+      .map(cb => cb.closest("tr"));       // Для кожного вибраного чекбокса отримуємо найближчий <tr>
+      document.querySelector('.form__delete_student').classList.add('active');
+      document.querySelector('.form__delete_student_paragraph').textContent = "Are you sure you want do delete all checked students: ";
+      document.querySelector('#delete_name').textContent = `${[...document.querySelectorAll(".main_table tbody input[type='checkbox']")].filter(cb => cb.checked).length}`
+      document.querySelector('.form__delete_student').classList.add('active');
 
+      let deleteButton = document.querySelector('#delete_student_btn');
+      deleteButton.addEventListener('click', function(){
+         checkedRows.forEach(row => row.remove());
+         updateSelectAllState();
+         CloseForm();
+      });
+   }
+   
+});
 
 // Creating student
 document.querySelector('#create_student_btn').addEventListener("click", () => {
@@ -111,6 +142,10 @@ document.querySelector('#create_student_btn').addEventListener("click", () => {
    // Status
    let statusSpan = document.createElement("span");
    statusSpan.classList.add("table__active_cirtle");
+   const randomBoolean = Math.random() < 0.5;
+   if (randomBoolean){
+      statusSpan.classList.add('active');
+   }
    newRow.appendChild(createCell(statusSpan));
 
    // Option
@@ -144,7 +179,7 @@ document.querySelector('#create_student_btn').addEventListener("click", () => {
    // Додаємо рядок у таблицю
    tableBody.appendChild(newRow);
    CloseForm();
-})
+});
 
 function ClearInputForms(){
    document.querySelectorAll('input, select').forEach(form => form.value = "");

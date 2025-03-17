@@ -118,10 +118,16 @@
 						<h2 class="describe__heading">Students</h2>
 						<p class="descpibe__paragraph">Here you can manage all data about students</p>
 					</div>
-					<button class="table__add_student">
-						<img class="add_student_plus" src="img/plus.svg" alt="Plus sign for adding button">
-						<p class="add_student_describe">Add Student</p>
-					</button>
+					<div class="table__control_buttons">
+						<button class="table__add_student">
+							<img class="add_student_plus" src="img/plus.svg" alt="Plus sign for adding button">
+							<p class="add_student_describe">Add Student</p>
+						</button>
+						<button class="table__delete_student">
+							<p class="delete_student_describe">Delete (0)</p>
+						</button>
+					</div>
+					
 				</div>
 				<div class="table_wrapper">
 					<table class="main_table">
@@ -207,17 +213,16 @@
 		<div class="form__delete_student modal_window_style">
 			<div class="modal_window_container">
 				<div class="modal_windows__control">
-					<h2 class="modal_control__heading">Delete Student</h2>
+					<h2 class="modal_control__heading">Warning</h2>
 					<button onclick="CloseForm()" class="modal_control__close">
 						<img class="modal_control__close_icon" src="img/close.svg" alt="Close">
 					</button>
 				</div>
 				<div class="form__delete_student_text">
-					<p class="form__delete_student_paragraph">Are you sure you want to delete user <b><span class="form__delete_student_paragraph" id="delete_name"></span></b></p>
-
+					<p class="form__delete_student_paragraph">Are you sure you want to delete user</p> <b><span id="delete_name"></span></b>
 				</div>
 				<div class="form__student_buttons">
-					<button class="form__student_button">Cancel</button>
+					<button onclick="CloseForm()" class="form__student_button">Cancel</button>
 					<button id="delete_student_btn" class="form__student_button">Delete</button>
 				</div>
 			</div>
