@@ -1,26 +1,32 @@
-const toggleButton = document.querySelector('.menu__icon_arrow')
-const sidebar = document.querySelector('.menu__container')
-const icon = document.querySelector('.nav_icon')
+const toggleButton = document.querySelector(".menu__icon_arrow");
+const sidebar = document.querySelector(".menu__container");
+const icon = document.querySelector(".nav_icon");
 
-document.querySelector('.menu__item.arrow').addEventListener('click', function(){
-  sidebar.classList.toggle('close')
-  toggleButton.classList.toggle('close')
-});
+document
+  .querySelector(".menu__item.arrow")
+  .addEventListener("click", function () {
+    sidebar.classList.toggle("close");
+    toggleButton.classList.toggle("close");
+  });
 
-icon.addEventListener('click', () => {
+icon.addEventListener("click", () => {
   icon.classList.toggle("open");
-  sidebar.classList.toggle('active');
+  sidebar.classList.toggle("active");
 });
 
-document.querySelector(".notification_bell").addEventListener("mousedown", function() {
-  this.classList.add("clicked");
+document
+  .querySelector(".notification_bell")
+  .addEventListener("mousedown", function () {
+    this.classList.add("clicked");
 
-  setTimeout(() => {
+    setTimeout(() => {
       this.classList.remove("clicked");
-  }, 500); 
-});
+    }, 500);
+  });
 
 const redSign = document.querySelector(".notification_sign");
-document.querySelector(".notification_bell").addEventListener("click", function() {
-  redSign.classList.toggle("active");
-});
+document
+  .querySelector(".notification_bell")
+  .addEventListener("click", function () {
+    redSign.classList.toggle("active");
+  });

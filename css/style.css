@@ -303,7 +303,7 @@ aside {
     top: 0;
     background-color: #0D75DE;
     position: sticky;
-    border-radius: 5px;
+    /*border-radius: 5px;*/
     height: calc(100vh - 74px);
     padding-left: 0;
     padding: 5px 1em;

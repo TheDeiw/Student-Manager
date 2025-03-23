@@ -90,6 +90,11 @@
    transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
+.form__student_input.error{
+   border: 1.5px solid rgba(247, 24, 24);
+   /*outline-color: rgb(247, 24, 24);*/
+   background-color: rgb(254, 228, 228);
+}
 
 input[type="text"] {
    box-sizing: border-box;
@@ -98,9 +103,9 @@ input[type="text"] {
    border: 1px solid #ccc;
    padding: 0.3em 1em;
    border-radius: 4px;
-   outline-color: rgb(84 105 212 / 0.7);
+   outline-color: rgb(84 105 212);
    background-color: rgb(255, 255, 255);
-   box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px,
+   box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px;
 
 }
 
@@ -112,7 +117,7 @@ input[type="date"] {
    padding: 0.3em 1em;
    border-radius: 4px;
    color: #bbb;
-   outline-color: rgb(84 105 212 / 0.5);
+   outline-color: rgb(84 105 212);
    background-color: rgb(255, 255, 255);
    box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px;
 }
@@ -132,7 +137,7 @@ select {
    border: unset;
    border-radius: 4px;
    color: #bbb;
-   outline-color: rgb(84 105 212 / 0.5);
+   outline-color: rgb(84 105 212);
    background-color: rgb(255, 255, 255);
    box-shadow: rgba(60, 66, 87, 0.16) 0px 0px 0px 1px;
 }
@@ -172,6 +177,12 @@ input[type="checkbox"]::before {
 
 input[type="checkbox"]:checked::before {
    transform: scale(1);
+}
+
+.form__error_text{
+   color: #b51b1b;
+   padding-top: 2px;
+   font-size: 0.9rem;
 }
 
 .form__student_buttons {
