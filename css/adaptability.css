@@ -1,9 +1,11 @@
 @media (max-width: 767.98px) {
-  html, body {
-    height: 100vh;
+
+  html,
+  body {
+    height: 100dvh;
     margin: 0;
     padding: 0;
-}
+  }
 
   /* ============================================== */
   .wrapper {
@@ -94,7 +96,7 @@
   }
 
   /* TABLE --------------------------------------------------------------- */
-  .table__describe{
+  .table__describe {
     width: 50%;
   }
 
@@ -107,13 +109,8 @@
     font-size: 0.8rem;
   }
 
-  .table__add_student{
-    margin: 5px;
-  }
-
   .student_table {
     width: 100%;
-    
     box-sizing: border-box;
     /* display: grid;
     grid-template-rows: auto 1fr auto; */
@@ -133,7 +130,10 @@
 
   .table__add_student {
     padding: 5px 8px;
-    margin: 5px;
+  }
+
+  .table__delete_student {
+    padding: 5px 8px;
   }
 
   .menu__item.arrow {
@@ -157,7 +157,7 @@
     background-color: #0d7de6;
   }
 
-  .pagination__list{
+  .pagination__list {
     padding: 2px;
   }
 
