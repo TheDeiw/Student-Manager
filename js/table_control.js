@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
    const mainCheckbox = document.querySelector(".main_table thead input[type='checkbox']");
    const tbody = document.querySelector(".main_table tbody");
 
-   // Делегований обробник для змін дочірніх чекбоксів
+   // Options in table
    tbody.addEventListener("change", function (event) {
        if (event.target.matches("input[type='checkbox']")) {
            const row = event.target.closest("tr");
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
        }
    });
 
-   // Обробник для головного чекбокса
+   // Main checkbox
    mainCheckbox.addEventListener("change", function () {
        const targetState = mainCheckbox.checked;
        const allChildCheckboxes = document.querySelectorAll(".main_table tbody input[type='checkbox']");
@@ -81,8 +81,8 @@ function openDeleteStudentForm(newRow){
 document.querySelector('.table__delete_student').addEventListener("click", function(event) {
    if (this.classList.contains("active")){
       const checkedRows = [...document.querySelectorAll(".main_table tbody input[type='checkbox']")]
-      .filter(cb => cb.checked)         // Фільтруємо лише вибрані чекбокси
-      .map(cb => cb.closest("tr"));       // Для кожного вибраного чекбокса отримуємо найближчий <tr>
+      .filter(cb => cb.checked)
+      .map(cb => cb.closest("tr"));
       document.querySelector('.form__delete_student').classList.add('active');
       document.querySelector('.form__delete_student_paragraph').textContent = "Are you sure you want do delete all checked students: ";
       document.querySelector('#delete_name').textContent = `${[...document.querySelectorAll(".main_table tbody input[type='checkbox']")].filter(cb => cb.checked).length}`
@@ -95,7 +95,6 @@ document.querySelector('.table__delete_student').addEventListener("click", funct
          CloseForm();
       });
    }
-   
 });
 
 // Creating student
@@ -118,7 +117,6 @@ document.querySelector('#create_student_btn').addEventListener("click", () => {
    // Checkbox
    let checkbox = document.createElement("input");
    checkbox.type = "checkbox";
-   //checkbox.classList.add("row-checkbox");
    newRow.appendChild(createCell(checkbox));
 
    // Group
@@ -182,7 +180,7 @@ document.querySelector('#create_student_btn').addEventListener("click", () => {
    optionsDiv.appendChild(deleteButton);
    newRow.appendChild(createCell(optionsDiv));
 
-   // Додаємо рядок у таблицю
+   // Create row
    tableBody.appendChild(newRow);
    CloseForm();
 });
