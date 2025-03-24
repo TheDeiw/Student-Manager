@@ -78,6 +78,8 @@ document
   .querySelector(".table__add_student")
   .addEventListener("click", function () {
     let form_addStudent = document.querySelector(".form__add_student");
+    form_addStudent.querySelector(".modal_control__heading").textContent =
+      "Add Student";
     form_addStudent.classList.toggle("active");
   });
 
@@ -151,6 +153,18 @@ function HideErrorInput(element) {
 
   errorField.textContent = "";
   element.classList.toggle("error", false);
+}
+
+function openEditStudentForm(Row) {
+  const form_addStudent = document.querySelector(".form__add_student");
+  form_addStudent.classList.toggle("active");
+  form_addStudent.querySelector(".modal_control__heading").textContent =
+    "Edit Student";
+  const groupForm = document.getElementById("group");
+  const firstNameForm = document.getElementById("first_name");
+  const lastNameForm = document.getElementById("last_name");
+  const genderForm = document.getElementById("gender");
+  const birthdayForm = document.getElementById("birthday");
 }
 
 // Creating student
@@ -329,6 +343,12 @@ function CreateStudent() {
   editButtonIcon.src = "img/table/edit.svg";
   editButtonIcon.classList.add("table__icon");
   editButton.appendChild(editButtonIcon);
+  editButton.addEventListener("click", function (event) {
+    let icon = event.target.closest(".table__icon");
+    if (icon && icon.classList.contains("active")) {
+      openEditStudentForm(newRow);
+    }
+  });
 
   let deleteButton = document.createElement("button");
   deleteButton.classList.add("table__delete");
