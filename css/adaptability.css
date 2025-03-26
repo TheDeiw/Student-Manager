@@ -152,7 +152,8 @@
     transition: all 0.4s ease-in-out;
   }
 
-  .menu__container.active {
+  .menu__container.close {
+    width: 100%;
     left: 0;
     background-color: #0d7de6;
   }

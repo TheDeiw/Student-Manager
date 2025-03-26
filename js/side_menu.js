@@ -11,7 +11,7 @@ document
 
 icon.addEventListener("click", () => {
   icon.classList.toggle("open");
-  sidebar.classList.toggle("active");
+  sidebar.classList.toggle("close");
 });
 
 document
