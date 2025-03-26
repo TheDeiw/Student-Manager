@@ -260,7 +260,7 @@ function CheckInputForms() {
   const dayDiff = today.getDate() - birthdayDate.getDate();
 
   if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-    age--;
+    //age--;
   }
 
   if (birthdayValue === "") {
@@ -340,7 +340,7 @@ function CreateStudent() {
   let editButton = document.createElement("button");
   editButton.classList.add("table__edit");
   let editButtonIcon = document.createElement("img");
-  editButtonIcon.src = "img/table/edit.svg";
+  editButtonIcon.src = "assets/img/students-table/edit.svg";
   editButtonIcon.classList.add("table__icon");
   editButton.appendChild(editButtonIcon);
   editButton.addEventListener("click", function (event) {
@@ -353,7 +353,7 @@ function CreateStudent() {
   let deleteButton = document.createElement("button");
   deleteButton.classList.add("table__delete");
   let deleteButtonIcon = document.createElement("img");
-  deleteButtonIcon.src = "img/table/delete.svg";
+  deleteButtonIcon.src = "assets/img/students-table/delete.svg";
   deleteButtonIcon.classList.add("table__icon");
   deleteButton.appendChild(deleteButtonIcon);
   deleteButton.addEventListener("click", function (event) {
