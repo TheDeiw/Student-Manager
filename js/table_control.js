@@ -62,11 +62,6 @@ function CloseForm() {
     allForms.forEach((form) => form.classList.remove("active"));
     ClearInputForms();
 }
-document.querySelector(".table__add_student").addEventListener("click", function () {
-    let form_addStudent = document.querySelector(".form__add_student");
-    form_addStudent.querySelector(".modal_control__heading").textContent = "Add Student";
-    form_addStudent.classList.toggle("active");
-});
 
 function openDeleteStudentForm(studentId) {
     const deleteModal = document.querySelector(".form__delete_student");
@@ -147,6 +142,22 @@ function HideErrorInput(element) {
     element.classList.toggle("error", false);
 }
 
+document.querySelector(".table__add_student").addEventListener("click", function () {
+    const form_addStudent = document.querySelector(".form__add_student");
+    form_addStudent.querySelector(".modal_control__heading").textContent = "Add Student";
+    form_addStudent.querySelector(".interact_student_button").textContent = "Create";
+    form_addStudent.querySelector(".interact_student_button").id = "create_student_btn";
+    form_addStudent.classList.toggle("active");
+    // Creating student
+    form_addStudent.querySelector(".interact_student_button").onclick = function () {
+        if (CheckInputForms()) {
+            CreateStudent();
+            CloseForm();
+            console.log("Student added successfully!");
+        }
+    };
+});
+
 function openEditStudentForm(studentId) {
     let students = JSON.parse(localStorage.getItem("students")) || [];
     let student = students.find((s) => s.id === studentId);
@@ -155,21 +166,135 @@ function openEditStudentForm(studentId) {
     const form = document.querySelector(".form__add_student");
     form.classList.add("active");
     form.querySelector(".modal_control__heading").textContent = "Edit Student";
+    form.querySelector(".interact_student_button").textContent = "Save";
+    form.querySelector(".interact_student_button").id = "edit_student_btn";
 
     document.getElementById("group").value = student.group;
     document.getElementById("first_name").value = student.firstName;
     document.getElementById("last_name").value = student.lastName;
     document.getElementById("gender").value = student.gender;
     document.getElementById("birthday").value = student.birthday;
+
+    form.querySelector(".interact_student_button").onclick = function () {
+        if (CheckInputForms()) {
+            EditStudent(studentId);
+            UpdateStudentTable();
+            updateSelectAllState();
+            CloseForm();
+            console.log("Student edited successfully!");
+        }
+    };
 }
 
-// Creating student
-document.querySelector("#create_student_btn").addEventListener("click", () => {
-    if (CheckInputForms()) {
-        CreateStudent();
-        CloseForm();
-    }
-});
+function EditStudent(studentId) {
+    let students = JSON.parse(localStorage.getItem("students")) || [];
+    let studentIndex = students.findIndex((s) => s.id === studentId);
+
+    const groupForm = document.getElementById("group");
+    const firstNameForm = document.getElementById("first_name");
+    const lastNameForm = document.getElementById("last_name");
+    const genderForm = document.getElementById("gender");
+    const birthdayForm = document.getElementById("birthday");
+
+    const groupValue = groupForm.value;
+    const firstNameValue = firstNameForm.value.trim();
+    const lastNameValue = lastNameForm.value.trim();
+    const genderValue = genderForm.value;
+    const birthdayValue = birthdayForm.value;
+
+    students[studentIndex].group = groupValue;
+    students[studentIndex].firstName = firstNameValue;
+    students[studentIndex].lastName = lastNameValue;
+    students[studentIndex].gender = genderValue;
+    students[studentIndex].birthday = birthdayValue;
+
+    localStorage.setItem("students", JSON.stringify(students));
+}
+
+function UpdateStudentTable() {
+    const students = JSON.parse(localStorage.getItem("students")) || [];
+    const tableBody = document.querySelector(".main_table tbody");
+
+    tableBody.innerHTML = ""; // Очищаємо таблицю перед оновленням
+
+    students.forEach((student) => {
+        let newRow = document.createElement("tr");
+
+        // Функція для створення комірки
+        function createCell(content) {
+            let td = document.createElement("td");
+            if (typeof content === "string" || typeof content === "number") {
+                td.textContent = content;
+            } else {
+                td.appendChild(content);
+            }
+            return td;
+        }
+
+        // Checkbox + ID (прихований)
+        let idCell = document.createElement("td");
+        let hiddenText = document.createElement("span");
+        hiddenText.textContent = student.id;
+        hiddenText.style.display = "none";
+        idCell.appendChild(hiddenText);
+
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        idCell.appendChild(checkbox);
+        newRow.appendChild(idCell);
+
+        // Group
+        newRow.appendChild(createCell(student.group));
+
+        // Name
+        newRow.appendChild(createCell(student.firstName + " " + student.lastName));
+
+        // Gender
+        newRow.appendChild(createCell(student.gender));
+
+        // Birthday
+        newRow.appendChild(createCell(student.birthday));
+
+        // Status
+        let statusSpan = document.createElement("span");
+        statusSpan.classList.add("table__active_cirtle");
+        if (Math.random() < 0.5) {
+            statusSpan.classList.add("active");
+        }
+        newRow.appendChild(createCell(statusSpan));
+
+        // Option (Редагування + Видалення)
+        let optionsDiv = document.createElement("div");
+        optionsDiv.classList.add("table__cell_control");
+
+        let editButton = document.createElement("button");
+        editButton.classList.add("table__edit");
+        let editButtonIcon = document.createElement("img");
+        editButtonIcon.src = "assets/img/students-table/edit.svg";
+        editButtonIcon.classList.add("table__icon");
+        editButton.appendChild(editButtonIcon);
+        editButton.addEventListener("click", function () {
+            openEditStudentForm(student.id);
+        });
+
+        let deleteButton = document.createElement("button");
+        deleteButton.classList.add("table__delete");
+        let deleteButtonIcon = document.createElement("img");
+        deleteButtonIcon.src = "assets/img/students-table/delete.svg";
+        deleteButtonIcon.classList.add("table__icon");
+        deleteButton.appendChild(deleteButtonIcon);
+        deleteButton.addEventListener("click", function () {
+            openDeleteStudentForm(student.id);
+        });
+
+        optionsDiv.appendChild(editButton);
+        optionsDiv.appendChild(deleteButton);
+        newRow.appendChild(createCell(optionsDiv));
+
+        // Додаємо рядок до таблиці
+        tableBody.appendChild(newRow);
+    });
+}
 
 function CheckInputForms() {
     const groupForm = document.getElementById("group");
@@ -215,13 +340,13 @@ function CheckInputForms() {
     if (lastNameValue === "") {
         ShowErrorInput(lastNameForm, "First name is required");
         allowCreating = false;
-    } else if (lastNameValue.length < 2 || firstNameValue.length > 50) {
+    } else if (lastNameValue.length < 2 || lastNameValue.length > 50) {
         ShowErrorInput(lastNameForm, "First name must be between 2 and 50 characters");
         allowCreating = false;
     } else if (!/^[A-ZА-ЯЁІЇЄ]/.test(lastNameValue)) {
         ShowErrorInput(lastNameForm, "First name must start with an uppercase letter");
         allowCreating = false;
-    } else if (!/^[A-Za-zА-Яа-яЁёІіЇїЄє-]+$/.test(firstNameValue)) {
+    } else if (!/^[A-Za-zА-Яа-яЁёІіЇїЄє-]+$/.test(lastNameValue)) {
         ShowErrorInput(lastNameForm, "First name can only contain letters");
         allowCreating = false;
     } else {
@@ -287,7 +412,7 @@ function CreateStudent() {
 
     let hiddenText = document.createElement("span");
     hiddenText.textContent = studentIdCounter;
-    hiddenText.style.display = "none"; // Ховаємо тільки текст
+    hiddenText.style.display = "none";
     idCell.appendChild(hiddenText);
     let checkbox = document.createElement("input");
     checkbox.type = "checkbox";
