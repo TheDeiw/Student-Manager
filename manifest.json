@@ -2,12 +2,13 @@
 	"name": "PWA Student-Manager App",
 	"short_name": "Student-Manager App",
 	"description": "JS-Datamanagement-App",
-	"lang": "en",
+	"start_url": "/Student-Manager/index.html",
+	"scope": "/Student-Manager/",
 	"id": "/Student-Manager",
-	"start_url": "/Student-Manager",
+	"lang": "en",
 	"display": "standalone",
 	"background_color": "#ffffff",
-	"theme_color": "#000000",
+	"theme_color": "#0D75DE",
 	"icons": [
 	  {
 		 "src": "/Student-Manager/assets/img/PWA-logo/pwa-logo-500.png",
