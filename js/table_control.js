@@ -338,16 +338,16 @@ function CheckInputForms() {
 
     // Check Last Name
     if (lastNameValue === "") {
-        ShowErrorInput(lastNameForm, "First name is required");
+        ShowErrorInput(lastNameForm, "Last name is required");
         allowCreating = false;
     } else if (lastNameValue.length < 2 || lastNameValue.length > 50) {
-        ShowErrorInput(lastNameForm, "First name must be between 2 and 50 characters");
+        ShowErrorInput(lastNameForm, "Last name must be between 2 and 50 characters");
         allowCreating = false;
     } else if (!/^[A-ZА-ЯЁІЇЄ]/.test(lastNameValue)) {
-        ShowErrorInput(lastNameForm, "First name must start with an uppercase letter");
+        ShowErrorInput(lastNameForm, "Last name must start with an uppercase letter");
         allowCreating = false;
     } else if (!/^[A-Za-zА-Яа-яЁёІіЇїЄє-]+$/.test(lastNameValue)) {
-        ShowErrorInput(lastNameForm, "First name can only contain letters");
+        ShowErrorInput(lastNameForm, "Last name can only contain letters");
         allowCreating = false;
     } else {
         HideErrorInput(lastNameForm);
