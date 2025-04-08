@@ -1,5 +1,6 @@
 // Checkboxes Logic
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOM fully loaded and parsed"); // ← має з’явитись в консолі
     const birthdayInput = document.getElementById("birthday");
     const today = new Date().toISOString().split("T")[0];
     birthdayInput.setAttribute("max", today);
@@ -141,22 +142,66 @@ function HideErrorInput(element) {
     errorField.textContent = "";
     element.classList.toggle("error", false);
 }
-
+console.log("JS FILE LOADED");
 document.querySelector(".table__add_student").addEventListener("click", function () {
     const form_addStudent = document.querySelector(".form__add_student");
     form_addStudent.querySelector(".modal_control__heading").textContent = "Add Student";
     form_addStudent.querySelector(".interact_student_button").textContent = "Create";
     form_addStudent.querySelector(".interact_student_button").id = "create_student_btn";
     form_addStudent.classList.toggle("active");
-    // Creating student
-    form_addStudent.querySelector(".interact_student_button").onclick = function () {
-        if (CheckInputForms()) {
-            CreateStudent();
-            CloseForm();
-            console.log("Student added successfully!");
+    console.log("Form submitted!1111");
+
+    // Очищаємо попередні обробники, щоб уникнути дублювання
+    const form = form_addStudent.querySelector(".modal_window__form");
+    //form.removeEventListener("submit", handleFormSubmit); // Видаляємо старий обробник, якщо був
+    form.addEventListener("submit", function (event) {
+        event.preventDefault(); // Завжди зупиняємо стандартну відправку
+        console.log("Form submitted!");
+
+        // Перевіряємо валідність форми
+        const isValid = CheckInputForms();
+        console.log("Is form valid?", isValid);
+
+        if (isValid) {
+            console.log("Form is valid, sending data to server...");
+            const formData = new FormData(this);
+
+            fetch("process.php", {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.text();
+                })
+                .then((data) => {
+                    console.log("Server response:", data);
+                    CloseForm();
+                    alert("Student added successfully!");
+                })
+                .catch((error) => {
+                    console.error("Fetch error:", error);
+                    alert("Failed to add student. Please try again.");
+                });
+        } else {
+            console.log("Form is invalid, stopping submission.");
+            // Додаткове повідомлення користувачу, якщо потрібно
+            alert("Please fix the errors in the form.");
         }
-    };
+    }); // Додаємо новий
 });
+
+// function handleFormSubmit(event) {}
+// Creating student
+// form_addStudent.querySelector(".interact_student_button").onclick = function () {
+//     if (CheckInputForms()) {
+//         CreateStudent();
+//         CloseForm();
+//         console.log("Student added successfully!");
+//     }
+// };
 
 function openEditStudentForm(studentId) {
     let students = JSON.parse(localStorage.getItem("students")) || [];
