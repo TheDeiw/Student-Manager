@@ -184,10 +184,10 @@
 					<img class="modal_control__close_icon" src="assets/img/modal-windows/close.svg" alt="Close">
 				</button>
 			</div>
-			<form class="modal_window__form" action="process.php" method="post">
+			<form class="modal_window__form" action="api/students.php" method="post">
 				<div class="form__student_group">
 					 <label for="group" class="form__student_label">Group</label>
-					 <select required id="group" name="group" class="form__student_input">
+					 <select id="group" name="group" class="form__student_input">
 						  <option value="" disabled hidden selected> Select group </option>
 						  <option value="PZ-21">PZ-21</option>
 						  <option value="PZ-22">PZ-22</option>
@@ -198,17 +198,17 @@
 				</div>
 				<div class="form__student_group">
 					 <label for="first_name" class="form__student_label">First name</label>
-					 <input required type="text" name="first_name" id="first_name" class="form__student_input">
+					 <input type="text" name="first_name" id="first_name" class="form__student_input">
 					 <div class="form__error_text"></div>
 				</div>
 				<div class="form__student_group">
 					 <label for="last_name" class="form__student_label">Last Name</label>
-					 <input required type="text" name="last_name" id="last_name" class="form__student_input">
+					 <input type="text" name="last_name" id="last_name" class="form__student_input">
 					 <div class="form__error_text"></div>
 				</div>
 				<div class="form__student_group">
 					 <label for="gender" class="form__student_label">Gender</label>
-					 <select required id="gender" name="gender" class="form__student_input">
+					 <select id="gender" name="gender" class="form__student_input">
 						  <option value="" disabled hidden selected> Select gender </option>
 						  <option value="M">Male</option>
 						  <option value="F">Female</option>
@@ -217,7 +217,7 @@
 				</div>
 				<div class="form__student_group">
 					 <label for="birthday" class="form__student_label">Birthday</label>
-					 <input required type="date" min="1924-01-01" name="birthday" id="birthday" class="form__student_input">
+					 <input type="date" min="1924-01-01" name="birthday" id="birthday" class="form__student_input">
 					 <div class="form__error_text"></div>
 				</div>
 				<div class="form__student_buttons">
@@ -252,6 +252,8 @@
 	<script src="js/side_menu.js"></script>
 	<script src="js/table_control.js"></script>
 	<script src="js/init_sw.js"></script>
+	<script src="js/load_students.js"></script>
+	<script src="js/control_students.js"></script>
 </body>
 
 </html>
