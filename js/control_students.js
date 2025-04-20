@@ -170,7 +170,7 @@ async function openEditStudentForm(studentId) {
             formData.append("id", studentId);
 
             try {
-                const response = await fetch("api/update_student.php", {
+                const response = await fetch("api/student.php", {
                     // Потрібен новий PHP-скрипт
                     method: "POST",
                     body: formData,
