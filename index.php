@@ -1,0 +1,260 @@
+<?php
+session_start();
+require_once 'controllers/AuthController.php';
+$authController = new AuthController();
+$isLoggedIn = isset($_SESSION['user']);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Student-Manager. JS-DataManager. Labwork for 'Internet Programming'">
+    <meta name="author" content="Chekhovskyi Dmytro (TheDeiw)">
+    <meta name="keywords" content="Student-Manager, JS-DataManager">
+    <meta name="google" content="notranslate">
+    <meta property="og:image" content="img/favicon.ico">
+    <meta property="og:title" content="Student-Manager">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/favicon/favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/adaptability.css">
+    <title>Student-Manager</title>
+    <style>
+        .disabled { pointer-events: none; opacity: 0.5; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <button class="nav_burger" aria-label="Menu opener">
+                <div class="nav_icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+            <a href="" class="header__logo">
+                <h1>Student Manager</h1>
+            </a>
+            <div class="header__account_control">
+                <?php if ($isLoggedIn): ?>
+                    <div class="account_control__notification">
+                        <a href="messages.php"><span class="notification_sign active"></span><img class="notification_bell" src="assets/img/header/Notification-bell.svg" alt="Notification-bell"></a>
+                        <div class="notification__messages">
+                            <div class="notification__massage">
+                                <div class="message__icon"></div>
+                                <div class="message__text">
+                                    <h3 class="message_text__header">Teacher</h3>
+                                    <p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="account_control__user">
+                        <div class="account_control__account">
+                            <div class="account__image"><img src="assets/img/header/Avatar.jpg" alt="" class="account__avatar"></div>
+                            <div class="account__name"><?php echo htmlspecialchars($_SESSION['user']['username']); ?></div>
+                        </div>
+                        <div class="account_control__dropdown">
+                            <a href="profile.php"><div class="dropdown__item"><img class="dropdown__icon" src="assets/img/header/Profile.svg" alt="Profile-link">Profile</div></a>
+                            <a href="logout.php"><div class="dropdown__item"><img class="dropdown__icon" src="assets/img/header/Logout.svg" alt="LogOut-link">Log Out</div></a>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="account_control__notification disabled">
+                        <span class="notification_sign"></span><img class="notification_bell" src="assets/img/header/Notification-bell.svg" alt="Notification-bell">
+                    </div>
+                    <button onclick="showLoginModal()">Log In</button>
+                <?php endif; ?>
+            </div>
+        </div>
+    </header>
+
+    <main class="wrapper">
+        <aside>
+            <nav class="menu__container close">
+                <ul class="menu__list">
+                    <li class="menu__item arrow">
+                        <button id="toggle-btn" class="menu_arrow">
+                            <img src="assets/img/navigation/Arrow.svg" class="menu__icon_arrow close" alt="Menu opener button">
+                        </button>
+                    </li>
+                    <li class="menu__item">
+                        <a href="dashboard.php" class="menu__link">
+                            <img class="menu__icon" src="assets/img/navigation/Dashboard.svg" alt="Icon - link to page 'Dashboard'">
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="menu__item selected">
+                        <a href="index.php" class="menu__link">
+                            <img class="menu__icon" src="assets/img/navigation/Students.svg" alt="Icon - link to page 'Students'">
+                            <span>Students</span>
+                        </a>
+                    </li>
+                    <li class="menu__item <?php echo !$isLoggedIn ? 'disabled' : ''; ?>">
+                        <a href="tasks.php" class="menu__link">
+                            <img class="menu__icon" src="assets/img/navigation/Tasks.svg" alt="Icon - link to page 'Tasks'">
+                            <span>Tasks</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <section class="student_table">
+            <div class="student_table__control">
+                <div class="table__describe">
+                    <h2 class="describe__heading">Students</h2>
+                    <p class="descpibe__paragraph">Here you can manage all data about students</p>
+                </div>
+                <div class="table__control_buttons">
+                    <button class="table__add_student <?php echo !$isLoggedIn ? 'disabled' : ''; ?>">
+                        <img class="add_student_plus" src="assets/img/students-table/plus.svg" alt="Plus sign for adding button">
+                        <p class="add_student_describe">Add Student</p>
+                    </button>
+                    <button class="table__delete_student <?php echo !$isLoggedIn ? 'disabled' : ''; ?>">
+                        <p class="delete_student_describe">Delete (0)</p>
+                    </button>
+                </div>
+            </div>
+            <div class="table_wrapper">
+                <table class="main_table">
+                    <thead>
+                        <tr>
+                            <th scope="col"><input type="checkbox" aria-label="Turn on all checkboxes"> <span class="visually-hidden">Select All</span></th>
+                            <th scope="col">Group</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Gender</th>
+                            <th scope="col">Birthday</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Option</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="pagination">
+                <ul class="pagination__list">
+                    <li class="pagination_list__item"><button class="item__content" aria-label="Previous page in table"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M8.84 7.41L13.42 12L8.84 16.59L10.25 18L16.25 12L10.25 6L8.84 7.41Z" fill="#C4CDD5" transform="rotate(180 12 12)" /></svg></button></li>
+                    <li class="pagination_list__item"><button class="item__content">1</button></li>
+                    <li class="pagination_list__item"><button class="item__content">2</button></li>
+                    <li class="pagination_list__item"><button class="item__content">3</button></li>
+                    <li class="pagination_list__item"><button class="item__content" aria-label="Next page in table"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M8.84 7.41L13.42 12L8.84 16.59L10.25 18L16.25 12L10.25 6L8.84 7.41Z" fill="#C4CDD5" /></svg></button></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- Login Modal -->
+    <?php if (!$isLoggedIn): ?>
+        <div class="modal_window_style" id="loginModal">
+            <div class="modal_window_container">
+                <h2>Log In</h2>
+                <form action="api/auth.php" method="post">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <label for="password">Password (Birthday):</label>
+                    <input type="date" id="password" name="password" required>
+                    <button type="submit">Log In</button>
+                </form>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <div class="form__add_student modal_window_style">
+        <div class="modal_window_container">
+            <div class="modal_windows__control">
+                <h2 class="modal_control__heading">Add Student</h2>
+                <button onclick="CloseForm()" class="modal_control__close">
+                    <img class="modal_control__close_icon" src="assets/img/modal-windows/close.svg" alt="Close">
+                </button>
+            </div>
+            <form class="modal_window__form" action="api/students.php" method="post">
+                <div class="form__student_group">
+                    <label for="group" class="form__student_label">Group</label>
+                    <select id="group" name="group" class="form__student_input">
+                        <option value="" disabled hidden selected>Select group</option>
+                        <option value="PZ-21">PZ-21</option>
+                        <option value="PZ-22">PZ-22</option>
+                        <option value="PZ-23">PZ-23</option>
+                        <option value="PZ-24">PZ-24</option>
+                    </select>
+                    <div class="form__error_text"></div>
+                </div>
+                <div class="form__student_group">
+                    <label for="first_name" class="form__student_label">First name</label>
+                    <input type="text" name="first_name" id="first_name" class="form__student_input">
+                    <div class="form__error_text"></div>
+                </div>
+                <div class="form__student_group">
+                    <label for="last_name" class="form__student_label">Last Name</label>
+                    <input type="text" name="last_name" id="last_name" class="form__student_input">
+                    <div class="form__error_text"></div>
+                </div>
+                <div class="form__student_group">
+                    <label for="gender" class="form__student_label">Gender</label>
+                    <select id="gender" name="gender" class="form__student_input">
+                        <option value="" disabled hidden selected>Select gender</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                    <div class="form__error_text"></div>
+                </div>
+                <div class="form__student_group">
+                    <label for="birthday" class="form__student_label">Birthday</label>
+                    <input type="date" name="birthday" id="birthday" class="form__student_input">
+                    <div class="form__error_text"></div>
+                </div>
+                <div class="form__student_buttons">
+                    <button onclick="CloseForm()" class="form__student_button">Cancel</button>
+                    <button type="submit" class="form__student_button interact_student_button">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="form__delete_student modal_window_style">
+        <div class="modal_window_container">
+            <div class="modal_windows__control">
+                <h2 class="modal_control__heading">Warning</h2>
+                <button onclick="CloseForm()" class="modal_control__close">
+                    <img class="modal_control__close_icon" src="assets/img/modal-windows/close.svg" alt="Close">
+                </button>
+            </div>
+            <div class="form__delete_student_text">
+                <p class="form__delete_student_paragraph">Are you sure you want to delete user</p> <b><span id="delete_name"></span></b>
+            </div>
+            <div class="form__student_buttons">
+                <button onclick="CloseForm()" class="form__student_button">Cancel</button>
+                <button id="delete_student_btn" class="form__student_button">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/side_menu.js"></script>
+    <script src="js/table_control.js"></script>
+    <script src="js/init_sw.js"></script>
+    <script src="js/load_students.js"></script>
+    <script src="js/control_students.js"></script>
+    <script>
+        function showLoginModal() {
+            const loginModal = document.getElementById("loginModal");
+            if (loginModal) {
+                loginModal.classList.add("active");
+            }
+            console.log("Login modal opened");
+        }
+
+        function closeLoginModal() {
+            const loginModal = document.getElementById("loginModal");
+            if (loginModal) {
+                loginModal.classList.remove("active");
+            }
+        }
+    </script>
+</body>
+</html>
