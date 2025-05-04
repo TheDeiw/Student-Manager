@@ -1,5 +1,5 @@
 <?php
-require_once './db.php';
+require_once 'db.php';
 
 class UserModel {
     private $pdo;
@@ -9,9 +9,9 @@ class UserModel {
         $this->pdo = $pdo;
     }
 
-    public function authenticate($username, $password) {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
-        $stmt->execute([$username, md5($password)]); // У продакшені використовуй безпечне хешування
+    public function authenticate($first_name, $last_name, $birthday) {
+        $stmt = $this->pdo->prepare("SELECT * FROM students WHERE first_name = ? AND last_name = ? AND birthday = ?");
+        $stmt->execute([$first_name, $last_name, $birthday]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

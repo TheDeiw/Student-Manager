@@ -44,20 +44,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($students as $student): ?>
-                        <tr>
-                            <td><input type="checkbox" name="student_ids[]" value="<?php echo htmlspecialchars($student['id']); ?>"></td>
-                            <td><?php echo htmlspecialchars($student['group_name']); ?></td>
-                            <td><?php echo htmlspecialchars($student['first_name'] . ' ' . $student['last_name']); ?></td>
-                            <td><?php echo htmlspecialchars($student['gender']); ?></td>
-                            <td><?php echo htmlspecialchars($student['birthday']); ?></td>
-                            <td><span class="table__active_circle <?php echo mt_rand(0, 1) ? 'active' : ''; ?>"></span></td>
-                            <td>
-                                <button class="table__edit" onclick="openEditForm(<?php echo $student['id']; ?>)">Редагувати</button>
-                                <button class="table__delete" onclick="openDeleteForm(<?php echo $student['id']; ?>)">Видалити</button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
+                    <!-- Таблиця заповнюється через JavaScript -->
                 </tbody>
             </table>
             <div class="pagination">
@@ -79,7 +66,7 @@
                     <img class="modal_control__close_icon" src="assets/img/modal-windows/close.svg" alt="Close">
                 </button>
             </div>
-            <form class="modal_window__form" action="api/students.php" method="post">
+            <form class="modal_window__form" action="index.php?action=create" method="post">
                 <div class="form__student_group">
                     <label for="group" class="form__student_label">Group</label>
                     <select id="group" name="group" class="form__student_input">
@@ -122,7 +109,6 @@
             </form>
         </div>
     </div>
-
     <div class="form__delete_student modal_window_style">
         <div class="modal_window_container">
             <div class="modal_windows__control">

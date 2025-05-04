@@ -9,9 +9,22 @@ class StudentModel {
         $this->pdo = $pdo;
     }
 
-    public function getAllStudents() {
-        $stmt = $this->pdo->query("SELECT * FROM students");
+    public function getPdo() {
+        return $this->pdo;
+    }
+
+    public function getAllStudents($page = 1, $perPage = 5) {
+        $offset = ($page - 1) * $perPage;
+        $stmt = $this->pdo->prepare("SELECT * FROM students LIMIT :limit OFFSET :offset");
+        $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalStudents() {
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM students");
+        return $stmt->fetchColumn();
     }
 
     public function getStudentById($id) {
@@ -34,5 +47,10 @@ class StudentModel {
         $stmt = $this->pdo->prepare("DELETE FROM students WHERE id = ?");
         return $stmt->execute([$id]);
     }
+
+    public function deleteMultipleStudents($ids) {
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $this->pdo->prepare("DELETE FROM students WHERE id IN ($placeholders)");
+        return $stmt->execute($ids);
+    }
 }
-?>
