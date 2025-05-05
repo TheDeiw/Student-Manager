@@ -1,16 +1,27 @@
-async function loadStudents() {
+async function loadStudents(page = 1) {
     try {
-        const response = await fetch("http://localhost/Student-Manager/api/students");
+        const response = await fetch(`http://localhost/Student-Manager/api/students?page=${page}&perPage=7`);
         if (!response.ok) {
-            throw new Error("Помилка при отриманні даних");
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
+        console.log("API Response:", data); // Debugging log
+
         const students = data.students || [];
         const isLoggedIn = data.isLoggedIn || false;
+        const pagination = data.pagination || {};
+
+        // Оновлюємо глобальні змінні пагінації
+        window.currentPage = pagination.currentPage || 1;
+        window.totalPages = pagination.totalPages || 1;
 
         const tableBody = document.querySelector(".main_table tbody");
-        let rows = "";
+        if (!tableBody) {
+            console.error("Table body not found");
+            return;
+        }
 
+        let rows = "";
         students.forEach((student) => {
             const statusClass = Math.random() < 0.5 ? "active" : "";
             const checkboxDisabled = isLoggedIn ? "" : "disabled";
@@ -37,7 +48,8 @@ async function loadStudents() {
                 </tr>
             `;
         });
-        tableBody.innerHTML = rows;
+        tableBody.innerHTML = rows || "<tr><td colspan='7'>No students found</td></tr>"; // Show message if no students
+        console.log(`Loaded ${students.length} students for page ${page}, totalPages: ${window.totalPages}`); // Debugging log
 
         // Встановлення початкового стану для кнопки масового видалення
         const deleteMultipleButton = document.querySelector(".table__delete_student");
@@ -51,12 +63,16 @@ async function loadStudents() {
         const mainCheckbox = document.querySelector(".main_table thead input[type='checkbox']");
         if (mainCheckbox) {
             mainCheckbox.checked = false;
-            mainCheckbox.disabled = !isLoggedIn; // Вимикаємо головний чекбокс, якщо не залогінений
+            mainCheckbox.disabled = !isLoggedIn;
         }
     } catch (error) {
-        console.error("Помилка:", error);
+        console.error("Помилка при завантаженні студентів:", error);
+        const tableBody = document.querySelector(".main_table tbody");
+        if (tableBody) {
+            tableBody.innerHTML = "<tr><td colspan='7'>Error loading students</td></tr>";
+        }
     }
 }
 
 // Завантажуємо студентів при завантаженні сторінки
-document.addEventListener("DOMContentLoaded", loadStudents);
+document.addEventListener("DOMContentLoaded", () => loadStudents(1));
