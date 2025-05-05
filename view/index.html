@@ -23,12 +23,12 @@
 	<link rel="stylesheet" href="css/forms.css">
 	<link rel="stylesheet" href="css/adaptability.css">
 
-	<link rel="manifest" href="manifest.json" />
+	<!-- <link rel="manifest" href="manifest.json" /> -->
 	<title>Student-Manager</title>
 </head>
 
 <body>
-	<header class="header">
+	<header class="header" onclick="openAddForm()">
 		<div class="header-container">
 			<button class="nav_burger" aria-label="Menu opener">
 				<div class="nav_icon">
@@ -128,11 +128,11 @@
 					<p class="descpibe__paragraph">Here you can manage all data about students</p>
 				</div>
 				<div class="table__control_buttons">
-					<button class="table__add_student">
+					<button onclick="openAddForm()" class="table__add_student">
 						<img class="add_student_plus" src="assets/img/students-table/plus.svg" alt="Plus sign for adding button">
 						<p class="add_student_describe">Add Student</p>
 					</button>
-					<button class="table__delete_student">
+					<button onclick="openAddForm()" class="table__delete_student">
 						<p class="delete_student_describe">Delete (0)</p>
 					</button>
 				</div>
@@ -220,11 +220,11 @@
 					<input required type="date" min="1924-01-01" id="birthday" class="form__student_input">
 					<div class="form__error_text"></div>
 				</div>
+				<div class="form__student_buttons">
+					<button onclick="CloseForm()" class="form__student_button">Cancel</button>
+					<button type="submit" class="form__student_button interact_student_button">Create</button>
+				</div>
 			</form>
-			<div class="form__student_buttons">
-				<button onclick="CloseForm()" class="form__student_button">Cancel</button>
-				<button class="form__student_button interact_student_button">Create</button>
-			</div>
 		</div>
 	</div>
 
@@ -242,7 +242,7 @@
 			</div>
 			<div class="form__student_buttons">
 				<button onclick="CloseForm()" class="form__student_button">Cancel</button>
-				<button id="delete_student_btn" class="form__student_button">Delete</button>
+				<button type="submit" id="delete_student_btn" class="form__student_button">Delete</button>
 			</div>
 		</div>
 	</div>
@@ -251,6 +251,8 @@
 	<script src="js/side_menu.js"></script>
 	<script src="js/table_control.js"></script>
 	<script src="js/init_sw.js"></script>
+	<script src="js/load_students.js"></script>
+	<script src="js/control_students.js"></script>
 </body>
 
 </html>
