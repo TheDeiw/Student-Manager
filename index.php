@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json');
 
@@ -25,21 +25,12 @@ try {
 			$studentController->edit($id);
 		} elseif ($path === '/api/students' && $requestMethod === 'POST') {
 			$studentController->create();
-			// $action = $_POST['action'] ?? '';
-			// if ($action === 'create') {
-
-			// } elseif ($action === 'update') {
-			// 	$data = $_POST;
-			// 	$studentController->update($data);
-			// } elseif ($action === 'delete') {
-			// 	$id = $_POST['id'] ?? 0;
-			// 	$studentController->delete($id);
-			// } elseif ($action === 'deleteMultiple') {
-			// 	$studentController->deleteMultiple();
-			// } else {
-			// 	http_response_code(400);
-			// 	echo json_encode(['success' => false, 'error' => 'Invalid action']);
-			// }
+		} elseif (preg_match('#^/api/students/(\d+)$#', $path, $matches) && $requestMethod === 'PUT') {
+			$studentController->update();
+		} elseif (preg_match('#^/api/students/(\d+)$#', $path, $matches) && $requestMethod === 'DELETE') {
+			$studentController->delete();
+		} elseif ($path === '/api/students' && $requestMethod === 'DELETE') {
+			$studentController->deleteMultiple();
 		} else {
 			http_response_code(404);
 			echo json_encode(['success' => false, 'error' => 'Not found']);

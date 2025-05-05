@@ -5,9 +5,12 @@ function openAddForm() {
     form.querySelector(".modal_control__heading").textContent = "Add Student";
     form.querySelector(".interact_student_button").textContent = "Create";
 
+    // Clone and replace the form to remove any existing event listeners
     const formElement = form.querySelector(".modal_window__form");
+    const newFormElement = formElement.cloneNode(true);
+    formElement.parentNode.replaceChild(newFormElement, formElement);
 
-    formElement.addEventListener("submit", async (event) => {
+    newFormElement.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         const groupSelect = document.getElementById("group");
@@ -23,18 +26,31 @@ function openAddForm() {
             gender: genderSelect.value,
             birthday: birthdayInput.value,
         });
+
         try {
             const response = await fetch("http://localhost/Student-Manager/api/students", {
                 method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 body: studentData,
             });
-            if (!response.ok) {
-                const data = await response.json();
-                console.log("data", data);
-                displayErrors(data.errors || ["Помилка на сервері"]);
-                throw new Error("Validation errors");
-            }
+
             const result = await response.json();
+
+            if (!response.ok) {
+                console.log("Error response:", result);
+                // Handle the errors from the server
+                if (result.errors) {
+                    displayErrors(result.errors);
+                } else if (result.error) {
+                    displayErrors([result.error]);
+                } else {
+                    displayErrors(["Помилка на сервері"]);
+                }
+                return;
+            }
+
             if (result.success) {
                 await loadStudents();
                 CloseForm();
@@ -43,7 +59,7 @@ function openAddForm() {
             }
         } catch (error) {
             console.error("Error:", error);
-            displayErrors(["Помилка при додаванні студента"]);
+            displayErrors(["Сталася помилка при спробі зв'язатися з сервером"]);
         }
     });
 }
@@ -57,7 +73,7 @@ function openEditForm(studentId) {
     fetch(`http://localhost/Student-Manager/api/students/${studentId}`)
         .then((response) => response.json())
         .then((student) => {
-            document.getElementById("group").value = student.group_name;
+            document.getElementById("group").value = student.group;
             document.getElementById("first_name").value = student.first_name;
             document.getElementById("last_name").value = student.last_name;
             document.getElementById("gender").value = student.gender;
@@ -67,27 +83,57 @@ function openEditForm(studentId) {
             const newFormElement = formElement.cloneNode(true);
             formElement.parentNode.replaceChild(newFormElement, formElement);
 
+            // Before replacing, make sure the select values are properly preserved
+            const groupSelect = newFormElement.querySelector("#group");
+            const genderSelect = newFormElement.querySelector("#gender");
+
+            // Set the selected values in the new form
+            groupSelect.value = student.group_name;
+            genderSelect.value = student.gender;
             newFormElement.addEventListener("submit", async (event) => {
                 event.preventDefault();
-                const formData = new FormData(newFormElement);
-                formData.append("action", "update");
-                formData.append("id", studentId);
+
+                const studentData = JSON.stringify({
+                    id: studentId,
+                    group: document.getElementById("group").value,
+                    first_name: document.getElementById("first_name").value,
+                    last_name: document.getElementById("last_name").value,
+                    gender: document.getElementById("gender").value,
+                    birthday: document.getElementById("birthday").value,
+                });
 
                 try {
-                    const response = await fetch("http://localhost/Student-Manager/api/students", {
-                        method: "POST",
-                        body: formData,
+                    const response = await fetch(`http://localhost/Student-Manager/api/students/${studentId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: studentData,
                     });
+
+                    const result = await response.json();
+
                     if (!response.ok) {
-                        const data = await response.json();
-                        displayErrors(data.errors || ["Помилка на сервері"]);
-                        throw new Error("Validation errors");
+                        console.log("Error response:", result);
+                        if (result.errors) {
+                            displayErrors(result.errors);
+                        } else if (result.error) {
+                            displayErrors([result.error]);
+                        } else {
+                            displayErrors(["Помилка на сервері"]);
+                        }
+                        return;
                     }
-                    await loadStudents();
-                    CloseForm();
+
+                    if (result.success) {
+                        await loadStudents();
+                        CloseForm();
+                    } else {
+                        displayErrors([result.error || "Не вдалося оновити студента"]);
+                    }
                 } catch (error) {
                     console.error("Error:", error);
-                    displayErrors(["Помилка при редагуванні студента"]);
+                    displayErrors(["Сталася помилка при спробі зв'язатися з сервером"]);
                 }
             });
         })
@@ -102,6 +148,7 @@ function openDeleteForm(studentId) {
     form.classList.add("active");
 
     if (studentId) {
+        // Single student deletion
         const row = document.querySelector(`.main_table tbody tr[data-id="${studentId}"]`);
         const name = row.querySelector("td:nth-child(3)").textContent;
         document.querySelector("#delete_name").textContent = name;
@@ -111,13 +158,15 @@ function openDeleteForm(studentId) {
         deleteButton.parentNode.replaceChild(newDeleteButton, deleteButton);
 
         newDeleteButton.onclick = async () => {
-            const formData = new FormData();
-            formData.append("action", "delete");
-            formData.append("id", studentId);
+            const deleteData = JSON.stringify({ id: studentId });
+
             try {
-                const response = await fetch("http://localhost/Student-Manager/api/students", {
-                    method: "POST",
-                    body: formData,
+                const response = await fetch(`http://localhost/Student-Manager/api/students/${studentId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: deleteData,
                 });
                 if (!response.ok) throw new Error("Failed to delete student");
                 await loadStudents();
@@ -128,6 +177,7 @@ function openDeleteForm(studentId) {
             }
         };
     } else {
+        // Multiple students deletion
         const checkboxes = document.querySelectorAll('.main_table tbody input[type="checkbox"]:checked');
         const ids = Array.from(checkboxes).map((cb) => cb.closest("tr").dataset.id);
 
@@ -144,13 +194,15 @@ function openDeleteForm(studentId) {
         deleteButton.parentNode.replaceChild(newDeleteButton, deleteButton);
 
         newDeleteButton.onclick = async () => {
-            const formData = new FormData();
-            formData.append("action", "deleteMultiple");
-            formData.append("ids", JSON.stringify(ids));
+            const deleteData = JSON.stringify({ ids: ids });
+
             try {
                 const response = await fetch("http://localhost/Student-Manager/api/students", {
-                    method: "POST",
-                    body: formData,
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: deleteData,
                 });
                 if (!response.ok) throw new Error("Failed to delete students");
                 await loadStudents();
@@ -179,24 +231,69 @@ function ClearInputForms() {
 }
 
 function displayErrors(errors) {
+    // Reset all error states
     document.querySelectorAll(".form__error_text").forEach((text) => (text.textContent = ""));
     document.querySelectorAll("input, select").forEach((input) => input.classList.remove("error"));
 
-    errors.forEach((error) => {
-        if (error.includes("Group")) ShowErrorInput(document.getElementById("group"), error);
-        else if (error.includes("First name")) ShowErrorInput(document.getElementById("first_name"), error);
-        else if (error.includes("Last name")) ShowErrorInput(document.getElementById("last_name"), error);
-        else if (error.includes("Gender")) ShowErrorInput(document.getElementById("gender"), error);
-        else if (error.includes("Birthday") || error.includes("Age"))
-            ShowErrorInput(document.getElementById("birthday"), error);
-        else if (error.includes("Student already exists")) ShowErrorInput(document.getElementById("first_name"), error);
-        else ShowErrorInput(document.getElementById("first_name"), error);
-    });
+    // Return early if there are no errors
+    if (!errors || errors.length === 0) return;
+
+    // Check if errors is an array (from your PHP backend)
+    if (Array.isArray(errors)) {
+        errors.forEach((error) => {
+            // Map error messages to their corresponding form fields
+            if (error.includes("Group")) {
+                ShowErrorInput(document.getElementById("group"), error);
+            } else if (error.includes("First name")) {
+                ShowErrorInput(document.getElementById("first_name"), error);
+            } else if (error.includes("Last name")) {
+                ShowErrorInput(document.getElementById("last_name"), error);
+            } else if (error.includes("Gender")) {
+                ShowErrorInput(document.getElementById("gender"), error);
+            } else if (error.includes("Birthday") || error.includes("Age")) {
+                ShowErrorInput(document.getElementById("birthday"), error);
+            } else if (error.includes("Student already exists")) {
+                // Show duplicate student error on both first and last name fields
+                ShowErrorInput(document.getElementById("first_name"), error);
+                ShowErrorInput(document.getElementById("last_name"), error);
+            } else {
+                // For any other errors, display on a general error element if available,
+                // or default to first name field
+                const generalError = document.querySelector(".general-error");
+                if (generalError) {
+                    generalError.textContent = error;
+                } else {
+                    ShowErrorInput(document.getElementById("first_name"), error);
+                }
+            }
+        });
+    } else if (typeof errors === "object") {
+        // For object-based errors (field: message format)
+        for (let field in errors) {
+            const errorMessage = errors[field];
+            const inputElement = document.getElementById(field);
+            if (inputElement) {
+                ShowErrorInput(inputElement, errorMessage);
+            }
+        }
+    } else if (typeof errors === "string") {
+        // If it's just a single error string
+        ShowErrorInput(document.getElementById("first_name"), errors);
+    }
 }
 
 function ShowErrorInput(element, message) {
+    if (!element) return; // Skip if element doesn't exist
+
     const inputControl = element.parentElement;
     const errorField = inputControl.querySelector(".form__error_text");
-    errorField.textContent = message;
-    element.classList.add("error");
+    if (errorField) {
+        // If there's already content, add a line break
+        if (errorField.textContent) {
+            errorField.textContent += "\n" + message;
+        } else {
+            errorField.textContent = message;
+        }
+        element.classList.add("error");
+    }
 }

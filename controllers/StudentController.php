@@ -13,12 +13,12 @@ class StudentController
     public function getStudents()
     {
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-        $perPage = isset($_GET['perPage']) ? (int) $_GET['perPage'] : 5;
+        $perPage = isset($_GET['perPage']) ? (int) $_GET['perPage'] : 7;
 
         if ($page < 1)
             $page = 1;
         if ($perPage < 1)
-            $perPage = 5;
+            $perPage = 7;
 
         $students = $this->model->getAllStudents($page, $perPage);
         $totalStudents = $this->model->getTotalStudents();
@@ -39,7 +39,7 @@ class StudentController
         exit;
     }
 
-    public function create()
+    public function create(): never
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
@@ -47,7 +47,15 @@ class StudentController
             exit;
         }
 
-        $data = json_decode(file_get_contents('php://input'), true);
+        $input = file_get_contents(filename: 'php://input');
+        $data = json_decode($input, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON']);
+            exit;
+        }
+
         $errors = $this->validateStudent($data);
 
         if (!empty($errors)) {
@@ -65,7 +73,7 @@ class StudentController
         exit;
     }
 
-    public function edit($id)
+    public function edit($id): never
     {
         $student = $this->model->getStudentById($id);
         if (!$student) {
@@ -79,12 +87,20 @@ class StudentController
         exit;
     }
 
-    public function update($data)
+    public function update(): never
     {
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
             http_response_code(405);
             echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+            exit;
+        }
+
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON']);
             exit;
         }
 
@@ -112,14 +128,24 @@ class StudentController
         exit;
     }
 
-    public function delete($id)
+    public function delete()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             http_response_code(405);
             echo json_encode(['success' => false, 'error' => 'Method not allowed']);
             exit;
         }
 
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON']);
+            exit;
+        }
+
+        $id = $data['id'] ?? 0;
         if (!$id || !$this->model->getStudentById($id)) {
             http_response_code(404);
             echo json_encode(['success' => false, 'error' => 'Student not found']);
@@ -137,14 +163,22 @@ class StudentController
 
     public function deleteMultiple()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             http_response_code(405);
             echo json_encode(['success' => false, 'error' => 'Method not allowed']);
             exit;
         }
 
-        $ids = isset($_POST['ids']) ? json_decode($_POST['ids'], true) : [];
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
 
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON']);
+            exit;
+        }
+
+        $ids = $data['ids'] ?? [];
         if (empty($ids)) {
             http_response_code(400);
             echo json_encode(['success' => false, 'error' => 'No student IDs provided']);
