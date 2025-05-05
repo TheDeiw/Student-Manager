@@ -204,12 +204,10 @@ class StudentController
 
         $errors = [];
 
-        // Validate group
         if (empty($group)) {
             $errors[] = 'Group is required';
         }
 
-        // Validate first name
         if (empty($first_name)) {
             $errors[] = 'First name is required';
         } elseif (strlen($first_name) < 2 || strlen($first_name) > 50) {
@@ -220,7 +218,6 @@ class StudentController
             $errors[] = 'First name can only contain letters';
         }
 
-        // Validate last name
         if (empty($last_name)) {
             $errors[] = 'Last name is required';
         } elseif (strlen($last_name) < 2 || strlen($last_name) > 50) {
@@ -231,14 +228,12 @@ class StudentController
             $errors[] = 'Last name can only contain letters';
         }
 
-        // Validate gender
         if (empty($gender)) {
             $errors[] = 'Gender is required';
         } elseif (!in_array($gender, ['M', 'F'])) {
             $errors[] = 'Invalid gender';
         }
 
-        // Validate birthday
         if (empty($birthday)) {
             $errors[] = 'Birthday is required';
         } else {
@@ -250,7 +245,6 @@ class StudentController
             }
         }
 
-        // Check for duplicates
         if ($id) {
             $stmt = $this->model->getPdo()->prepare("SELECT COUNT(*) FROM students WHERE first_name = ? AND last_name = ? AND birthday = ? AND id != ?");
             $stmt->execute([$first_name, $last_name, $birthday, $id]);

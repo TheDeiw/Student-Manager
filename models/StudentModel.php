@@ -17,9 +17,15 @@ class StudentModel
     }
 
     public function getAllStudents($page = 1, $perPage = 7)
-    { // Changed default to perPage=7
+    {
         $offset = ($page - 1) * $perPage;
-        $stmt = $this->pdo->prepare("SELECT * FROM students LIMIT :limit OFFSET :offset");
+        $stmt = $this->pdo->prepare(
+            "SELECT s.*, EXISTS (
+                SELECT 1 FROM sessions WHERE student_id = s.id
+            ) AS is_online 
+            FROM students s 
+            LIMIT :limit OFFSET :offset"
+        );
         $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();

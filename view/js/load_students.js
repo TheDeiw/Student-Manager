@@ -23,7 +23,7 @@ async function loadStudents(page = 1) {
 
         let rows = "";
         students.forEach((student) => {
-            const statusClass = Math.random() < 0.5 ? "active" : "";
+            const statusClass = student.is_online ? "active" : "";
             const checkboxDisabled = isLoggedIn ? "" : "disabled";
             rows += `
                 <tr data-id="${student.id}">
@@ -48,8 +48,8 @@ async function loadStudents(page = 1) {
                 </tr>
             `;
         });
-        tableBody.innerHTML = rows || "<tr><td colspan='7'>No students found</td></tr>"; // Show message if no students
-        console.log(`Loaded ${students.length} students for page ${page}, totalPages: ${window.totalPages}`); // Debugging log
+        tableBody.innerHTML = rows || "<tr><td colspan='7'>No students found</td></tr>";
+        console.log(`Loaded ${students.length} students for page ${page}, totalPages: ${window.totalPages}`);
 
         // Встановлення початкового стану для кнопки масового видалення
         const deleteMultipleButton = document.querySelector(".table__delete_student");
@@ -76,3 +76,6 @@ async function loadStudents(page = 1) {
 
 // Завантажуємо студентів при завантаженні сторінки
 document.addEventListener("DOMContentLoaded", () => loadStudents(1));
+
+// Optional: Poll for status updates every 30 seconds
+setInterval(() => loadStudents(window.currentPage), 30000);

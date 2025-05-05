@@ -11,6 +11,11 @@ class UserModel
         $this->pdo = $pdo;
     }
 
+    public function getPdo()
+    {
+        return $this->pdo;
+    }
+
     public function authenticate($first_name, $last_name, $birthday)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM students WHERE first_name = ? AND last_name = ? AND birthday = ?");
@@ -18,4 +23,3 @@ class UserModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
-?>

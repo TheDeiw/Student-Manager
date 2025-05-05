@@ -253,7 +253,7 @@ li {
     opacity: 0;
     top: 100%;
     transition: all 0.2s ease-in-out;
-    width: 80%;
+    width: 100%;
     position: absolute;
     padding: 0.2rem;
     border: #eeefff 2px solid;
@@ -497,6 +497,8 @@ aside {
     font-weight: 500;
     line-height: 20px;
 }
+
+
 /* ============================================================================================ */
 .main_table {
     width: 100%;
@@ -532,15 +534,14 @@ aside {
     text-align: center;
 }
 
-.table__active_cirtle {
+.table__active_circle {
     width: 15px;
     height: 15px;
     border-radius: 50%;
     background-color: #9c9c9c;
     display: inline-block;
 }
-
-.table__active_cirtle.active {
+.table__active_circle.active {
     background-color: #31f044;
 }
 
