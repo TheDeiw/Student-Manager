@@ -28,7 +28,7 @@
 </head>
 
 <body>
-	<header class="header" onclick="openAddForm()">
+	<header class="header">
 		<div class="header-container">
 			<button class="nav_burger" aria-label="Menu opener">
 				<div class="nav_icon">
@@ -70,8 +70,8 @@
 				</div>
 				<div class="account_control__user">
 					<div class="account_control__account">
-						<div class="account__image"><img src="assets/img/header/Avatar.jpg" alt="" class="account__avatar"></div>
-						<div class="account__name">Chekhovskyi</div>
+						<div class="account__image"></div>
+						<div class="account__name"></div>
 					</div>
 					<div class="account_control__dropdown">
 						<a href="">
@@ -79,13 +79,14 @@
 								<img class="dropdown__icon" src="assets/img/header/Profile.svg" alt="Profile-link">Profile
 							</div>
 						</a>
-						<a href="">
+						<a href="" class="logout-link">
 							<div class="dropdown__item">
-								<img class="dropdown__icon" src="assets/img/header/Logout.svg" alt="LogOut-link">Log Out
+								 <img class="dropdown__icon" src="assets/img/header/Logout.svg" alt="LogOut-link">Log Out
 							</div>
-						</a>
+					  </a>
 					</div>
 				</div>
+				<button class="login-button" onclick="openLoginForm()">Log In</button>
 			</div>
 		</div>
 	</header>
@@ -246,8 +247,37 @@
 			</div>
 		</div>
 	</div>
-	<footer></footer>
 
+	<div class="form__login modal_window_style">
+		<div class="modal_window_container">
+			<div class="modal_windows__control">
+				<h2 class="modal_control__heading">Log In</h2>
+				<button onclick="CloseForm()" class="modal_control__close">
+					<img class="modal_control__close_icon" src="assets/img/modal-windows/close.svg" alt="Close">
+				</button>
+			</div>
+			<form class="modal_window__form">
+				<div class="form__student_group">
+					<label for="login" class="form__student_label">Login</label>
+					<input required type="text" id="login" placeholder="Username" class="form__student_input">
+					<div class="form__error_text"></div>
+				</div>
+				<div class="form__student_group">
+					<label for="password" class="form__student_label">Password</label>
+					<input required type="password" id="password" class="form__student_input">
+					<div class="form__error_text"></div>
+				</div>
+				<div class="form__student_buttons">
+					<button onclick="CloseForm()" class="form__student_button">Cancel</button>
+					<button type="submit" class="form__student_button interact_student_button">Login</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<footer></footer>
+	
+	<script src="js/auth.js"></script>
 	<script src="js/side_menu.js"></script>
 	<script src="js/table_control.js"></script>
 	<script src="js/init_sw.js"></script>

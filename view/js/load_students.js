@@ -13,16 +13,17 @@ async function loadStudents() {
 
         students.forEach((student) => {
             const statusClass = Math.random() < 0.5 ? "active" : "";
+            const checkboxDisabled = isLoggedIn ? "" : "disabled";
             rows += `
                 <tr data-id="${student.id}">
                     <td>
-                        <input type="checkbox" name="student_ids[]" value="${student.id}">
+                        <input type="checkbox" name="student_ids[]" value="${student.id}" ${checkboxDisabled}>
                     </td>
                     <td>${student.group_name}</td>
                     <td>${student.first_name} ${student.last_name}</td>
                     <td>${student.gender}</td>
                     <td>${student.birthday}</td>
-                    <td><span class="table__active_circle"></span></td>
+                    <td><span class="table__active_circle ${statusClass}"></span></td>
                     <td>
                         <div class="table__cell_control">
                             <button class="table__edit" style="pointer-events: none;" onclick="openEditForm(${student.id})">
@@ -50,6 +51,7 @@ async function loadStudents() {
         const mainCheckbox = document.querySelector(".main_table thead input[type='checkbox']");
         if (mainCheckbox) {
             mainCheckbox.checked = false;
+            mainCheckbox.disabled = !isLoggedIn; // Вимикаємо головний чекбокс, якщо не залогінений
         }
     } catch (error) {
         console.error("Помилка:", error);

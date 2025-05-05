@@ -1,10 +1,13 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     const mainCheckbox = document.querySelector(".main_table thead input[type='checkbox']");
     const tbody = document.querySelector(".main_table tbody");
     const deleteMultipleButton = document.querySelector(".table__delete_student");
 
+    // Перевірка стану авторизації
+    const isLoggedIn = await checkLoginStatusForTable();
+
     // Apply initial states to all buttons
-    initializeButtonStates();
+    initializeButtonStates(isLoggedIn);
 
     // Логіка для чекбоксів у рядках
     tbody.addEventListener("change", function (event) {
@@ -16,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Логіка для головного чекбокса у заголовку
     mainCheckbox.addEventListener("change", function () {
+        if (!isLoggedIn) return; // Ігноруємо, якщо не залогінений
         const targetState = mainCheckbox.checked;
         const allChildCheckboxes = document.querySelectorAll(".main_table tbody input[type='checkbox']");
 
@@ -27,14 +31,29 @@ document.addEventListener("DOMContentLoaded", function () {
         updateSelectAllState();
     });
 
+    // Перевірка стану авторизації
+    async function checkLoginStatusForTable() {
+        try {
+            const response = await fetch("http://localhost/Student-Manager/api/auth/user");
+            if (!response.ok) return false;
+            const data = await response.json();
+            return data.success;
+        } catch (error) {
+            console.error("Помилка перевірки авторизації:", error);
+            return false;
+        }
+    }
+
     // Ініціалізація стану кнопок при завантаженні сторінки
-    function initializeButtonStates() {
+    function initializeButtonStates(isLoggedIn) {
         const allRows = document.querySelectorAll(".main_table tbody tr");
 
         allRows.forEach((row) => {
             const checkbox = row.querySelector("input[type='checkbox']");
             const editIcon = row.querySelector(".table__edit .table__icon");
             const deleteIcon = row.querySelector(".table__delete .table__icon");
+
+            if (checkbox) checkbox.disabled = !isLoggedIn; // Вимикаємо чекбокси, якщо не залогінений
 
             if (editIcon && deleteIcon) {
                 // Початковий стан - іконки неактивні
@@ -45,6 +64,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Ініціалізація кнопки масового видалення
         deleteMultipleButton.classList.remove("active");
+        deleteMultipleButton.style.pointerEvents = "none";
+        if (mainCheckbox) mainCheckbox.disabled = !isLoggedIn;
     }
 
     // Оновлення стану іконок для конкретного рядка

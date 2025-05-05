@@ -251,6 +251,7 @@ li {
 .account_control__dropdown {
     visibility: hidden;
     opacity: 0;
+    top: 100%;
     transition: all 0.2s ease-in-out;
     width: 80%;
     position: absolute;

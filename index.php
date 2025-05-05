@@ -40,6 +40,8 @@ try {
 			$authController->login();
 		} elseif ($path === '/api/auth/logout' && $requestMethod === 'POST') {
 			$authController->logout();
+		} elseif ($path === '/api/auth/user' && $requestMethod === 'GET') {
+			$authController->getCurrentUser();
 		} else {
 			http_response_code(404);
 			echo json_encode(['success' => false, 'error' => 'Not found']);
