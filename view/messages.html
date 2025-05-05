@@ -24,68 +24,68 @@
 	<title>Student-Manager</title>
 </head>
 <body>
-	<div>
-		<header class="header">
-			<div class="header-container">
-				<button class="nav_burger" aria-label="Menu opener">
-					<div class="nav_icon">
-						<span></span>
-						<span></span>
-						<span></span>
-					</div>
-				</button>
-				<a href="" class="header__logo">
-					<h1>Student Manager</h1>
-				</a>
-				<div class="header__account_control">
-					<div class="account_control__notification">
-						<a href="messages.html"> <span class="notification_sign active"></span><img class="notification_bell"
-								src="assets/img/header/Notification-bell.svg" alt="Notification-bell"></a>
-						<div class="notification__messages">
-							<div class="notification__massage">
-								<div class="message__icon"></div>
-								<div class="message__text">
-									<h3 class="message_text__header">Teacher</h3>
-									<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-								</div>
-							</div>
-							<div class="notification__massage">
-								<div class="message__icon"></div>
-								<div class="message__text">
-									<h3 class="message_text__header">Teacher</h3>
-									<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit....</p>
-								</div>
-							</div>
-							<div class="notification__massage">
-								<div class="message__icon"></div>
-								<div class="message__text">
-									<h3 class="message_text__header">Teacher</h3>
-									<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-								</div>
+	<header class="header">
+		<div class="header-container">
+			<button class="nav_burger" aria-label="Menu opener">
+				<div class="nav_icon">
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			</button>
+			<a href="" class="header__logo">
+				<h1>Student Manager</h1>
+			</a>
+			<div class="header__account_control">
+				<div class="account_control__notification">
+					<a href="messages.html"> <span class="notification_sign active"></span><img class="notification_bell"
+							src="assets/img/header/Notification-bell.svg" alt="Notification-bell"></a>
+					<div class="notification__messages">
+						<div class="notification__massage">
+							<div class="message__icon"></div>
+							<div class="message__text">
+								<h3 class="message_text__header">Teacher</h3>
+								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
 							</div>
 						</div>
-					</div>
-					<div class="account_control__user">
-						<div class="account_control__account">
-							<div class="account__image"><img src="assets/img/header/Avatar.jpg" alt="" class="account__avatar"></div>
-							<div class="account__name">Chekhovskyi</div>
+						<div class="notification__massage">
+							<div class="message__icon"></div>
+							<div class="message__text">
+								<h3 class="message_text__header">Teacher</h3>
+								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit....</p>
+							</div>
 						</div>
-						<div class="account_control__dropdown">
-							<a href="">
-								<div class="dropdown__item">
-									<img class="dropdown__icon" src="assets/img/header/Profile.svg" alt="Profile-link">Profile
-								</div>
-							</a>
-							<a href="">
-								<div class="dropdown__item">
-									<img class="dropdown__icon" src="assets/img/header/Logout.svg" alt="LogOut-link">Log Out
-								</div>
-							</a>
+						<div class="notification__massage">
+							<div class="message__icon"></div>
+							<div class="message__text">
+								<h3 class="message_text__header">Teacher</h3>
+								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+							</div>
 						</div>
 					</div>
 				</div>
+				<div class="account_control__user">
+					<div class="account_control__account">
+						<div class="account__image"></div>
+						<div class="account__name"></div>
+					</div>
+					<div class="account_control__dropdown">
+						<a href="">
+							<div class="dropdown__item">
+								<img class="dropdown__icon" src="assets/img/header/Profile.svg" alt="Profile-link">Profile
+							</div>
+						</a>
+						<a href="" class="logout-link">
+							<div class="dropdown__item">
+								 <img class="dropdown__icon" src="assets/img/header/Logout.svg" alt="LogOut-link">Log Out
+							</div>
+					  </a>
+					</div>
+				</div>
+				<button class="login-button" onclick="openLoginForm()">Log In</button>
 			</div>
-		</header>
+		</div>
+	</header>
 	
 		<main class="wrapper">
 			<aside>
@@ -119,6 +119,7 @@
 			</aside>
 		</main>
 
-	<script src="js/side_menu.js"></script>
+		<script src="js/auth.js"></script>
+		<script src="js/side_menu.js"></script>
 </body>
 </html>

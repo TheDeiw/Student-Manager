@@ -246,11 +246,11 @@ class StudentController
         }
 
         if ($id) {
-            $stmt = $this->model->getPdo()->prepare("SELECT COUNT(*) FROM students WHERE first_name = ? AND last_name = ? AND birthday = ? AND id != ?");
-            $stmt->execute([$first_name, $last_name, $birthday, $id]);
+            $stmt = $this->model->getPdo()->prepare("SELECT COUNT(*) FROM students WHERE group_name = ? AND first_name = ? AND last_name = ? AND gender = ? AND birthday = ? AND id != ?");
+            $stmt->execute([$group, $first_name, $last_name, $gender, $birthday, $id]);
         } else {
-            $stmt = $this->model->getPdo()->prepare("SELECT COUNT(*) FROM students WHERE first_name = ? AND last_name = ? AND birthday = ?");
-            $stmt->execute([$first_name, $last_name, $birthday]);
+            $stmt = $this->model->getPdo()->prepare("SELECT COUNT(*) FROM students WHERE group_name = ? AND first_name = ? AND last_name = ? AND gender = ? AND birthday = ?");
+            $stmt->execute([$group, $first_name, $last_name, $gender, $birthday]);
         }
         $count = $stmt->fetchColumn();
         if ($count > 0) {

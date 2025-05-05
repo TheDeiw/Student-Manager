@@ -261,6 +261,7 @@ li {
     border-radius: 5px;
     font-weight: 500;
     cursor: pointer;
+    z-index: 100;
 }
 
 .dropdown__item {
