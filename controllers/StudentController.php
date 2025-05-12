@@ -68,7 +68,7 @@ class StudentController
             echo json_encode(['success' => true]);
         } else {
             http_response_code(500);
-            echo json_encode(['success' => false, 'error' => 'Не вдалося створити студента']);
+            echo json_encode(['success' => false, 'error' => 'Could not create student']);
         }
         exit;
     }
@@ -123,7 +123,7 @@ class StudentController
             echo json_encode(['success' => true]);
         } else {
             http_response_code(500);
-            echo json_encode(['success' => false, 'error' => 'Не вдалося оновити студента']);
+            echo json_encode(['success' => false, 'error' => 'Could not update student']);
         }
         exit;
     }
@@ -156,7 +156,7 @@ class StudentController
             echo json_encode(['success' => true]);
         } else {
             http_response_code(500);
-            echo json_encode(['success' => false, 'error' => 'Не вдалося видалити студента']);
+            echo json_encode(['success' => false, 'error' => 'Could not delete student']);
         }
         exit;
     }
@@ -189,7 +189,7 @@ class StudentController
             echo json_encode(['success' => true]);
         } else {
             http_response_code(500);
-            echo json_encode(['success' => false, 'error' => 'Не вдалося видалити студентів']);
+            echo json_encode(['success' => false, 'error' => 'Could not delete students']);
         }
         exit;
     }

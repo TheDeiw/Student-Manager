@@ -83,11 +83,9 @@ function openEditForm(studentId) {
             const newFormElement = formElement.cloneNode(true);
             formElement.parentNode.replaceChild(newFormElement, formElement);
 
-            // Before replacing, make sure the select values are properly preserved
             const groupSelect = newFormElement.querySelector("#group");
             const genderSelect = newFormElement.querySelector("#gender");
 
-            // Set the selected values in the new form
             groupSelect.value = student.group_name;
             genderSelect.value = student.gender;
             newFormElement.addEventListener("submit", async (event) => {

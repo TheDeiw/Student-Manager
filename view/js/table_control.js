@@ -5,13 +5,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     const paginationList = document.querySelector(".pagination__list");
     let currentPage = 1;
 
-    // Перевірка стану авторизації
     const isLoggedIn = await checkLoginStatusForTable();
 
-    // Apply initial states to all buttons
     initializeButtonStates(isLoggedIn);
 
-    // Логіка для чекбоксів у рядках
     if (tbody) {
         tbody.addEventListener("change", function (event) {
             if (event.target.matches("input[type='checkbox']")) {
@@ -23,10 +20,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error("Table body not found");
     }
 
-    // Логіка для головного чекбокса у заголовку
     if (mainCheckbox) {
         mainCheckbox.addEventListener("change", function () {
-            if (!isLoggedIn) return; // Ігноруємо, якщо не залогінений
+            if (!isLoggedIn) return;
             const targetState = mainCheckbox.checked;
             const allChildCheckboxes = document.querySelectorAll(".main_table tbody input[type='checkbox']");
 
@@ -41,7 +37,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error("Main checkbox not found");
     }
 
-    // Логіка для пагінації
     if (paginationList) {
         paginationList.addEventListener("click", async function (event) {
             const target = event.target.closest(".item__content");
@@ -66,7 +61,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error("Pagination list not found");
     }
 
-    // Перевірка стану авторизації
     async function checkLoginStatusForTable() {
         try {
             const response = await fetch("http://localhost/Student-Manager/api/auth/user");
@@ -79,7 +73,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    // Ініціалізація стану кнопок при завантаженні сторінки
     function initializeButtonStates(isLoggedIn) {
         const allRows = document.querySelectorAll(".main_table tbody tr");
 
@@ -97,7 +90,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         });
 
-        // Ініціалізація кнопки масового видалення
         if (deleteMultipleButton) {
             deleteMultipleButton.classList.remove("active");
             deleteMultipleButton.style.pointerEvents = "none";
@@ -105,7 +97,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (mainCheckbox) mainCheckbox.disabled = !isLoggedIn;
     }
 
-    // Оновлення стану іконок для конкретного рядка
     function updateRowButtonsState(checkbox) {
         const row = checkbox.closest("tr");
         const editIcon = row.querySelector(".table__edit .table__icon");
@@ -115,36 +106,28 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         if (editIcon && deleteIcon) {
             if (checkbox.checked) {
-                // Активуємо іконки, якщо чекбокс відмічений
                 editIcon.classList.add("active");
                 deleteIcon.classList.add("active");
 
-                // Забезпечуємо, щоб кнопки працювали
                 editButton.style.pointerEvents = "auto";
                 deleteButton.style.pointerEvents = "auto";
             } else {
-                // Деактивуємо іконки, якщо чекбокс знятий
                 editIcon.classList.remove("active");
                 deleteIcon.classList.remove("active");
-
-                // Забезпечуємо, щоб кнопки не працювали
                 editButton.style.pointerEvents = "none";
                 deleteButton.style.pointerEvents = "none";
             }
         }
     }
 
-    // Оновлення стану головного чекбокса та кнопки видалення
     function updateSelectAllState() {
         const allChildCheckboxes = document.querySelectorAll(".main_table tbody input[type='checkbox']");
         const numberOfChecked = [...allChildCheckboxes].filter((cb) => cb.checked).length;
 
-        // Оновлюємо головний чекбокс: вибраний, якщо всі рядки вибрані
         if (mainCheckbox) {
             mainCheckbox.checked = numberOfChecked === allChildCheckboxes.length && numberOfChecked > 0;
         }
 
-        // Оновлюємо кнопку масового видалення
         if (deleteMultipleButton) {
             if (numberOfChecked > 0) {
                 deleteMultipleButton.classList.add("active");
@@ -157,18 +140,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    // Оновлення пагінації
     function updatePagination() {
         if (!paginationList) {
             console.error("Pagination list is not available");
             return;
         }
 
-        // Видаляємо старі номери сторінок
         const pageItems = paginationList.querySelectorAll(".pagination__page_item");
         pageItems.forEach((item) => item.remove());
 
-        // Знаходимо кнопки попередньої та наступної сторінок
         const prevButton = paginationList.querySelector(".item__content.pagination__prev");
         const nextButton = paginationList.querySelector(".item__content.pagination__next");
 
@@ -179,7 +159,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             return;
         }
 
-        // Показуємо всі сторінки (для 9 студентів = 2 сторінки)
         const totalPages = window.totalPages || 1;
         const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 

@@ -11,7 +11,6 @@ async function loadStudents(page = 1) {
         const isLoggedIn = data.isLoggedIn || false;
         const pagination = data.pagination || {};
 
-        // Оновлюємо глобальні змінні пагінації
         window.currentPage = pagination.currentPage || 1;
         window.totalPages = pagination.totalPages || 1;
 
@@ -51,7 +50,6 @@ async function loadStudents(page = 1) {
         tableBody.innerHTML = rows || "<tr><td colspan='7'>No students found</td></tr>";
         console.log(`Loaded ${students.length} students for page ${page}, totalPages: ${window.totalPages}`);
 
-        // Встановлення початкового стану для кнопки масового видалення
         const deleteMultipleButton = document.querySelector(".table__delete_student");
         if (deleteMultipleButton) {
             deleteMultipleButton.classList.remove("active");
@@ -59,7 +57,6 @@ async function loadStudents(page = 1) {
             document.querySelector(".delete_student_describe").textContent = "Delete (0)";
         }
 
-        // Знімаємо головний чекбокс
         const mainCheckbox = document.querySelector(".main_table thead input[type='checkbox']");
         if (mainCheckbox) {
             mainCheckbox.checked = false;
@@ -74,7 +71,6 @@ async function loadStudents(page = 1) {
     }
 }
 
-// Завантажуємо студентів при завантаженні сторінки
 document.addEventListener("DOMContentLoaded", () => loadStudents(1));
 
 // Optional: Poll for status updates every 30 seconds

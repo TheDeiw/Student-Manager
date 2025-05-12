@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
     setupLogoutButton();
 });
 
-// Перевірка стану авторизації та оновлення інтерфейсу
 async function checkLoginStatus() {
     try {
         const response = await fetch("http://localhost/Student-Manager/api/auth/user");
@@ -25,7 +24,6 @@ async function checkLoginStatus() {
     }
 }
 
-// Оновлення інтерфейсу в залежності від статусу авторизації
 function updateUIBasedOnLoginStatus(isLoggedIn, user = null) {
     const loginButton = document.querySelector(".login-button");
     const notificationBell = document.querySelector(".account_control__notification");
@@ -37,7 +35,6 @@ function updateUIBasedOnLoginStatus(isLoggedIn, user = null) {
     const tableDeleteButtons = document.querySelectorAll(".table__delete");
 
     if (isLoggedIn && user) {
-        // Користувач залогінений
         if (loginButton) loginButton.style.display = "none";
         if (notificationBell) notificationBell.style.display = "block";
         if (userAccount) userAccount.style.display = "flex";
@@ -46,21 +43,18 @@ function updateUIBasedOnLoginStatus(isLoggedIn, user = null) {
             addStudentButton.style.pointerEvents = "auto";
             addStudentButton.classList.remove("disabled");
             addStudentButton.style.opacity = "1";
-            deleteMultipleButton.opacity = "1";
+            deleteMultipleButton.style.opacity = "1";
         }
 
-        // Активація кнопок редагування для вибраних рядків
         document.querySelectorAll('.main_table tbody input[type="checkbox"]:checked').forEach((checkbox) => {
             const row = checkbox.closest("tr");
             const editBtn = row.querySelector(".table__edit");
             const deleteBtn = row.querySelector(".table__delete");
 
-            // Включаємо чекбокси
             if (editBtn) editBtn.style.pointerEvents = "auto";
             if (deleteBtn) deleteBtn.style.pointerEvents = "auto";
         });
     } else {
-        // Користувач не залогінений
         if (loginButton) loginButton.style.display = "block";
         if (notificationBell) notificationBell.style.display = "none";
         if (userAccount) userAccount.style.display = "none";
@@ -72,19 +66,16 @@ function updateUIBasedOnLoginStatus(isLoggedIn, user = null) {
             deleteMultipleButton.style.opacity = "0.5";
         }
 
-        // Деактивація кнопок редагування та видалення
         tableEditButtons.forEach((btn) => (btn.style.pointerEvents = "none"));
         tableDeleteButtons.forEach((btn) => (btn.style.pointerEvents = "none"));
     }
 }
 
-// Відкрити форму логіну
 function openLoginForm() {
     const form = document.querySelector(".form__login");
     if (form) form.classList.add("active");
 }
 
-// Налаштування форми логіну
 function setupLoginForm() {
     const loginForm = document.querySelector(".form__login form");
     if (loginForm) {
@@ -107,12 +98,10 @@ function setupLoginForm() {
                 const result = await response.json();
 
                 if (result.success) {
-                    // Успішний вхід
                     CloseForm();
                     updateUIBasedOnLoginStatus(true, result.user);
-                    loadStudents(); // Перезавантажуємо дані студентів
+                    loadStudents();
                 } else {
-                    // Помилка входу
                     const errorElement = document.querySelector(".form__login .form__error_text");
                     if (errorElement) {
                         errorElement.textContent = result.error || "Помилка автентифікації";
@@ -131,7 +120,6 @@ function setupLoginForm() {
     }
 }
 
-// Налаштування кнопки виходу
 function setupLogoutButton() {
     const logoutButton = document.querySelector(".logout-link");
     if (logoutButton) {
@@ -143,7 +131,7 @@ function setupLogoutButton() {
                 });
                 if (response.ok) {
                     updateUIBasedOnLoginStatus(false);
-                    loadStudents(); // Перезавантажуємо дані студентів
+                    loadStudents();
                 } else {
                     console.error("Помилка при виході");
                 }

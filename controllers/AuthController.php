@@ -24,7 +24,7 @@ class AuthController
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
-            echo json_encode(['success' => false, 'error' => 'Невірний метод запиту']);
+            echo json_encode(['success' => false, 'error' => 'Indvalid request method']);
             exit;
         }
 
@@ -34,7 +34,7 @@ class AuthController
         $parts = explode(' ', trim($login), 2);
         if (count($parts) !== 2) {
             http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Невірний формат логіну. Введіть "Ім\'я Прізвище"']);
+            echo json_encode(['success' => false, 'error' => 'Invalid login format']);
             exit;
         }
 
@@ -48,14 +48,14 @@ class AuthController
                 $_SESSION['user'] = $user;
                 // Store session in the database
                 $this->storeSession($user['id']);
-                echo json_encode(['success' => true, 'message' => 'Успішний вхід', 'user' => $user]);
+                echo json_encode(['success' => true, 'message' => 'Successful login', 'user' => $user]);
             } else {
                 http_response_code(401);
-                echo json_encode(['success' => false, 'error' => 'Невірні дані для входу']);
+                echo json_encode(['success' => false, 'error' => 'Invalid credentials']);
             }
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(['success' => false, 'error' => 'Помилка сервера: ' . $e->getMessage()]);
+            echo json_encode(['success' => false, 'error' => 'Server error: ' . $e->getMessage()]);
         }
 
         exit;
@@ -90,7 +90,7 @@ class AuthController
         session_destroy();
 
         header('Content-Type: application/json');
-        echo json_encode(['success' => true, 'message' => 'Успішний вихід']);
+        echo json_encode(['success' => true, 'message' => 'Successful login']);
         exit;
     }
 
@@ -102,7 +102,7 @@ class AuthController
             $this->updateSession($_SESSION['user']['id']);
             echo json_encode(['success' => true, 'user' => $_SESSION['user']]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Не авторизовано']);
+            echo json_encode(['success' => false, 'error' => 'No user logged in']);
         }
         exit;
     }
