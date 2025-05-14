@@ -1,4 +1,4 @@
-const init_or_not_init = true;
+const init_or_not_init = false;
 
 if (init_or_not_init) {
     if ("serviceWorker" in navigator) {

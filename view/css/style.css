@@ -251,8 +251,9 @@ li {
 .account_control__dropdown {
     visibility: hidden;
     opacity: 0;
+    top: 100%;
     transition: all 0.2s ease-in-out;
-    width: 80%;
+    width: 100%;
     position: absolute;
     padding: 0.2rem;
     border: #eeefff 2px solid;
@@ -260,6 +261,7 @@ li {
     border-radius: 5px;
     font-weight: 500;
     cursor: pointer;
+    z-index: 100;
 }
 
 .dropdown__item {
@@ -496,6 +498,8 @@ aside {
     font-weight: 500;
     line-height: 20px;
 }
+
+
 /* ============================================================================================ */
 .main_table {
     width: 100%;
@@ -531,15 +535,14 @@ aside {
     text-align: center;
 }
 
-.table__active_cirtle {
+.table__active_circle {
     width: 15px;
     height: 15px;
     border-radius: 50%;
     background-color: #9c9c9c;
     display: inline-block;
 }
-
-.table__active_cirtle.active {
+.table__active_circle.active {
     background-color: #31f044;
 }
 
@@ -579,7 +582,7 @@ aside {
   }
   
 /* ============================================================================================ */
-.pagination {
+/* .pagination {
     align-self: end;
     margin: auto;
 }
@@ -607,4 +610,63 @@ aside {
     font-style: normal;
     font-weight: 700;
     line-height: 20px;
+} */
+
+/* Pagination styles */
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination__list {
+    display: flex;
+    list-style: none;
+    padding: 10px;
+    gap: 8px;
+}
+
+.pagination_list__item {
+    display: inline-block;
+    
+}
+
+.item__content {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    padding: 5px 4px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    border: 1px solid #DFE3E8;
+    background: #FFF;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
+}
+
+.item__content:hover:not(:disabled) {
+    background-color: #e9ecef;
+}
+
+.item__content.active {
+    background-color: #007bff;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.item__content:disabled {
+    background-color: #f8f9fa;
+    color: #ced4da;
+    cursor: not-allowed;
+}
+
+.pagination__prev, .pagination__next {
+    background-color: #f8f9fa;
+}
+
+.pagination__prev:hover:not(:disabled), .pagination__next:hover:not(:disabled) {
+    background-color: #dee2e6;
 }

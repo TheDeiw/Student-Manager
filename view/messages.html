@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Student-Manager. JS-DataManager. Labwork for 'Internet Programming'">
+	<meta name="author" content="Chekhovskyi Dmytro (TheDeiw)">
+	<meta name="keywords" content="Student-Manager, JS-DataManager">
+	<meta name="google" content="notranslate">
+	<meta property="og:image" content="img/favicon.ico">
+	<meta property="og:title" content="Student-Manager">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+	
+	<link rel="shortcut icon" type="image/x-icon" href="assets/favicon/favicon.ico">
+
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/forms.css">
+	<link rel="stylesheet" href="css/adaptability.css">
+	<link rel="stylesheet" href="css/messages.css">
+
+	<link rel="manifest" href="manifest.json" />
+	<title>Student-Manager</title>
+</head>
+<body>
+	<header class="header">
+		<div class="header-container">
+			<button class="nav_burger" aria-label="Menu opener">
+				<div class="nav_icon">
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			</button>
+			<a href="" class="header__logo">
+				<h1>Student Manager</h1>
+			</a>
+			<div class="header__account_control">
+				<div class="account_control__notification">
+					<a href="messages.html"> <span class="notification_sign active"></span><img class="notification_bell"
+							src="assets/img/header/Notification-bell.svg" alt="Notification-bell"></a>
+					<div class="notification__messages">
+						<div class="notification__massage">
+							<div class="message__icon"></div>
+							<div class="message__text">
+								<h3 class="message_text__header">Teacher</h3>
+								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+							</div>
+						</div>
+						<div class="notification__massage">
+							<div class="message__icon"></div>
+							<div class="message__text">
+								<h3 class="message_text__header">Teacher</h3>
+								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit....</p>
+							</div>
+						</div>
+						<div class="notification__massage">
+							<div class="message__icon"></div>
+							<div class="message__text">
+								<h3 class="message_text__header">Teacher</h3>
+								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="account_control__user">
+					<div class="account_control__account">
+						<div class="account__image"></div>
+						<div class="account__name"></div>
+					</div>
+					<div class="account_control__dropdown">
+						<a href="">
+							<div class="dropdown__item">
+								<img class="dropdown__icon" src="assets/img/header/Profile.svg" alt="Profile-link">Profile
+							</div>
+						</a>
+						<a href="" class="logout-link">
+							<div class="dropdown__item">
+								 <img class="dropdown__icon" src="assets/img/header/Logout.svg" alt="LogOut-link">Log Out
+							</div>
+						</a>
+					</div>
+				</div>
+				<button class="login-button" onclick="openLoginForm()">Log In</button>
+			</div>
+		</div>
+	</header>
+	
+	<main class="wrapper">
+		<aside>
+			<nav class="menu__container close">
+				<ul class="menu__list">
+					<li class="menu__item arrow">
+						<button id="toggle-btn" class="menu_arrow">
+							<img src="assets/img/navigation/Arrow.svg" class="menu__icon_arrow close" alt="Menu opener button">
+						</button>
+					</li>
+					<li class="menu__item">
+						<a href="dashboard.html" class="menu__link">
+							<img class="menu__icon" src="assets/img/navigation/Dashboard.svg" alt="Icon - link to page 'Dashboard'">
+							<span>Dashboard</span>
+						</a>
+					</li>
+					<li class="menu__item selected">
+						<a href="messages.html" class="menu__link">
+							<img class="menu__icon" src="assets/img/navigation/Messages.svg" alt="Icon - link to page 'Messages'">
+							<span>Messages</span>
+						</a>
+					</li>
+					<li class="menu__item">
+						<a href="tasks.html" class="menu__link">
+							<img class="menu__icon" src="assets/img/navigation/Tasks.svg" alt="Icon - link to page 'Tasks'">
+							<span>Tasks</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</aside>
+
+		<section class="messages_section">
+			<div class="messages_control">
+				<div class="control_describe">
+					<h2 class="describe__heading">Messages</h2>
+					<p class="describe__paragraph">Manage your chat rooms and messages here</p>
+				</div>
+				<button class="new_chat_button" onclick="openNewChatForm()">
+					<img class="new_chat_plus" src="assets/img/messages/plus.svg" alt="Plus sign for new chat button">
+					<p class="new_chat_describe">New Chat Room</p>
+				</button>
+			</div>
+
+			<div class="chat_container">
+				<div class="chat_list">
+					<button class="new_chat_room">+ New chat room</button>
+					<div class="chat_item active">
+						<div class="chat_icon"></div>
+						<span class="chat_name">Admin</span>
+					</div>
+					<div class="chat_item">
+						<div class="chat_icon"></div>
+						<span class="chat_name">Ann Smith</span>
+					</div>
+					<div class="chat_item">
+						<div class="chat_icon"></div>
+						<span class="chat_name">John Bond</span>
+					</div>
+					<div class="chat_item">
+						<div class="chat_icon"></div>
+						<span class="chat_name">Ivon Stan</span>
+					</div>
+				</div>
+				<div class="chat_room">
+					<div class="chat_room_header">
+						<h3 class="chat_room_title">Chatroom Admin</h3>
+						<div class="members_section">
+							<span>Members</span>
+							<div class="member_icons">
+								<div class="member_icon"></div>
+								<div class="member_icon"></div>
+								<div class="member_icon"></div>
+								<button class="add_member">+</button>
+							</div>
+						</div>
+					</div>
+					<div class="messages_area">
+						<div class="message_item">
+							<div class="message_icon"></div>
+							<div class="message_content">
+								<h4 class="message_author">Admin</h4>
+								<p class="message_text">Hello, this is a test message!</p>
+							</div>
+						</div>
+						<div class="message_item self">
+							<div class="message_icon"></div>
+							<div class="message_content">
+								<h4 class="message_author">Me</h4>
+								<p class="message_text">Hi! Thanks for the update.</p>
+							</div>
+						</div>
+					</div>
+					<div class="message_input">
+						<input type="text" placeholder="Type a message..." class="message_input_field">
+						<button class="send_button">→</button>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<div class="form__new_chat modal_window_style">
+		<div class="modal_window_container">
+			<div class="modal_windows__control">
+				<h2 class="modal_control__heading">New Chat Room</h2>
+				<button onclick="CloseForm()" class="modal_control__close">
+					<img class="modal_control__close_icon" src="assets/img/modal-windows/close.svg" alt="Close">
+				</button>
+			</div>
+			<form class="modal_window__form">
+				<div class="form__student_group">
+					<label for="chat_name" class="form__student_label">Chat Name</label>
+					<input required type="text" id="chat_name" class="form__student_input">
+					<div class="form__error_text"></div>
+				</div>
+				<div class="form__student_group">
+					<label for="members" class="form__student_label">Members</label>
+					<select multiple required id="members" class="form__student_input">
+						<option value="admin">Admin</option>
+						<option value="ann_smith">Ann Smith</option>
+						<option value="john_bond">John Bond</option>
+						<option value="ivon_stan">Ivon Stan</option>
+					</select>
+					<div class="form__error_text"></div>
+				</div>
+				<div class="form__student_buttons">
+					<button onclick="CloseForm()" class="form__student_button">Cancel</button>
+					<button type="submit" class="form__student_button interact_student_button">Create</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script src="js/auth.js"></script>
+	<script src="js/side_menu.js"></script>
+	<script src="js/messages_control.js"></script>
+</body>
+</html>
