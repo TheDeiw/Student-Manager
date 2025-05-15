@@ -21,7 +21,7 @@
 	<link rel="stylesheet" href="css/adaptability.css">
 	<link rel="stylesheet" href="css/messages.css">
 
-	<link rel="manifest" href="manifest.json" />
+	<!-- <link rel="manifest" href="manifest.json" /> -->
 	<title>Student-Manager</title>
 </head>
 <body>
@@ -105,7 +105,7 @@
 					</li>
 					<li class="menu__item selected">
 						<a href="messages.html" class="menu__link">
-							<img class="menu__icon" src="assets/img/navigation/Messages.svg" alt="Icon - link to page 'Messages'">
+							<img class="menu__icon" src="assets/img/navigation/Students.svg" alt="Icon - link to page 'Messages'">
 							<span>Messages</span>
 						</a>
 					</li>
@@ -126,7 +126,7 @@
 					<p class="describe__paragraph">Manage your chat rooms and messages here</p>
 				</div>
 				<button class="new_chat_button" onclick="openNewChatForm()">
-					<img class="new_chat_plus" src="assets/img/messages/plus.svg" alt="Plus sign for new chat button">
+					<img class="new_chat_plus" src="assets/img/students-table/plus.svg" alt="Plus sign for new chat button">
 					<p class="new_chat_describe">New Chat Room</p>
 				</button>
 			</div>
@@ -221,6 +221,8 @@
 		</div>
 	</div>
 
+	<!-- Socket.io скрипт -->
+	<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 	<script src="js/auth.js"></script>
 	<script src="js/side_menu.js"></script>
 	<script src="js/messages_control.js"></script>
