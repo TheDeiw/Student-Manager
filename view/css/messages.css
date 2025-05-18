@@ -428,3 +428,25 @@
 .form__new_chat.active {
     display: flex;
 }
+
+.delete_chat_button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.delete_chat_button:hover {
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.delete_chat_button img {
+    width: 20px;
+    height: 20px;
+}

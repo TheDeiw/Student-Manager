@@ -182,11 +182,138 @@ app.post("/api/chat/rooms", async (req, res) => {
 // Get all students (potential chat members)
 app.get("/api/chat/students", async (req, res) => {
     try {
-        // Get all students from MongoDB (synced from MySQL)
-        const students = await User.find({}, "first_name last_name username avatar");
-        res.json({ success: true, students });
+        // Get all students from MySQL database
+        const [students] = await mysqlConnection.execute("SELECT * FROM students");
+
+        // For each student, check if they exist in MongoDB, if not - create them
+        const mongoStudents = [];
+
+        for (const student of students) {
+            // Try to find or create user in MongoDB
+            const mongoUser = await syncUser(student.first_name, student.last_name, new Date(student.birthday));
+
+            if (mongoUser) {
+                // Add MySQL ID for reference
+                mongoUser._mysqlId = student.id;
+                mongoStudents.push(mongoUser);
+            }
+        }
+
+        res.json({ success: true, students: mongoStudents });
     } catch (err) {
         console.error("Помилка отримання списку студентів:", err);
+        res.status(500).json({ success: false, message: "Внутрішня помилка сервера" });
+    }
+});
+
+// Delete a chat room
+app.delete("/api/chat/rooms/:roomId", async (req, res) => {
+    try {
+        const roomId = req.params.roomId;
+        const userId = req.query.userId; // User who is deleting the room
+
+        // Check if room exists
+        const chatRoom = await ChatRoom.findById(roomId);
+        if (!chatRoom) {
+            return res.status(404).json({ success: false, message: "Чат не знайдено" });
+        }
+
+        // Check if user is a participant
+        if (!chatRoom.participants.includes(userId)) {
+            return res.status(403).json({ success: false, message: "Ви не є учасником чату" });
+        }
+
+        // Delete all messages in the chat room
+        await Message.deleteMany({ chatRoom: roomId });
+
+        // Delete the chat room
+        await ChatRoom.findByIdAndDelete(roomId);
+
+        // Notify all participants about the deleted chat room
+        chatRoom.participants.forEach((participantId) => {
+            const socketId = connectedUsers.get(participantId.toString());
+            if (socketId) {
+                io.to(socketId).emit("chat_room_deleted", { roomId });
+            }
+        });
+
+        res.json({ success: true, message: "Чат успішно видалено" });
+    } catch (err) {
+        console.error("Помилка видалення чату:", err);
+        res.status(500).json({ success: false, message: "Внутрішня помилка сервера" });
+    }
+});
+
+// Get student interaction history
+app.get("/api/chat/student/:studentId/history", async (req, res) => {
+    try {
+        const studentId = req.params.studentId;
+        const currentUserId = req.query.currentUserId;
+
+        if (!currentUserId) {
+            return res.status(400).json({ success: false, message: "Не вказано поточного користувача" });
+        }
+
+        // Find the MongoDB user by MySQL ID
+        const [rows] = await mysqlConnection.execute("SELECT * FROM students WHERE id = ?", [studentId]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ success: false, message: "Студента не знайдено" });
+        }
+
+        const student = rows[0];
+
+        // Find or create MongoDB user for this student
+        const studentMongoUser = await syncUser(student.first_name, student.last_name, new Date(student.birthday));
+
+        if (!studentMongoUser) {
+            return res.status(404).json({ success: false, message: "Не вдалося знайти студента в MongoDB" });
+        }
+
+        // Find private chat room between these two users
+        const chatRoom = await ChatRoom.findOne({
+            type: "private",
+            participants: {
+                $all: [currentUserId, studentMongoUser._id],
+            },
+        }).populate("participants", "first_name last_name username avatar");
+
+        let messages = [];
+        let roomData = null;
+
+        // If chat room exists, get messages
+        if (chatRoom) {
+            messages = await Message.find({ chatRoom: chatRoom._id })
+                .populate("sender", "first_name last_name username avatar")
+                .sort({ createdAt: 1 });
+
+            roomData = {
+                _id: chatRoom._id,
+                name: chatRoom.name,
+                type: chatRoom.type,
+                participants: chatRoom.participants,
+            };
+        }
+
+        // Get student details from MySQL
+        const studentDetails = {
+            id: student.id,
+            first_name: student.first_name,
+            last_name: student.last_name,
+            group_name: student.group_name,
+            gender: student.gender,
+            birthday: student.birthday,
+            mongoId: studentMongoUser._id,
+        };
+
+        res.json({
+            success: true,
+            student: studentDetails,
+            chatRoom: roomData,
+            messages: messages,
+        });
+    } catch (err) {
+        console.error("Помилка отримання історії взаємодії:", err);
         res.status(500).json({ success: false, message: "Внутрішня помилка сервера" });
     }
 });
@@ -408,6 +535,47 @@ io.on("connection", (socket) => {
         } catch (err) {
             console.error("Помилка додавання користувача до чату:", err);
             socket.emit("add_member_error", { message: "Помилка додавання користувача до чату" });
+        }
+    });
+
+    // Delete chat room
+    socket.on("delete_chat_room", async (data) => {
+        try {
+            const { roomId } = data;
+
+            if (!socket.userId) {
+                socket.emit("delete_room_error", { message: "Користувач не авторизований" });
+                return;
+            }
+
+            // Check if chat room exists
+            const chatRoom = await ChatRoom.findById(roomId);
+            if (!chatRoom) {
+                socket.emit("delete_room_error", { message: "Чат не знайдено" });
+                return;
+            }
+
+            // Check if user is a participant
+            if (!chatRoom.participants.includes(socket.userId)) {
+                socket.emit("delete_room_error", { message: "Ви не є учасником чату" });
+                return;
+            }
+
+            // Delete all messages in the chat room
+            await Message.deleteMany({ chatRoom: roomId });
+
+            // Delete the chat room
+            await ChatRoom.findByIdAndDelete(roomId);
+
+            // Notify all participants about the deleted chat room
+            chatRoom.participants.forEach((participantId) => {
+                io.to(participantId.toString()).emit("chat_room_deleted", { roomId });
+            });
+
+            socket.emit("delete_room_success", { roomId });
+        } catch (err) {
+            console.error("Помилка видалення чату:", err);
+            socket.emit("delete_room_error", { message: "Помилка видалення чату" });
         }
     });
 

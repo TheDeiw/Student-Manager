@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const notificationBell = document.querySelector(".notification_bell");
     const notificationSign = document.querySelector(".notification_sign");
     const notificationMessages = document.querySelector(".notification__messages");
+    const deleteChatButton = document.querySelector(".delete_chat_button") || createDeleteChatButton();
 
     // State variables
     let currentUser = null;
@@ -76,20 +77,50 @@ document.addEventListener("DOMContentLoaded", function () {
         const formContainer = document.querySelector(".form__new_chat");
         if (!formContainer) return;
 
-        // Show the form
-        formContainer.classList.add("active");
+        // Fetch available students from the server
+        fetch("http://localhost:3000/api/chat/students")
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    // Get the select element
+                    const membersSelect = document.getElementById("members");
+                    if (membersSelect) {
+                        // Clear existing options
+                        membersSelect.innerHTML = "";
 
-        // Add close event listeners
-        const closeButton = formContainer.querySelector(".modal_control__close");
-        const cancelButton = formContainer.querySelector(".cancel-button");
+                        // Add all students as options
+                        data.students.forEach((student) => {
+                            // Skip current user
+                            if (student._id === currentUser._id) return;
 
-        if (closeButton) {
-            closeButton.addEventListener("click", CloseForm);
-        }
+                            const option = document.createElement("option");
+                            option.value = student._id;
+                            option.textContent = `${student.first_name} ${student.last_name}`;
+                            membersSelect.appendChild(option);
+                        });
+                    }
 
-        if (cancelButton) {
-            cancelButton.addEventListener("click", CloseForm);
-        }
+                    // Show the form
+                    formContainer.classList.add("active");
+
+                    // Add close event listeners
+                    const closeButton = formContainer.querySelector(".modal_control__close");
+                    const cancelButton = formContainer.querySelector(".cancel-button");
+
+                    if (closeButton) {
+                        closeButton.addEventListener("click", CloseForm);
+                    }
+
+                    if (cancelButton) {
+                        cancelButton.addEventListener("click", CloseForm);
+                    }
+                } else {
+                    console.error("Error fetching students:", data.message);
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching students:", error);
+            });
     }
 
     // Helper function to close the form
@@ -165,6 +196,11 @@ document.addEventListener("DOMContentLoaded", function () {
         updateMessageReadStatus(data.messageId, data.userId, data.readAt);
     });
 
+    // Chat room deleted listener
+    socket.on("chat_room_deleted", (data) => {
+        handleChatRoomDeleted(data.roomId);
+    });
+
     // Event listeners
     if (sendButton) {
         sendButton.addEventListener("click", sendMessage);
@@ -195,6 +231,10 @@ document.addEventListener("DOMContentLoaded", function () {
             event.preventDefault();
             toggleNotifications();
         });
+    }
+
+    if (deleteChatButton) {
+        deleteChatButton.addEventListener("click", deleteChatRoom);
     }
 
     // Handle new chat form submission
@@ -793,29 +833,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         try {
-            // First, we need to get the actual MongoDB IDs for the selected members
-            const studentsResponse = await fetch("http://localhost:3000/api/chat/students");
-            if (!studentsResponse.ok) {
-                throw new Error("Error fetching students");
-            }
-
-            const studentsData = await studentsResponse.json();
-            if (!studentsData.success) {
-                throw new Error("Error fetching students");
-            }
-
-            // Map selected usernames to MongoDB IDs
-            const participantIds = [];
+            // Create participant IDs array - selected members plus current user
+            const participantIds = [...selectedMembers];
 
             // Always include current user
-            participantIds.push(currentUser._id);
-
-            // Add selected members
-            studentsData.students.forEach((student) => {
-                if (selectedMembers.includes(student.username) && student._id !== currentUser._id) {
-                    participantIds.push(student._id);
-                }
-            });
+            if (!participantIds.includes(currentUser._id)) {
+                participantIds.push(currentUser._id);
+            }
 
             // Create chat room
             const response = await fetch("http://localhost:3000/api/chat/rooms", {
@@ -947,5 +971,79 @@ document.addEventListener("DOMContentLoaded", function () {
         if (messagesArea) {
             messagesArea.scrollTop = messagesArea.scrollHeight;
         }
+    }
+
+    // Handle chat room deletion
+    function handleChatRoomDeleted(roomId) {
+        // Find and remove the chat room from the list
+        const index = chatRooms.findIndex((room) => room._id === roomId);
+        if (index !== -1) {
+            chatRooms.splice(index, 1);
+            renderChatRooms();
+
+            // If this was the current chat room, clear the messages area
+            if (currentChatRoomId === roomId) {
+                currentChatRoomId = null;
+                messagesArea.innerHTML = "";
+                chatRoomTitle.textContent = "Виберіть чат";
+                membersIcons.innerHTML = "";
+
+                // If there are other chat rooms, open the first one
+                if (chatRooms.length > 0) {
+                    openChatRoom(chatRooms[0]._id);
+                }
+            }
+
+            // Show notification
+            showNotification({
+                chatRoom: { _id: roomId, name: "Система" },
+                sender: { first_name: "Система", last_name: "" },
+                message: { content: "Чат було видалено" },
+            });
+        }
+    }
+
+    // Delete current chat room
+    function deleteChatRoom() {
+        if (!currentChatRoomId || !currentUser) return;
+
+        if (confirm("Ви впевнені, що хочете видалити цей чат?")) {
+            console.log("Deleting chat room:", currentChatRoomId);
+
+            // Try both methods - API and socket
+            // 1. API method
+            fetch(`http://localhost:3000/api/chat/rooms/${currentChatRoomId}?userId=${currentUser._id}`, {
+                method: "DELETE",
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        console.log("Chat room deleted via API");
+                        handleChatRoomDeleted(currentChatRoomId);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error deleting chat room via API:", error);
+
+                    // 2. Socket method as fallback
+                    socket.emit("delete_chat_room", { roomId: currentChatRoomId });
+                });
+        }
+    }
+
+    // Create delete chat button if it doesn't exist
+    function createDeleteChatButton() {
+        const button = document.createElement("button");
+        button.className = "delete_chat_button";
+        button.innerHTML = '<img src="assets/img/delete.svg" alt="Delete Chat" />';
+        button.title = "Видалити чат";
+
+        // Add to the chat room header
+        const chatRoomHeader = document.querySelector(".chat_room_header");
+        if (chatRoomHeader) {
+            chatRoomHeader.appendChild(button);
+        }
+
+        return button;
     }
 });
