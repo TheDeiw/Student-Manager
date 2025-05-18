@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
     socket.on("authenticated", (response) => {
         if (response.success) {
             console.log("Socket authenticated successfully");
-            loadChatRooms();
+            // loadChatRooms() is now called after successful syncUserToMongoDB
         } else {
             console.error("Socket authentication failed:", response.message);
         }
@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const response = await fetch("http://localhost/Student-Manager/api/auth/user");
             if (!response.ok) {
-                throw new Error("Error fetching user data");
+                throw new Error(`Error fetching user data: ${response.status} ${response.statusText}`);
             }
 
             const data = await response.json();
@@ -260,6 +260,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Authenticate socket with user ID
                 try {
                     await syncUserToMongoDB(currentUser);
+                    console.log("MongoDB sync successful");
+
+                    // Load chat rooms after successful authentication
+                    loadChatRooms();
                 } catch (error) {
                     console.warn("MongoDB sync failed:", error.message);
 
@@ -272,12 +276,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     // Use fallback user
                     currentUser = fallbackUser;
+                    console.log("Using fallback user:", currentUser);
 
                     // Show an error message to the user
                     const errorMessage = document.createElement("div");
                     errorMessage.className = "error-message";
                     errorMessage.innerHTML = `
-                        <p>Could not connect to the chat server. Some features may be limited.</p>
+                        <p>Could not connect to the chat server: ${error.message}</p>
+                        <p>Chat functionality will be limited.</p>
                         <button class="retry-button">Retry Connection</button>
                     `;
 
@@ -290,6 +296,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             errorMessage.remove();
                             try {
                                 await syncUserToMongoDB(currentUser);
+                                console.log("Retry successful");
                                 // Refresh page on successful connection
                                 window.location.reload();
                             } catch (error) {
@@ -299,6 +306,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             }
                         });
                     }
+
+                    // Still try to render the UI with empty chat rooms
+                    chatRooms = [];
+                    renderChatRooms();
                 }
             } else {
                 // Redirect to login if not authenticated
@@ -306,6 +317,25 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } catch (error) {
             console.error("Error checking login status:", error);
+
+            // Show error message
+            const errorMessage = document.createElement("div");
+            errorMessage.className = "error-message";
+            errorMessage.innerHTML = `
+                <p>Error checking login status: ${error.message}</p>
+                <button class="retry-button">Retry</button>
+            `;
+
+            document.body.appendChild(errorMessage);
+
+            // Add retry button functionality
+            const retryButton = errorMessage.querySelector(".retry-button");
+            if (retryButton) {
+                retryButton.addEventListener("click", () => {
+                    errorMessage.remove();
+                    checkLoginStatus();
+                });
+            }
         }
     }
 
@@ -318,17 +348,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 birthday: user.birthday,
             });
 
+            // Create payload with required fields
+            const payload = {
+                first_name: user.first_name,
+                last_name: user.last_name,
+            };
+
+            // Only add birthday if it exists
+            if (user.birthday) {
+                payload.birthday = user.birthday;
+            }
+
             // Sync user to MongoDB
             const response = await fetch("http://localhost:3000/api/chat/auth", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    first_name: user.first_name,
-                    last_name: user.last_name,
-                    birthday: user.birthday,
-                }),
+                body: JSON.stringify(payload),
             });
 
             // Log the response status and headers
@@ -342,7 +379,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 data = JSON.parse(responseText);
             } catch (e) {
                 console.error("Failed to parse server response:", responseText);
-                throw new Error("Invalid server response format");
+                throw new Error(`Invalid server response format: ${responseText.substring(0, 100)}`);
             }
 
             if (data.success) {
@@ -352,26 +389,47 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Authenticate socket
                 socket.emit("authenticate", { userId: currentUser._id });
             } else {
-                console.error("Server returned error:", data.message);
-                throw new Error(data.message || "Error syncing user");
+                const errorMessage = data.details
+                    ? `${data.message}: ${data.details}`
+                    : data.message || "Error syncing user";
+
+                console.error("Server returned error:", errorMessage);
+                throw new Error(errorMessage);
             }
         } catch (error) {
             console.error("Detailed sync error:", error);
+
             // Try to reconnect socket in case of disconnection
-            if (socket.disconnected) {
+            if (socket && socket.disconnected) {
                 console.log("Attempting to reconnect socket...");
                 socket.connect();
             }
-            throw error;
+
+            // Create a more descriptive error message for the user
+            let errorMessage = "Failed to connect to chat server. ";
+
+            if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+                errorMessage += "Please check that the chat server is running.";
+            } else {
+                errorMessage += error.message;
+            }
+
+            throw new Error(errorMessage);
         }
     }
 
     // Load chat rooms for the current user
     async function loadChatRooms() {
         try {
+            // Check if user is authenticated
+            if (!currentUser || !currentUser._id) {
+                console.warn("Cannot load chat rooms: User not authenticated");
+                return;
+            }
+
             const response = await fetch(`http://localhost:3000/api/chat/rooms/${currentUser._id}`);
             if (!response.ok) {
-                throw new Error("Error fetching chat rooms");
+                throw new Error(`Error fetching chat rooms: ${response.status} ${response.statusText}`);
             }
 
             const data = await response.json();
@@ -383,9 +441,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (chatRooms.length > 0 && !currentChatRoomId) {
                     openChatRoom(chatRooms[0]._id);
                 }
+            } else {
+                console.error("Error loading chat rooms:", data.message);
+                chatRooms = [];
+                renderChatRooms();
             }
         } catch (error) {
             console.error("Error loading chat rooms:", error);
+            // Set empty chat rooms and render
+            chatRooms = [];
+            renderChatRooms();
         }
     }
 
@@ -399,6 +464,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (newChatRoomButton) {
             chatList.appendChild(newChatRoomButton);
+        }
+
+        // Check if there are no chat rooms
+        if (chatRooms.length === 0) {
+            const noChatMessage = document.createElement("div");
+            noChatMessage.className = "no_chat_message";
+            noChatMessage.textContent = "No chat rooms yet. Click the button above to create one.";
+            chatList.appendChild(noChatMessage);
+
+            // Clear messages area
+            if (messagesArea) {
+                messagesArea.innerHTML = "";
+            }
+
+            // Update chat room title
+            if (chatRoomTitle) {
+                chatRoomTitle.textContent = "Select or create a chat";
+            }
+
+            // Clear member icons
+            if (membersIcons) {
+                membersIcons.innerHTML = "";
+
+                // Add back the add button
+                const addButton = document.createElement("button");
+                addButton.className = "add_member";
+                addButton.textContent = "+";
+                addButton.addEventListener("click", openAddMemberModal);
+                membersIcons.appendChild(addButton);
+            }
+
+            return;
         }
 
         // Add chat rooms

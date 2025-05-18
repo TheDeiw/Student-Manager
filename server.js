@@ -62,28 +62,73 @@ const Message = require("./chat-server/models/Message");
 // Function to sync user from MySQL to MongoDB
 async function syncUser(first_name, last_name, birthday) {
     try {
+        console.log(`Attempting to sync user: ${first_name} ${last_name}, birthday: ${birthday}`);
+
+        // Create query conditions
+        const query = { first_name, last_name };
+
+        // Add birthday to query if provided
+        if (birthday) {
+            query.birthday = birthday;
+            console.log("Using birthday in query:", birthday);
+        } else {
+            console.log("Birthday not provided, using name-only query");
+        }
+
+        console.log("MongoDB query:", JSON.stringify(query));
+
         // Check if user exists in MongoDB
-        let user = await User.findOne({ first_name, last_name, birthday });
+        let user = await User.findOne(query);
+        console.log("User found in MongoDB:", user ? "Yes" : "No");
 
         if (!user) {
             // Generate username
             const username = `${first_name.toLowerCase()}_${last_name.toLowerCase()}`;
+            console.log("Generated username:", username);
 
-            // If user doesn't exist, create new user
-            user = await User.create({
+            // Create user data
+            const userData = {
                 first_name,
                 last_name,
-                birthday,
                 username,
                 email: `${username}@example.com`, // Default email
                 password: "defaultpassword", // Default password
-            });
-            console.log(`Новий користувач синхронізований: ${first_name} ${last_name}`);
+            };
+
+            // Add birthday if provided
+            if (birthday) {
+                userData.birthday = birthday;
+            } else {
+                // Use a default birthday if not provided
+                userData.birthday = new Date("2000-01-01");
+                console.log("Using default birthday:", userData.birthday);
+            }
+
+            console.log("Creating new user with data:", JSON.stringify(userData));
+
+            // If user doesn't exist, create new user
+            try {
+                user = await User.create(userData);
+                console.log(`Новий користувач синхронізований: ${first_name} ${last_name}, ID: ${user._id}`);
+            } catch (createErr) {
+                console.error("Error creating user in MongoDB:", createErr);
+                if (createErr.code === 11000) {
+                    // Handle duplicate key error
+                    console.log("Duplicate key error. Trying to find existing user with username:", username);
+                    user = await User.findOne({ username });
+                    if (user) {
+                        console.log("Found user by username:", user._id);
+                        return user;
+                    }
+                }
+                throw createErr;
+            }
         }
 
         return user;
     } catch (err) {
-        console.error("Помилка синхронізації користувача:", err);
+        console.error("Детальна помилка синхронізації користувача:", err);
+        console.error("Stack trace:", err.stack);
         return null;
     }
 }
@@ -91,28 +136,99 @@ async function syncUser(first_name, last_name, birthday) {
 // API routes
 app.post("/api/chat/auth", async (req, res) => {
     try {
+        console.log("Auth request received:", req.body);
         const { first_name, last_name, birthday } = req.body;
 
-        // Check in MySQL first
-        const [rows] = await mysqlConnection.execute(
-            "SELECT * FROM students WHERE first_name = ? AND last_name = ? AND birthday = ?",
-            [first_name, last_name, birthday]
-        );
+        if (!first_name || !last_name) {
+            console.log("Missing required fields:", { first_name, last_name });
+            return res.status(400).json({ success: false, message: "First name and last name are required" });
+        }
 
-        if (rows.length > 0) {
-            // If found in MySQL, sync to MongoDB
-            const user = await syncUser(first_name, last_name, new Date(birthday));
-            if (user) {
-                res.json({ success: true, user });
+        // Create query conditions
+        const conditions = { first_name, last_name };
+
+        // Add birthday to conditions if provided
+        if (birthday) {
+            conditions.birthday = birthday;
+        }
+
+        console.log("MySQL query conditions:", conditions);
+
+        // Check in MySQL first - if birthday is missing, search by name only
+        let query = "SELECT * FROM students WHERE first_name = ? AND last_name = ?";
+        let params = [first_name, last_name];
+
+        if (birthday) {
+            query += " AND birthday = ?";
+            params.push(birthday);
+        }
+
+        console.log("MySQL query:", query);
+        console.log("MySQL params:", params);
+
+        try {
+            const [rows] = await mysqlConnection.execute(query, params);
+            console.log("MySQL query result:", rows.length > 0 ? "User found" : "User not found");
+
+            if (rows.length > 0) {
+                // If found in MySQL, sync to MongoDB
+                const birthdayDate = birthday ? new Date(birthday) : null;
+                console.log("Syncing to MongoDB with birthday:", birthdayDate);
+
+                const user = await syncUser(first_name, last_name, birthdayDate);
+
+                if (user) {
+                    console.log("User synced successfully, returning user data");
+                    return res.json({ success: true, user });
+                } else {
+                    console.error("User sync failed - syncUser returned null");
+                    return res.status(500).json({
+                        success: false,
+                        message: "Помилка синхронізації користувача",
+                        details: "syncUser function returned null",
+                    });
+                }
             } else {
-                res.status(500).json({ success: false, message: "Помилка синхронізації користувача" });
+                // If not found with exact match, try finding by name only
+                if (birthday) {
+                    console.log("Trying name-only search in MySQL");
+                    const [nameOnlyRows] = await mysqlConnection.execute(
+                        "SELECT * FROM students WHERE first_name = ? AND last_name = ?",
+                        [first_name, last_name]
+                    );
+
+                    console.log("Name-only search result:", nameOnlyRows.length > 0 ? "User found" : "User not found");
+
+                    if (nameOnlyRows.length > 0) {
+                        // Found by name only, sync to MongoDB
+                        const user = await syncUser(first_name, last_name, null);
+                        if (user) {
+                            console.log("User synced successfully with name-only search");
+                            return res.json({ success: true, user });
+                        } else {
+                            console.error("User sync failed after name-only search");
+                        }
+                    }
+                }
+
+                console.log("User not found in MySQL database");
+                return res.status(401).json({ success: false, message: "Користувача не знайдено" });
             }
-        } else {
-            res.status(401).json({ success: false, message: "Користувача не знайдено" });
+        } catch (sqlError) {
+            console.error("MySQL query error:", sqlError);
+            return res.status(500).json({
+                success: false,
+                message: "Помилка бази даних MySQL",
+                details: sqlError.message,
+            });
         }
     } catch (err) {
-        console.error("Помилка аутентифікації:", err);
-        res.status(500).json({ success: false, message: "Внутрішня помилка сервера" });
+        console.error("General authentication error:", err);
+        return res.status(500).json({
+            success: false,
+            message: "Внутрішня помилка сервера",
+            details: err.message,
+        });
     }
 });
 

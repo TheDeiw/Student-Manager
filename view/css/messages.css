@@ -450,3 +450,11 @@
     width: 20px;
     height: 20px;
 }
+
+.no_chat_message {
+    padding: 20px;
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    margin-top: 20px;
+}
