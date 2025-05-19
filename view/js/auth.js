@@ -15,6 +15,11 @@ async function checkLoginStatus() {
         if (data.success) {
             const user = data.user;
             updateUIBasedOnLoginStatus(true, user);
+
+            // Initialize notifications if that function exists
+            if (typeof initNotifications === "function") {
+                initNotifications(user._id);
+            }
         } else {
             updateUIBasedOnLoginStatus(false);
         }
@@ -98,9 +103,19 @@ function setupLoginForm() {
                 const result = await response.json();
 
                 if (result.success) {
+                    // Store user ID in localStorage for later use
+                    if (result.user && result.user._id) {
+                        localStorage.setItem("userId", result.user._id);
+                    }
+
                     CloseForm();
                     updateUIBasedOnLoginStatus(true, result.user);
                     loadStudents();
+
+                    // Initialize notifications if that function exists
+                    if (typeof initNotifications === "function" && result.user && result.user._id) {
+                        initNotifications(result.user._id);
+                    }
                 } else {
                     const errorElement = document.querySelector(".form__login .form__error_text");
                     if (errorElement) {
@@ -130,6 +145,9 @@ function setupLogoutButton() {
                     method: "POST",
                 });
                 if (response.ok) {
+                    // Clear stored user data
+                    localStorage.removeItem("userId");
+
                     updateUIBasedOnLoginStatus(false);
                     loadStudents();
                 } else {
@@ -140,4 +158,27 @@ function setupLogoutButton() {
             }
         });
     }
+}
+
+// Helper function to check if user is logged in
+function isLoggedIn() {
+    const accountName = document.querySelector(".account__name");
+    return accountName && accountName.textContent.trim() !== "";
+}
+
+// Helper function to get the current user data
+function getUserData() {
+    // In a real application, this would retrieve user data from local storage or a session
+    // For now, we'll just create a basic object from the displayed name
+    const accountName = document.querySelector(".account__name");
+    if (!accountName || !accountName.textContent) return null;
+
+    const nameParts = accountName.textContent.split(" ");
+    if (nameParts.length < 2) return null;
+
+    return {
+        _id: localStorage.getItem("userId") || "",
+        first_name: nameParts[0],
+        last_name: nameParts[1],
+    };
 }

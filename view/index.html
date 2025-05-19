@@ -21,7 +21,8 @@
 
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/forms.css">
-	<link rel="stylesheet" href="css/adaptability.css">
+	<link rel="stylesheet" href="css/notifications.css">
+	<!-- adaptability.css removed to disable mobile support -->
 
 	<!-- <link rel="manifest" href="manifest.json" /> -->
 	<title>Student-Manager</title>
@@ -45,27 +46,7 @@
 					<a href="messages.html"> <span class="notification_sign active"></span><img class="notification_bell"
 							src="assets/img/header/Notification-bell.svg" alt="Notification-bell"></a>
 					<div class="notification__messages">
-						<div class="notification__massage">
-							<div class="message__icon"></div>
-							<div class="message__text">
-								<h3 class="message_text__header">Teacher</h3>
-								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-							</div>
-						</div>
-						<div class="notification__massage">
-							<div class="message__icon"></div>
-							<div class="message__text">
-								<h3 class="message_text__header">Teacher</h3>
-								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit....</p>
-							</div>
-						</div>
-						<div class="notification__massage">
-							<div class="message__icon"></div>
-							<div class="message__text">
-								<h3 class="message_text__header">Teacher</h3>
-								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-							</div>
-						</div>
+						<!-- Notifications will be dynamically added by JavaScript -->
 					</div>
 				</div>
 				<div class="account_control__user">
@@ -286,6 +267,9 @@
 	<script src="js/init_sw.js"></script>
 	<script src="js/load_students.js"></script>
 	<script src="js/control_students.js"></script>
+	<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+	<script src="js/socket-config.js"></script>
+	<script src="js/notifications.js"></script>
 </body>
 
 </html>

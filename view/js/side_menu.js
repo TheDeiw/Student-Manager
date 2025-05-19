@@ -44,29 +44,6 @@ function setupSideMenu() {
     }
 }
 
-// Notification bell functionality
-document.addEventListener("DOMContentLoaded", function () {
-    const notificationBell = document.querySelector(".notification_bell");
-    const redSign = document.querySelector(".notification_sign");
-
-    if (notificationBell) {
-        // Add mousedown effect
-        notificationBell.addEventListener("mousedown", function () {
-            this.classList.add("clicked");
-            setTimeout(() => {
-                this.classList.remove("clicked");
-            }, 500);
-        });
-
-        // Add click effect for notification sign
-        if (redSign) {
-            notificationBell.addEventListener("click", function () {
-                redSign.classList.toggle("active");
-            });
-        }
-    }
-});
-
 // Form handling functions
 function openNewChatForm() {
     const form = document.querySelector(".form__new_chat");

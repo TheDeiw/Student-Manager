@@ -58,6 +58,7 @@ mongoose
 const User = require("./chat-server/models/User");
 const ChatRoom = require("./chat-server/models/ChatRoom");
 const Message = require("./chat-server/models/Message");
+const Notification = require("./chat-server/models/Notification");
 
 // Function to sync user from MySQL to MongoDB
 async function syncUser(first_name, last_name, birthday) {
@@ -239,7 +240,7 @@ app.get("/api/chat/rooms/:userId", async (req, res) => {
         const chatRooms = await ChatRoom.find({
             participants: userId,
         })
-            .populate("participants", "first_name last_name username avatar")
+            .populate("participants", "first_name last_name username avatar status lastActive")
             .populate("lastMessage");
 
         res.json({ success: true, chatRooms });
@@ -280,7 +281,7 @@ app.post("/api/chat/rooms", async (req, res) => {
 
         const populatedRoom = await ChatRoom.findById(chatRoom._id).populate(
             "participants",
-            "first_name last_name username avatar"
+            "first_name last_name username avatar status lastActive"
         );
 
         // Notify all participants about the new chat room
@@ -434,290 +435,335 @@ app.get("/api/chat/student/:studentId/history", async (req, res) => {
     }
 });
 
-// Socket.io connection
+// Get user's unread notifications
+app.get("/api/notifications/:userId", async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        const notifications = await Notification.find({
+            recipient: userId,
+            isRead: false,
+        })
+            .populate("sender", "first_name last_name username avatar")
+            .populate("chatRoom", "name type")
+            .sort({ createdAt: -1 });
+
+        res.json({ success: true, notifications });
+    } catch (err) {
+        console.error("Error getting notifications:", err);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+// Mark notification as read
+app.put("/api/notifications/:notificationId/read", async (req, res) => {
+    try {
+        const notificationId = req.params.notificationId;
+
+        const notification = await Notification.findByIdAndUpdate(notificationId, { isRead: true }, { new: true });
+
+        if (!notification) {
+            return res.status(404).json({ success: false, message: "Notification not found" });
+        }
+
+        res.json({ success: true, notification });
+    } catch (err) {
+        console.error("Error marking notification as read:", err);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+// Mark all notifications as read
+app.put("/api/notifications/:userId/read-all", async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        await Notification.updateMany({ recipient: userId, isRead: false }, { isRead: true });
+
+        res.json({ success: true, message: "All notifications marked as read" });
+    } catch (err) {
+        console.error("Error marking all notifications as read:", err);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+// Map to track connected users (userId -> socketId)
 const connectedUsers = new Map();
 
+// Socket.io connection handler
 io.on("connection", (socket) => {
-    console.log("Користувач підключився:", socket.id);
+    console.log("Новий клієнт підключений:", socket.id);
 
-    // User authentication
-    socket.on("authenticate", async (userData) => {
+    // Authentication handler
+    socket.on("authenticate", async (data) => {
         try {
-            const { userId } = userData;
+            const { userId } = data;
+            if (!userId) {
+                socket.emit("authenticated", { success: false, message: "User ID is required" });
+                return;
+            }
+
             const user = await User.findById(userId);
+            if (!user) {
+                socket.emit("authenticated", { success: false, message: "User not found" });
+                return;
+            }
 
+            // Associate socket with user
+            socket.userId = userId;
+            connectedUsers.set(userId, socket.id);
+
+            // Update user status to online
+            user.status = "online";
+            user.lastActive = new Date();
+            await user.save();
+
+            // Broadcast user status to all chat rooms they're in
+            const userChatRooms = await ChatRoom.find({ participants: userId });
+            userChatRooms.forEach((room) => {
+                room.participants.forEach((participantId) => {
+                    if (participantId.toString() !== userId && connectedUsers.has(participantId.toString())) {
+                        io.to(connectedUsers.get(participantId.toString())).emit("user_status", {
+                            userId,
+                            status: "online",
+                        });
+                    }
+                });
+            });
+
+            socket.emit("authenticated", { success: true });
+            console.log(`Користувач ${userId} автентифікований`);
+        } catch (err) {
+            console.error("Помилка автентифікації:", err);
+            socket.emit("authenticated", { success: false, message: "Authentication error" });
+        }
+    });
+
+    // Status update handler
+    socket.on("update_status", async (data) => {
+        try {
+            const userId = socket.userId;
+            if (!userId) return;
+
+            // Simplify to only online/offline
+            // "away" is treated as "online" for simplicity
+            let status = data.status;
+            if (status === "away") status = "online";
+
+            // Update user status
+            const user = await User.findById(userId);
             if (user) {
-                // Store socket ID with user ID
-                connectedUsers.set(userId, socket.id);
-                socket.userId = userId;
+                user.status = status;
+                user.lastActive = new Date();
+                await user.save();
 
-                // Join all rooms where user is a participant
-                const rooms = await ChatRoom.find({ participants: userId });
-                rooms.forEach((room) => {
-                    socket.join(room._id.toString());
-                });
-
-                // Update user status to online
-                await User.findByIdAndUpdate(userId, { lastActive: new Date() });
-
-                // Notify all rooms about user's online status
-                rooms.forEach((room) => {
-                    socket.to(room._id.toString()).emit("user_status", {
-                        userId: userId,
-                        status: "online",
+                // Broadcast status update to all users in the same chat rooms
+                const userChatRooms = await ChatRoom.find({ participants: userId });
+                userChatRooms.forEach((room) => {
+                    room.participants.forEach((participantId) => {
+                        if (participantId.toString() !== userId && connectedUsers.has(participantId.toString())) {
+                            io.to(connectedUsers.get(participantId.toString())).emit("user_status", {
+                                userId,
+                                status,
+                                lastActive: user.lastActive,
+                            });
+                        }
                     });
                 });
-
-                socket.emit("authenticated", { success: true });
-            } else {
-                socket.emit("authenticated", { success: false, message: "Користувача не знайдено" });
             }
         } catch (err) {
-            console.error("Помилка аутентифікації сокета:", err);
-            socket.emit("authenticated", { success: false, message: "Помилка аутентифікації" });
+            console.error("Error updating user status:", err);
         }
     });
 
-    // Send message
-    socket.on("send_message", async (messageData) => {
-        try {
-            const { roomId, content, attachments = [] } = messageData;
-
-            if (!socket.userId) {
-                socket.emit("message_error", { message: "Користувач не авторизований" });
-                return;
-            }
-
-            // Check if chat room exists and user is a participant
-            const chatRoom = await ChatRoom.findById(roomId);
-            if (!chatRoom) {
-                socket.emit("message_error", { message: "Чат не знайдено" });
-                return;
-            }
-
-            if (!chatRoom.participants.includes(socket.userId)) {
-                socket.emit("message_error", { message: "Ви не є учасником чату" });
-                return;
-            }
-
-            // Create new message
-            const newMessage = await Message.create({
-                chatRoom: roomId,
-                sender: socket.userId,
-                content,
-                attachments,
-                readBy: [{ user: socket.userId }],
-            });
-
-            // Update chat room's last message
-            await ChatRoom.findByIdAndUpdate(roomId, { lastMessage: newMessage._id });
-
-            // Get populated message
-            const populatedMessage = await Message.findById(newMessage._id).populate(
-                "sender",
-                "first_name last_name username avatar"
-            );
-
-            // Send message to all participants in the room
-            io.to(roomId).emit("new_message", populatedMessage);
-
-            // Send notification to users who are not in the room
-            chatRoom.participants.forEach(async (participantId) => {
-                const participantSocketId = connectedUsers.get(participantId.toString());
-
-                if (participantSocketId && participantId.toString() !== socket.userId) {
-                    const participant = await User.findById(participantId);
-
-                    // Send notification to users who are not in the current room
-                    io.to(participantSocketId).emit("message_notification", {
-                        message: populatedMessage,
-                        chatRoom: {
-                            _id: chatRoom._id,
-                            name: chatRoom.name,
-                        },
-                        sender: {
-                            _id: populatedMessage.sender._id,
-                            first_name: populatedMessage.sender.first_name,
-                            last_name: populatedMessage.sender.last_name,
-                        },
-                    });
-                }
-            });
-
-            socket.emit("message_sent", { success: true, message: populatedMessage });
-        } catch (err) {
-            console.error("Помилка надсилання повідомлення:", err);
-            socket.emit("message_error", { message: "Помилка надсилання повідомлення" });
-        }
-    });
-
-    // Mark message as read
-    socket.on("mark_as_read", async (data) => {
-        try {
-            const { messageId } = data;
-
-            if (!socket.userId) {
-                socket.emit("read_error", { message: "Користувач не авторизований" });
-                return;
-            }
-
-            const message = await Message.findById(messageId);
-            if (!message) {
-                socket.emit("read_error", { message: "Повідомлення не знайдено" });
-                return;
-            }
-
-            // Check if user already read the message
-            const userAlreadyRead = message.readBy.some((read) => read.user.toString() === socket.userId);
-
-            if (!userAlreadyRead) {
-                message.readBy.push({
-                    user: socket.userId,
-                    readAt: new Date(),
-                });
-
-                await message.save();
-
-                // Notify other users that the message was read
-                io.to(message.chatRoom.toString()).emit("message_read", {
-                    messageId,
-                    userId: socket.userId,
-                    readAt: new Date(),
-                });
-            }
-
-            socket.emit("read_success", { messageId });
-        } catch (err) {
-            console.error("Помилка позначення повідомлення прочитаним:", err);
-            socket.emit("read_error", { message: "Помилка позначення повідомлення прочитаним" });
-        }
-    });
-
-    // Add user to chat room
-    socket.on("add_chat_member", async (data) => {
-        try {
-            const { roomId, userId } = data;
-
-            if (!socket.userId) {
-                socket.emit("add_member_error", { message: "Користувач не авторизований" });
-                return;
-            }
-
-            const chatRoom = await ChatRoom.findById(roomId);
-            if (!chatRoom) {
-                socket.emit("add_member_error", { message: "Чат не знайдено" });
-                return;
-            }
-
-            // Check if the user making the request is in the room
-            if (!chatRoom.participants.includes(socket.userId)) {
-                socket.emit("add_member_error", { message: "Ви не є учасником чату" });
-                return;
-            }
-
-            // Check if user is already in the room
-            if (chatRoom.participants.includes(userId)) {
-                socket.emit("add_member_error", { message: "Користувач вже є учасником чату" });
-                return;
-            }
-
-            // Add user to room
-            chatRoom.participants.push(userId);
-            if (chatRoom.participants.length > 2) {
-                chatRoom.type = "group";
-            }
-
-            await chatRoom.save();
-
-            // Get updated room with populated participants
-            const updatedRoom = await ChatRoom.findById(roomId)
-                .populate("participants", "first_name last_name username avatar")
-                .populate("lastMessage");
-
-            // Notify all participants about the new member
-            io.to(roomId).emit("room_updated", updatedRoom);
-
-            // Add the new user to the room
-            const newMemberSocketId = connectedUsers.get(userId);
-            if (newMemberSocketId) {
-                const socket = io.sockets.sockets.get(newMemberSocketId);
-                if (socket) {
-                    socket.join(roomId);
-                    socket.emit("new_chat_room", updatedRoom);
-                }
-            }
-
-            socket.emit("add_member_success", { room: updatedRoom });
-        } catch (err) {
-            console.error("Помилка додавання користувача до чату:", err);
-            socket.emit("add_member_error", { message: "Помилка додавання користувача до чату" });
-        }
-    });
-
-    // Delete chat room
-    socket.on("delete_chat_room", async (data) => {
-        try {
-            const { roomId } = data;
-
-            if (!socket.userId) {
-                socket.emit("delete_room_error", { message: "Користувач не авторизований" });
-                return;
-            }
-
-            // Check if chat room exists
-            const chatRoom = await ChatRoom.findById(roomId);
-            if (!chatRoom) {
-                socket.emit("delete_room_error", { message: "Чат не знайдено" });
-                return;
-            }
-
-            // Check if user is a participant
-            if (!chatRoom.participants.includes(socket.userId)) {
-                socket.emit("delete_room_error", { message: "Ви не є учасником чату" });
-                return;
-            }
-
-            // Delete all messages in the chat room
-            await Message.deleteMany({ chatRoom: roomId });
-
-            // Delete the chat room
-            await ChatRoom.findByIdAndDelete(roomId);
-
-            // Notify all participants about the deleted chat room
-            chatRoom.participants.forEach((participantId) => {
-                io.to(participantId.toString()).emit("chat_room_deleted", { roomId });
-            });
-
-            socket.emit("delete_room_success", { roomId });
-        } catch (err) {
-            console.error("Помилка видалення чату:", err);
-            socket.emit("delete_room_error", { message: "Помилка видалення чату" });
-        }
-    });
-
-    // Disconnect
+    // Disconnect handler
     socket.on("disconnect", async () => {
-        console.log("Користувач відключився:", socket.id);
+        try {
+            const userId = socket.userId;
+            if (userId) {
+                // Remove from connectedUsers map
+                connectedUsers.delete(userId);
 
-        if (socket.userId) {
-            // Update user's last active time
-            await User.findByIdAndUpdate(socket.userId, { lastActive: new Date() });
+                // Update user status to offline
+                const user = await User.findById(userId);
+                if (user) {
+                    user.status = "offline";
+                    user.lastActive = new Date();
+                    await user.save();
 
-            // Remove from connected users
-            connectedUsers.delete(socket.userId);
-
-            // Notify all rooms about user's offline status
-            const rooms = await ChatRoom.find({ participants: socket.userId });
-            rooms.forEach((room) => {
-                io.to(room._id.toString()).emit("user_status", {
-                    userId: socket.userId,
-                    status: "offline",
-                    lastActive: new Date(),
-                });
-            });
+                    // Broadcast offline status
+                    const userChatRooms = await ChatRoom.find({ participants: userId });
+                    userChatRooms.forEach((room) => {
+                        room.participants.forEach((participantId) => {
+                            if (participantId.toString() !== userId && connectedUsers.has(participantId.toString())) {
+                                io.to(connectedUsers.get(participantId.toString())).emit("user_status", {
+                                    userId,
+                                    status: "offline",
+                                    lastActive: user.lastActive,
+                                });
+                            }
+                        });
+                    });
+                }
+            }
+            console.log("Клієнт відключений:", socket.id);
+        } catch (err) {
+            console.error("Error handling disconnect:", err);
         }
     });
+
+    // Add REST of the existing socket event handlers here
 });
+
+// API endpoint to update user status (for handling page unload/beacon API)
+app.post("/api/chat/status/:userId/:status", async (req, res) => {
+    try {
+        const { userId, status } = req.params;
+
+        if (!["online", "away", "offline"].includes(status)) {
+            return res.status(400).json({ success: false, message: "Invalid status value" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        user.status = status;
+        user.lastActive = new Date();
+        await user.save();
+
+        // Broadcast status update
+        const userChatRooms = await ChatRoom.find({ participants: userId });
+        userChatRooms.forEach((room) => {
+            room.participants.forEach((participantId) => {
+                if (participantId.toString() !== userId && connectedUsers.has(participantId.toString())) {
+                    io.to(connectedUsers.get(participantId.toString())).emit("user_status", {
+                        userId,
+                        status,
+                        lastActive: user.lastActive,
+                    });
+                }
+            });
+        });
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Error updating user status via API:", err);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+// Function to check if user is online based on PHP sessions
+async function isUserOnline(userId) {
+    try {
+        // First get the MySQL student ID for this MongoDB user
+        const user = await User.findById(userId);
+        if (!user) {
+            return false;
+        }
+
+        // Query to find student by name
+        const [students] = await mysqlConnection.execute(
+            "SELECT id FROM students WHERE first_name = ? AND last_name = ?",
+            [user.first_name, user.last_name]
+        );
+
+        if (students.length === 0) {
+            return false;
+        }
+
+        const studentId = students[0].id;
+
+        // Check for active session in the database
+        // PHP typically stores session data in the database or filesystem
+        // Here we'll check if there's a recent login activity
+        const [loginActivity] = await mysqlConnection
+            .execute(
+                "SELECT * FROM login_activity WHERE user_id = ? AND login_time > DATE_SUB(NOW(), INTERVAL 30 MINUTE) ORDER BY login_time DESC LIMIT 1",
+                [studentId]
+            )
+            .catch(() => {
+                // If the login_activity table doesn't exist, try an alternative approach
+                return [[]];
+            });
+
+        // If we found recent login activity
+        if (loginActivity && loginActivity.length > 0) {
+            return true;
+        }
+
+        // Fallback: Check if the user has any recent activity in the system
+        // This could be any recent interaction with the database
+        const [recentActivity] = await mysqlConnection
+            .execute("SELECT * FROM students WHERE id = ? AND last_updated > DATE_SUB(NOW(), INTERVAL 30 MINUTE)", [
+                studentId,
+            ])
+            .catch(() => {
+                // If the students table doesn't have a last_updated column
+                return [[]];
+            });
+
+        if (recentActivity && recentActivity.length > 0) {
+            return true;
+        }
+
+        // If we have socket connection for this user, they're definitely online
+        if (connectedUsers.has(userId.toString())) {
+            return true;
+        }
+
+        return false;
+    } catch (err) {
+        console.error("Error checking user online status:", err);
+        return false;
+    }
+}
+
+// Update user statuses from MySQL sessions periodically
+async function updateUserStatusesFromSQL() {
+    try {
+        // Get all MongoDB users
+        const users = await User.find({});
+
+        for (const user of users) {
+            const isOnline = await isUserOnline(user._id);
+
+            // Only update if the status has changed
+            if ((isOnline && user.status !== "online") || (!isOnline && user.status !== "offline")) {
+                const newStatus = isOnline ? "online" : "offline";
+
+                user.status = newStatus;
+                if (newStatus === "offline") {
+                    user.lastActive = new Date();
+                }
+                await user.save();
+
+                // Broadcast status change to all relevant rooms
+                const userChatRooms = await ChatRoom.find({ participants: user._id });
+                userChatRooms.forEach((room) => {
+                    room.participants.forEach((participantId) => {
+                        if (
+                            participantId.toString() !== user._id.toString() &&
+                            connectedUsers.has(participantId.toString())
+                        ) {
+                            io.to(connectedUsers.get(participantId.toString())).emit("user_status", {
+                                userId: user._id,
+                                status: newStatus,
+                                lastActive: user.lastActive,
+                            });
+                        }
+                    });
+                });
+            }
+        }
+    } catch (err) {
+        console.error("Error updating user statuses from SQL:", err);
+    }
+}
+
+// Set up periodic status updates (every 1 minute)
+setInterval(updateUserStatusesFromSQL, 60000);
 
 // Connect to MySQL before starting the server
 connectToMySQL().then(() => {

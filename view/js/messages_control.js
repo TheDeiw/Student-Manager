@@ -35,7 +35,35 @@ document.addEventListener("DOMContentLoaded", function () {
     document.head.appendChild(style);
 
     // Initialize Socket.io connection
-    const socket = io("http://localhost:3000");
+    const socket = window.getSocketConnection
+        ? window.getSocketConnection()
+        : io("http://localhost:3000", {
+              withCredentials: false,
+              transports: ["websocket", "polling"],
+          });
+
+    // Add connection error handling
+    socket.on("connect_error", (err) => {
+        console.error("Socket connection error:", err);
+
+        // Show user-friendly error message
+        const errorMessage = document.createElement("div");
+        errorMessage.className = "error-message";
+        errorMessage.innerHTML = `
+            <p>Cannot connect to chat server: ${err.message}</p>
+            <button class="retry-button">Retry Connection</button>
+        `;
+        document.body.appendChild(errorMessage);
+
+        // Add retry button functionality
+        const retryButton = errorMessage.querySelector(".retry-button");
+        if (retryButton) {
+            retryButton.addEventListener("click", () => {
+                errorMessage.remove();
+                socket.connect();
+            });
+        }
+    });
 
     // DOM Elements
     const chatList = document.querySelector(".chat_list");
@@ -57,6 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentChatRoomId = null;
     let chatRooms = [];
     let unreadMessages = new Map(); // Map of chat room ID to count of unread messages
+    let allMembers = [];
 
     // Check if user is logged in
     checkLoginStatus();
@@ -65,9 +94,32 @@ document.addEventListener("DOMContentLoaded", function () {
     socket.on("authenticated", (response) => {
         if (response.success) {
             console.log("Socket authenticated successfully");
+            // Set user as online
+            socket.emit("update_status", { status: "online" });
             // loadChatRooms() is now called after successful syncUserToMongoDB
         } else {
             console.error("Socket authentication failed:", response.message);
+        }
+    });
+
+    // Handle window focus/blur events to update user status
+    window.addEventListener("focus", () => {
+        if (socket && socket.connected && currentUser) {
+            socket.emit("update_status", { status: "online" });
+        }
+    });
+
+    window.addEventListener("blur", () => {
+        if (socket && socket.connected && currentUser) {
+            socket.emit("update_status", { status: "away" });
+        }
+    });
+
+    // Handle page unload to set user as offline
+    window.addEventListener("beforeunload", () => {
+        if (socket && socket.connected && currentUser) {
+            // Use sync request to ensure it gets sent before page unloads
+            navigator.sendBeacon(`http://localhost:3000/api/chat/status/${currentUser._id}/offline`);
         }
     });
 
@@ -189,6 +241,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // User status listener
     socket.on("user_status", (data) => {
         updateUserStatus(data.userId, data.status, data.lastActive);
+
+        // Update chat list status indicators
+        updateChatListUserStatus(data.userId, data.status);
     });
 
     // Message read listener
@@ -518,6 +573,17 @@ document.addEventListener("DOMContentLoaded", function () {
             let chatIcon = document.createElement("div");
             chatIcon.className = "chat_icon";
 
+            // For private chats, add online status indicator
+            if (room.type === "private" && room.participants.length === 2) {
+                // Find the other participant (not the current user)
+                const otherParticipant = room.participants.find((p) => p._id !== currentUser._id);
+                if (otherParticipant && otherParticipant.status === "online") {
+                    const statusDot = document.createElement("span");
+                    statusDot.className = "status_indicator online";
+                    chatIcon.appendChild(statusDot);
+                }
+            }
+
             // Add unread count badge if needed
             if (unreadCount > 0) {
                 const badge = document.createElement("span");
@@ -680,29 +746,50 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!membersIcons) return;
 
         // Clear existing members except the add button
-        const addButton = membersIcons.querySelector(".add_member");
         membersIcons.innerHTML = "";
 
-        // Add member icons
-        room.participants.slice(0, 3).forEach((participant) => {
+        // Add member icons with name tooltips
+        room.participants.forEach((participant) => {
+            const memberWrapper = document.createElement("div");
+            memberWrapper.className = "member_wrapper";
+
             const memberIcon = document.createElement("div");
             memberIcon.className = "member_icon";
+
+            // Always use default avatar
+            //memberIcon.style.backgroundImage = "url('assets/img/default-avatar.png')";
+
+            // Add simplified status indicator (only online/offline)
+            const statusIndicator = document.createElement("span");
+            const isOnline = participant.status === "online";
+            statusIndicator.className = `status_dot ${isOnline ? "online" : "offline"}`;
+            statusIndicator.title = isOnline ? "Online" : "Offline";
+
+            memberIcon.appendChild(statusIndicator);
+
+            // Name label that shows on hover
+            const nameLabel = document.createElement("span");
+            nameLabel.className = "member_name_label";
+            nameLabel.textContent = `${participant.first_name} ${participant.last_name}`;
 
             // Highlight current user
             if (participant._id === currentUser._id) {
                 memberIcon.classList.add("current_user");
+                nameLabel.classList.add("current_user");
             }
 
-            // Add tooltip with name
-            memberIcon.title = `${participant.first_name} ${participant.last_name}`;
-
-            membersIcons.appendChild(memberIcon);
+            memberWrapper.appendChild(memberIcon);
+            memberWrapper.appendChild(nameLabel);
+            membersIcons.appendChild(memberWrapper);
         });
 
-        // Add the "+" button back
-        if (addButton) {
-            membersIcons.appendChild(addButton);
-        }
+        // Add the add member button
+        const addButton = document.createElement("button");
+        addButton.className = "add_member";
+        addButton.textContent = "+";
+        addButton.title = "Add member";
+        addButton.addEventListener("click", () => openAddMemberModal());
+        membersIcons.appendChild(addButton);
     }
 
     // Send a message
@@ -788,21 +875,41 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateChatListUserStatus(userId, status) {
         // For each chat room that contains this user
         chatRooms.forEach((room) => {
-            if (room.participants.some((p) => p._id === userId)) {
-                const chatItem = Array.from(document.querySelectorAll(".chat_item")).find(
-                    (item) => item.querySelector(".chat_name").textContent === room.name
-                );
+            // Only update status for private chats
+            if (room.type === "private" && room.participants.length === 2) {
+                // Check if this user is a participant in this room
+                const participant = room.participants.find((p) => p._id === userId);
+                if (participant) {
+                    // Update participant status in our data - simplify to only online/offline
+                    participant.status = status === "away" ? "online" : status;
+                    const isOnline = participant.status === "online";
 
-                if (chatItem) {
-                    // Update status indicator
-                    let statusDot = chatItem.querySelector(".status_indicator");
-                    if (!statusDot) {
-                        statusDot = document.createElement("span");
-                        statusDot.className = "status_indicator";
-                        chatItem.querySelector(".chat_icon").appendChild(statusDot);
+                    // Find the chat item in the DOM
+                    const chatItems = document.querySelectorAll(".chat_item");
+                    const chatItem = Array.from(chatItems).find((item) => {
+                        return item.querySelector(".chat_name").textContent === room.name;
+                    });
+
+                    if (chatItem) {
+                        // Get or create status indicator
+                        let statusIndicator = chatItem.querySelector(".status_indicator");
+                        if (!statusIndicator) {
+                            statusIndicator = document.createElement("span");
+                            statusIndicator.className = "status_indicator";
+                            const chatIcon = chatItem.querySelector(".chat_icon");
+                            if (chatIcon) {
+                                chatIcon.appendChild(statusIndicator);
+                            }
+                        }
+
+                        // Update status indicator visibility based on online status
+                        if (isOnline) {
+                            statusIndicator.className = "status_indicator online";
+                            statusIndicator.style.display = "block";
+                        } else {
+                            statusIndicator.style.display = "none";
+                        }
                     }
-
-                    statusDot.className = `status_indicator ${status}`;
                 }
             }
         });

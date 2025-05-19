@@ -1,0 +1,190 @@
+/* Notification system styles - Desktop only version */
+.account_control__notification {
+    position: relative;
+    cursor: pointer;
+}
+
+.notification_sign {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+}
+
+.notification_sign.active {
+    background-color: #FF4B4B;
+}
+
+.notification_sign.blink {
+    animation: blink-animation 0.8s ease-in-out 4;
+}
+
+@keyframes blink-animation {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 75, 75, 0.7);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.5);
+        box-shadow: 0 0 0 5px rgba(255, 75, 75, 0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 75, 75, 0);
+    }
+}
+
+.notification_bell.shake {
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both !important;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    animation-iteration-count: 2;
+}
+
+/* Using existing site shake animation */
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-2px, 0, 0);
+    }
+    20%, 80% {
+        transform: translate3d(4px, 0, 0);
+    }
+    30%, 50%, 70% {
+        transform: translate3d(-6px, 0, 0);
+    }
+    40%, 60% {
+        transform: translate3d(6px, 0, 0);
+    }
+}
+
+.notification_bell.active {
+    animation: bell-shake 0.8s ease-in-out;
+    transform-origin: top center;
+}
+
+@keyframes bell-shake {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(15deg); }
+    40% { transform: rotate(-15deg); }
+    60% { transform: rotate(7deg); }
+    80% { transform: rotate(-7deg); }
+}
+
+.notification__messages {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: -10px;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    padding: 10px 0;
+    border: 1px solid #eee;
+}
+
+.notification__messages.show {
+    display: block;
+}
+
+.notification__massage {
+    display: flex;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f5f5f5;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.notification__massage:hover {
+    background-color: #f9f9f9;
+}
+
+.notification__massage:last-child {
+    border-bottom: none;
+}
+
+.message__icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    margin-right: 12px;
+    background-size: cover;
+    background-position: center;
+    background-image: url('../assets/img/default-avatar.png');
+}
+
+.message__text {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.message_text__header {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: #333;
+}
+
+.message_text__text {
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.empty-notification {
+    padding: 15px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}
+
+.mark-all-read {
+    text-align: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    color: #4a86e8;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.mark-all-read:hover {
+    background-color: #f5f5f5;
+}
+
+.notification-error {
+    padding: 15px;
+    text-align: center;
+    color: #e74c3c;
+    font-size: 14px;
+    background-color: #fdf5f5;
+    border-bottom: 1px solid #f5c6cb;
+}
+
+.show-all-notifications {
+    text-align: center;
+    padding: 10px 15px;
+    color: #4a86e8;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-top: 1px solid #eee;
+} 

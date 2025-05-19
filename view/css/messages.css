@@ -170,49 +170,116 @@
 .members_section {
     display: flex;
     align-items: center;
+    margin-right: 20px;
 }
 
 .members_section span {
-    margin-right: 10px;
-    color: #64748b;
     font-size: 14px;
+    color: #666;
+    margin-right: 10px;
 }
 
 .member_icons {
     display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.member_container {
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    width: 40px;
+}
+
+.member_wrapper {
+    position: relative;
+    display: inline-block;
+    margin-right: 5px;
 }
 
 .member_icon {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    background-color: #94a3b8;
-    margin-right: -5px;
-    border: 2px solid white;
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    color: #333;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #fff;
+    cursor: pointer;
+    position: relative;
 }
 
 .member_icon.current_user {
-    border-color: #0ea5e9;
+    border-color: #4a86e8;
+}
+
+.member_name_label {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    margin-top: 5px;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.member_wrapper:hover .member_name_label {
+    opacity: 1;
+    visibility: visible;
+    background-color: rgba(60, 60, 60, 0.75);
+    color: #f0f0f0;
+}
+
+.member_name {
+    font-size: 11px;
+    color: #666;
+    margin-top: 4px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.member_icon.more {
+    background-color: #f5f5f5;
+    color: #666;
 }
 
 .add_member {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    background-color: #f1f5f9;
-    color: #0ea5e9;
-    border: 2px solid white;
-    font-size: 16px;
+    background-color: #f0f0f0;
+    border: 2px solid #ddd;
+    color: #666;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.3s;
+    padding: 0;
+    line-height: 1;
+    transition: background-color 0.2s ease;
 }
 
 .add_member:hover {
-    background-color: #e0f2fe;
+    background-color: #e0e0e0;
 }
 
 .messages_area {
@@ -457,4 +524,28 @@
     color: #888;
     font-style: italic;
     margin-top: 20px;
+}
+
+/* Status indicators for member icons */
+.status_dot {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+.status_dot.online {
+    background-color: #42b983; /* green */
+}
+
+.status_dot.offline {
+    background-color: #bdbdbd; /* gray */
+}
+
+/* Remove away status, we don't need it now */
+.status_dot.away {
+    background-color: #bdbdbd; /* same as offline */
 }

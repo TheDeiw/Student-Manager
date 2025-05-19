@@ -36,6 +36,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "default-avatar.png",
     },
+    status: {
+        type: String,
+        enum: ["online", "offline"],
+        default: "offline",
+    },
     createdAt: {
         type: Date,
         default: Date.now,
