@@ -1,10 +1,11 @@
 # Student Manager
-Concept design: https://cacoo.com/diagrams/ZvVhYS3UpG5PdbBy/EDE3A
 ## Description of the Website
 
 This website is an **educational management platform** designed for organizing and administering educational processes, including managing students, tasks, and related activities. It features a modern interface with a combination of dark and light themes, incorporating tables, charts, forms, and pop-ups for user convenience. Below are the key features of the site.
 
 ![Screenshot 2025-03-17 173819](https://github.com/user-attachments/assets/a9a4851e-5529-4715-9843-fd9795b2f162)
+![Screenshot 2025-05-19 225727](https://github.com/user-attachments/assets/ae8a9816-8d1c-4d50-8b41-0d07081aac96)
+
 
 ### Main Features:
 
