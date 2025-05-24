@@ -1,0 +1,67 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment variables
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Build and coverage directories
+build/
+coverage/
+*.lcov
+.nyc_output
+
+# Cache directories
+.cache
+.parcel-cache
+.npm
+.eslintcache
+.stylelintcache
+
+# MongoDB local data (if any)
+data/
+*.mongo
+
+# Temporary files
+*.swp
+*~
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor-specific files
+.vscode/
+.idea/
+
+# Parcel bundler cache
+.parcel-cache
+
+# Yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Specific to your project (optional, based on your setup)
+chat-server/public/uploads/  # If you have file uploads
+chat-server/public/build/   # If you have a build output

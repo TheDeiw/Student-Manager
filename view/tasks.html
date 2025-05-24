@@ -18,7 +18,7 @@
 
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/forms.css">
-	<link rel="stylesheet" href="css/adaptability.css">
+	<link rel="stylesheet" href="css/notifications.css">
 
 	<link rel="manifest" href="manifest.json" />
 	<title>Student-Manager</title>
@@ -41,27 +41,7 @@
 					<a href="messages.html"> <span class="notification_sign active"></span><img class="notification_bell"
 							src="assets/img/header/Notification-bell.svg" alt="Notification-bell"></a>
 					<div class="notification__messages">
-						<div class="notification__massage">
-							<div class="message__icon"></div>
-							<div class="message__text">
-								<h3 class="message_text__header">Teacher</h3>
-								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-							</div>
-						</div>
-						<div class="notification__massage">
-							<div class="message__icon"></div>
-							<div class="message__text">
-								<h3 class="message_text__header">Teacher</h3>
-								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit....</p>
-							</div>
-						</div>
-						<div class="notification__massage">
-							<div class="message__icon"></div>
-							<div class="message__text">
-								<h3 class="message_text__header">Teacher</h3>
-								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-							</div>
-						</div>
+						<!-- Notifications will be dynamically added by JavaScript -->
 					</div>
 				</div>
 				<div class="account_control__user">
@@ -108,10 +88,16 @@
 								<span>Students</span>
 							</a>
 						</li>
-						<li class="menu__item selected">
+						<li class="menu__item selected" data-menu-type="tasks">
 							<a href="tasks.html" class="menu__link">
 								<img class="menu__icon" src="assets/img/navigation/Tasks.svg" alt="Icon - link to page 'Tasks'">
 								<span>Tasks</span>
+							</a>
+						</li>
+						<li class="menu__item" data-menu-type="messages">
+							<a href="messages.html" class="menu__link">
+								<img class="menu__icon" src="assets/img/navigation/Messages.svg" alt="Icon - link to page 'Messages'">
+								<span>Messages</span>
 							</a>
 						</li>
 					</ul>
@@ -119,7 +105,42 @@
 			</aside>
 		</main>
 
+		<section class="tasks">
+			<h1>Tasks</h1>
+			<p>Here you can manage tasks.</p>
+		</section>
+
+		<div class="form__login modal_window_style">
+			<div class="modal_window_container">
+				<div class="modal_windows__control">
+					<h2 class="modal_control__heading">Log In</h2>
+					<button onclick="CloseForm()" class="modal_control__close">
+						<img class="modal_control__close_icon" src="assets/img/modal-windows/close.svg" alt="Close">
+					</button>
+				</div>
+				<form class="modal_window__form">
+					<div class="form__student_group">
+						<label for="login" class="form__student_label">Login</label>
+						<input required type="text" id="login" placeholder="Username" class="form__student_input">
+						<div class="form__error_text"></div>
+					</div>
+					<div class="form__student_group">
+						<label for="password" class="form__student_label">Password</label>
+						<input required type="password" id="password" class="form__student_input">
+						<div class="form__error_text"></div>
+					</div>
+					<div class="form__student_buttons">
+						<button onclick="CloseForm()" class="form__student_button">Cancel</button>
+						<button type="submit" class="form__student_button interact_student_button">Login</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
 		<script src="js/auth.js"></script>
 		<script src="js/side_menu.js"></script>
+		<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+		<script src="js/socket-config.js"></script>
+		<script src="js/notifications.js"></script>
 </body>
 </html>

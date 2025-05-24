@@ -18,10 +18,11 @@
 
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/forms.css">
-	<link rel="stylesheet" href="css/adaptability.css">
 	<link rel="stylesheet" href="css/messages.css">
+	<link rel="stylesheet" href="css/notifications.css">
+	<!-- adaptability.css removed to disable mobile support -->
 
-	<link rel="manifest" href="manifest.json" />
+	<!-- <link rel="manifest" href="manifest.json" /> -->
 	<title>Student-Manager</title>
 </head>
 <body>
@@ -42,27 +43,7 @@
 					<a href="messages.html"> <span class="notification_sign active"></span><img class="notification_bell"
 							src="assets/img/header/Notification-bell.svg" alt="Notification-bell"></a>
 					<div class="notification__messages">
-						<div class="notification__massage">
-							<div class="message__icon"></div>
-							<div class="message__text">
-								<h3 class="message_text__header">Teacher</h3>
-								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-							</div>
-						</div>
-						<div class="notification__massage">
-							<div class="message__icon"></div>
-							<div class="message__text">
-								<h3 class="message_text__header">Teacher</h3>
-								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit....</p>
-							</div>
-						</div>
-						<div class="notification__massage">
-							<div class="message__icon"></div>
-							<div class="message__text">
-								<h3 class="message_text__header">Teacher</h3>
-								<p class="message_text__text">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-							</div>
-						</div>
+						<!-- Notifications will be dynamically added by JavaScript -->
 					</div>
 				</div>
 				<div class="account_control__user">
@@ -103,16 +84,22 @@
 							<span>Dashboard</span>
 						</a>
 					</li>
-					<li class="menu__item selected">
-						<a href="messages.html" class="menu__link">
-							<img class="menu__icon" src="assets/img/navigation/Messages.svg" alt="Icon - link to page 'Messages'">
-							<span>Messages</span>
+					<li class="menu__item">
+						<a href="index.html" class="menu__link">
+							<img class="menu__icon" src="assets/img/navigation/Students.svg" alt="Icon - link to page 'Students'">
+							<span>Students</span>
 						</a>
 					</li>
-					<li class="menu__item">
+					<li class="menu__item" data-menu-type="tasks">
 						<a href="tasks.html" class="menu__link">
 							<img class="menu__icon" src="assets/img/navigation/Tasks.svg" alt="Icon - link to page 'Tasks'">
 							<span>Tasks</span>
+						</a>
+					</li>
+					<li class="menu__item selected" data-menu-type="messages">
+						<a href="messages.html" class="menu__link">
+							<img class="menu__icon" src="assets/img/navigation/Messages.svg" alt="Icon - link to page 'Messages'">
+							<span>Messages</span>
 						</a>
 					</li>
 				</ul>
@@ -126,7 +113,7 @@
 					<p class="describe__paragraph">Manage your chat rooms and messages here</p>
 				</div>
 				<button class="new_chat_button" onclick="openNewChatForm()">
-					<img class="new_chat_plus" src="assets/img/messages/plus.svg" alt="Plus sign for new chat button">
+					<img class="new_chat_plus" src="assets/img/students-table/plus.svg" alt="Plus sign for new chat button">
 					<p class="new_chat_describe">New Chat Room</p>
 				</button>
 			</div>
@@ -134,51 +121,23 @@
 			<div class="chat_container">
 				<div class="chat_list">
 					<button class="new_chat_room">+ New chat room</button>
-					<div class="chat_item active">
-						<div class="chat_icon"></div>
-						<span class="chat_name">Admin</span>
-					</div>
-					<div class="chat_item">
-						<div class="chat_icon"></div>
-						<span class="chat_name">Ann Smith</span>
-					</div>
-					<div class="chat_item">
-						<div class="chat_icon"></div>
-						<span class="chat_name">John Bond</span>
-					</div>
-					<div class="chat_item">
-						<div class="chat_icon"></div>
-						<span class="chat_name">Ivon Stan</span>
-					</div>
+					<!-- Chat items will be dynamically added by JavaScript -->
 				</div>
 				<div class="chat_room">
 					<div class="chat_room_header">
-						<h3 class="chat_room_title">Chatroom Admin</h3>
+						<h3 class="chat_room_title">Select or create a chat</h3>
 						<div class="members_section">
 							<span>Members</span>
 							<div class="member_icons">
-								<div class="member_icon"></div>
-								<div class="member_icon"></div>
-								<div class="member_icon"></div>
 								<button class="add_member">+</button>
 							</div>
 						</div>
+						<button class="delete_chat_button" title="Delete Chat Room">
+							<img src="assets/img/delete.svg" alt="Delete Chat">
+						</button>
 					</div>
 					<div class="messages_area">
-						<div class="message_item">
-							<div class="message_icon"></div>
-							<div class="message_content">
-								<h4 class="message_author">Admin</h4>
-								<p class="message_text">Hello, this is a test message!</p>
-							</div>
-						</div>
-						<div class="message_item self">
-							<div class="message_icon"></div>
-							<div class="message_content">
-								<h4 class="message_author">Me</h4>
-								<p class="message_text">Hi! Thanks for the update.</p>
-							</div>
-						</div>
+						<!-- Messages will be displayed here -->
 					</div>
 					<div class="message_input">
 						<input type="text" placeholder="Type a message..." class="message_input_field">
@@ -221,8 +180,12 @@
 		</div>
 	</div>
 
+	<!-- Socket.io скрипт -->
+	<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+	<script src="js/socket-config.js"></script>
 	<script src="js/auth.js"></script>
 	<script src="js/side_menu.js"></script>
 	<script src="js/messages_control.js"></script>
+	<script src="js/notifications.js"></script>
 </body>
 </html>
