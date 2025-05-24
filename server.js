@@ -39,7 +39,6 @@ async function connectToMySQL() {
     }
 }
 
-// Підключення до MongoDB
 mongoose
     .connect("mongodb://localhost:27017/student_chat", {
         useNewUrlParser: true,
@@ -51,7 +50,6 @@ mongoose
     })
     .catch((err) => {
         console.error("Помилка підключення до MongoDB:", err.message);
-        console.error("Переконайтеся, що MongoDB встановлено і запущено на порту 27017");
         console.error("Детальна помилка:", err);
     });
 
@@ -513,6 +511,14 @@ io.on("connection", (socket) => {
             socket.userId = userId;
             connectedUsers.set(userId, socket.id);
 
+            // Join all rooms where user is a participant
+            const rooms = await ChatRoom.find({ participants: userId });
+            rooms.forEach((room) => {
+                const roomId = room._id.toString();
+                socket.join(roomId);
+                console.log(`User ${userId} joined room ${roomId}`);
+            });
+
             // Update user status to online
             user.status = "online";
             user.lastActive = new Date();
@@ -576,6 +582,290 @@ io.on("connection", (socket) => {
         }
     });
 
+    // Send message handler
+    socket.on("send_message", async (messageData) => {
+        try {
+            const { roomId, content, attachments = [] } = messageData;
+
+            if (!socket.userId) {
+                socket.emit("message_error", { message: "Користувач не авторизований" });
+                return;
+            }
+
+            // Check if chat room exists and user is a participant
+            const chatRoom = await ChatRoom.findById(roomId);
+            if (!chatRoom) {
+                socket.emit("message_error", { message: "Чат не знайдено" });
+                return;
+            }
+
+            if (!chatRoom.participants.includes(socket.userId)) {
+                socket.emit("message_error", { message: "Ви не є учасником чату" });
+                return;
+            }
+
+            // Create new message
+            const newMessage = await Message.create({
+                chatRoom: roomId,
+                sender: socket.userId,
+                content,
+                attachments,
+                readBy: [{ user: socket.userId }],
+            });
+
+            // Update chat room's last message
+            await ChatRoom.findByIdAndUpdate(roomId, { lastMessage: newMessage._id });
+
+            // Get populated message
+            const populatedMessage = await Message.findById(newMessage._id).populate(
+                "sender",
+                "first_name last_name username avatar"
+            );
+
+            // Get sender info for notifications
+            const sender = await User.findById(socket.userId);
+
+            // Send message to all participants in the room using socket.io room
+            io.to(roomId).emit("new_message", populatedMessage);
+
+            // Create notifications and send to users who aren't the sender
+            const notificationPromises = chatRoom.participants
+                .filter((participantId) => participantId.toString() !== socket.userId)
+                .map(async (participantId) => {
+                    try {
+                        console.log(`Creating notification for user ${participantId} about message in room ${roomId}`);
+
+                        // Create notification data
+                        const notificationData = {
+                            recipient: participantId,
+                            sender: socket.userId,
+                            chatRoom: roomId,
+                            message: newMessage._id,
+                            content: content.length > 50 ? content.substring(0, 50) + "..." : content,
+                            isRead: false,
+                        };
+
+                        console.log("Notification data:", notificationData);
+
+                        // Create notification in database
+                        const notification = await Notification.create(notificationData);
+                        console.log(`Created notification: ${notification._id}`);
+
+                        // Populate notification data for the socket event
+                        const populatedNotification = await Notification.findById(notification._id)
+                            .populate("sender", "first_name last_name username avatar")
+                            .populate("chatRoom", "name type");
+
+                        console.log("Populated notification:", {
+                            _id: populatedNotification._id,
+                            chatRoom: populatedNotification.chatRoom
+                                ? typeof populatedNotification.chatRoom === "object"
+                                    ? populatedNotification.chatRoom._id
+                                    : populatedNotification.chatRoom
+                                : "missing",
+                            sender: populatedNotification.sender
+                                ? `${populatedNotification.sender.first_name} ${populatedNotification.sender.last_name}`
+                                : "missing",
+                        });
+
+                        // Get socket ID of recipient if they're connected
+                        const participantSocketId = connectedUsers.get(participantId.toString());
+                        if (participantSocketId) {
+                            // Emit notification event to the recipient
+                            io.to(participantSocketId).emit("new_notification", populatedNotification);
+                            console.log(`Sent notification to socket ${participantSocketId}`);
+
+                            // Also send message notification (keeping existing functionality)
+                            io.to(participantSocketId).emit("message_notification", {
+                                message: populatedMessage,
+                                chatRoom: {
+                                    _id: chatRoom._id,
+                                    name: chatRoom.name,
+                                },
+                                sender: {
+                                    _id: sender._id,
+                                    first_name: sender.first_name,
+                                    last_name: sender.last_name,
+                                },
+                            });
+                        } else {
+                            console.log(`User ${participantId} not connected, notification will be shown later`);
+                        }
+
+                        return notification;
+                    } catch (notificationError) {
+                        console.error(`Error creating notification for user ${participantId}:`, notificationError);
+                        return null;
+                    }
+                });
+
+            // Wait for all notifications to be created
+            await Promise.all(notificationPromises);
+
+            socket.emit("message_sent", { success: true, message: populatedMessage });
+        } catch (err) {
+            console.error("Помилка надсилання повідомлення:", err);
+            socket.emit("message_error", { message: "Помилка надсилання повідомлення" });
+        }
+    });
+
+    // Mark message as read
+    socket.on("mark_as_read", async (data) => {
+        try {
+            const { messageId } = data;
+
+            if (!socket.userId) {
+                socket.emit("read_error", { message: "Користувач не авторизований" });
+                return;
+            }
+
+            const message = await Message.findById(messageId);
+            if (!message) {
+                socket.emit("read_error", { message: "Повідомлення не знайдено" });
+                return;
+            }
+
+            // Check if user already read the message
+            const userAlreadyRead = message.readBy.some((read) => read.user.toString() === socket.userId);
+
+            if (!userAlreadyRead) {
+                message.readBy.push({
+                    user: socket.userId,
+                    readAt: new Date(),
+                });
+
+                await message.save();
+
+                // Get the chat room to notify participants
+                const chatRoom = await ChatRoom.findById(message.chatRoom);
+                if (chatRoom) {
+                    // Notify other users that the message was read
+                    chatRoom.participants.forEach((participantId) => {
+                        if (
+                            participantId.toString() !== socket.userId &&
+                            connectedUsers.has(participantId.toString())
+                        ) {
+                            io.to(connectedUsers.get(participantId.toString())).emit("message_read", {
+                                messageId,
+                                userId: socket.userId,
+                                readAt: new Date(),
+                            });
+                        }
+                    });
+                }
+            }
+
+            socket.emit("read_success", { messageId });
+        } catch (err) {
+            console.error("Помилка позначення повідомлення прочитаним:", err);
+            socket.emit("read_error", { message: "Помилка позначення повідомлення прочитаним" });
+        }
+    });
+
+    // Add member to chat room
+    socket.on("add_chat_member", async (data) => {
+        try {
+            const { roomId, userId } = data;
+
+            if (!socket.userId) {
+                socket.emit("add_member_error", { message: "Користувач не авторизований" });
+                return;
+            }
+
+            const chatRoom = await ChatRoom.findById(roomId);
+            if (!chatRoom) {
+                socket.emit("add_member_error", { message: "Чат не знайдено" });
+                return;
+            }
+
+            // Check if the user making the request is in the room
+            if (!chatRoom.participants.includes(socket.userId)) {
+                socket.emit("add_member_error", { message: "Ви не є учасником чату" });
+                return;
+            }
+
+            // Check if user is already in the room
+            if (chatRoom.participants.includes(userId)) {
+                socket.emit("add_member_error", { message: "Користувач вже є учасником чату" });
+                return;
+            }
+
+            // Add user to room
+            chatRoom.participants.push(userId);
+            if (chatRoom.participants.length > 2) {
+                chatRoom.type = "group";
+            }
+
+            await chatRoom.save();
+
+            // Get updated room with populated participants
+            const updatedRoom = await ChatRoom.findById(roomId)
+                .populate("participants", "first_name last_name username avatar status lastActive")
+                .populate("lastMessage");
+
+            // Notify all participants about the new member
+            chatRoom.participants.forEach((participantId) => {
+                if (connectedUsers.has(participantId.toString())) {
+                    io.to(connectedUsers.get(participantId.toString())).emit("room_updated", updatedRoom);
+                }
+            });
+
+            // Add the new user to the room's socket room
+            const newMemberSocketId = connectedUsers.get(userId);
+            if (newMemberSocketId) {
+                io.to(newMemberSocketId).emit("new_chat_room", updatedRoom);
+            }
+
+            socket.emit("add_member_success", { room: updatedRoom });
+        } catch (err) {
+            console.error("Помилка додавання користувача до чату:", err);
+            socket.emit("add_member_error", { message: "Помилка додавання користувача до чату" });
+        }
+    });
+
+    // Delete chat room
+    socket.on("delete_chat_room", async (data) => {
+        try {
+            const { roomId } = data;
+
+            if (!socket.userId) {
+                socket.emit("delete_room_error", { message: "Користувач не авторизований" });
+                return;
+            }
+
+            // Check if chat room exists
+            const chatRoom = await ChatRoom.findById(roomId);
+            if (!chatRoom) {
+                socket.emit("delete_room_error", { message: "Чат не знайдено" });
+                return;
+            }
+
+            // Check if user is a participant
+            if (!chatRoom.participants.includes(socket.userId)) {
+                socket.emit("delete_room_error", { message: "Ви не є учасником чату" });
+                return;
+            }
+
+            // Delete all messages in the chat room
+            await Message.deleteMany({ chatRoom: roomId });
+
+            // Delete the chat room
+            await ChatRoom.findByIdAndDelete(roomId);
+
+            // Notify all participants about the deleted chat room
+            chatRoom.participants.forEach((participantId) => {
+                if (connectedUsers.has(participantId.toString())) {
+                    io.to(connectedUsers.get(participantId.toString())).emit("chat_room_deleted", { roomId });
+                }
+            });
+
+            socket.emit("delete_room_success", { roomId });
+        } catch (err) {
+            console.error("Помилка видалення чату:", err);
+            socket.emit("delete_room_error", { message: "Помилка видалення чату" });
+        }
+    });
+
     // Disconnect handler
     socket.on("disconnect", async () => {
         try {
@@ -611,8 +901,6 @@ io.on("connection", (socket) => {
             console.error("Error handling disconnect:", err);
         }
     });
-
-    // Add REST of the existing socket event handlers here
 });
 
 // API endpoint to update user status (for handling page unload/beacon API)

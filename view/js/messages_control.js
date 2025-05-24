@@ -197,24 +197,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Message notification listener
     socket.on("message_notification", (data) => {
+        console.log("Message notification received:", data);
+
         // Check if notification is for a different chat room than the current one
         if (currentChatRoomId !== data.chatRoom._id.toString()) {
-            // Add to unread messages count
-            const count = unreadMessages.get(data.chatRoom._id) || 0;
-            unreadMessages.set(data.chatRoom._id, count + 1);
+            try {
+                // Add to unread messages count
+                const count = unreadMessages.get(data.chatRoom._id) || 0;
+                unreadMessages.set(data.chatRoom._id, count + 1);
 
-            // Update chat room in the list
-            updateChatRoomUnreadCount(data.chatRoom._id);
+                // Update chat room in the list
+                updateChatRoomUnreadCount(data.chatRoom._id);
 
-            // Show notification
-            showNotification(data);
+                // Show notification
+                showNotification(data);
 
-            // Play notification sound
-            playNotificationSound();
+                // Play notification sound
+                playNotificationSound();
 
-            // Display notification badge
-            notificationSign.classList.add("active");
+                // Display notification badge
+                if (notificationSign) {
+                    notificationSign.classList.add("active");
+                }
+            } catch (error) {
+                console.error("Error processing message notification:", error, data);
+            }
+        } else {
+            console.log("Message notification for current room, ignoring notification UI updates");
         }
+    });
+
+    // New notification listener (separate from message notifications)
+    socket.on("new_notification", (notification) => {
+        console.log("New notification received in messages_control.js:", notification);
+        // This can be handled by notifications.js
     });
 
     // New chat room listener

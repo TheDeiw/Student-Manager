@@ -112,7 +112,7 @@ function loadNotifications() {
             if (notificationContainer) {
                 const errorMsg = document.createElement("div");
                 errorMsg.className = "notification-error";
-                errorMsg.textContent = "Помилка завантаження сповіщень";
+                errorMsg.textContent = "";
                 notificationContainer.appendChild(errorMsg);
             }
         });
@@ -120,8 +120,18 @@ function loadNotifications() {
 
 // Set up listeners for new notifications
 function setupNotificationListeners() {
+    console.log("Setting up notification listeners");
+
     // Listen for new notifications
     socket.on("new_notification", (notification) => {
+        console.log("Received new notification:", notification);
+
+        // Check if notification has required fields
+        if (!notification || !notification._id) {
+            console.error("Invalid notification received:", notification);
+            return;
+        }
+
         // Add to unread notifications
         unreadNotifications.unshift(notification);
         updateNotificationDisplay();
@@ -129,6 +139,10 @@ function setupNotificationListeners() {
         // Make notification bell blink
         makeNotificationBlink();
     });
+
+    // Debug: Check if we're properly connected
+    console.log("Socket connected:", socket.connected);
+    console.log("Current user ID:", currentUserId);
 }
 
 // Update notification display
@@ -201,50 +215,96 @@ function updateNotificationDisplay() {
 
 // Create a notification element
 function createNotificationElement(notification) {
-    const notificationDiv = document.createElement("div");
-    notificationDiv.className = "notification__massage";
-    notificationDiv.dataset.id = notification._id;
+    try {
+        console.log("Creating notification element:", notification);
 
-    // Create icon div
-    const iconDiv = document.createElement("div");
-    iconDiv.className = "message__icon";
-    // if (notification.sender && notification.sender.avatar) {
-    //     iconDiv.style.backgroundImage = `url(${
-    //         notification.sender.avatar !== "default-avatar.png"
-    //             ? notification.sender.avatar
-    //             : "assets/img/default-avatar.png"
-    //     })`;
-    // }
+        const notificationDiv = document.createElement("div");
+        notificationDiv.className = "notification__massage";
 
-    // Create text div
-    const textDiv = document.createElement("div");
-    textDiv.className = "message__text";
+        // Safely set the ID if available
+        if (notification._id) {
+            notificationDiv.dataset.id = notification._id;
+        } else {
+            console.warn("Notification missing _id:", notification);
+        }
 
-    // Create header
-    const header = document.createElement("h3");
-    header.className = "message_text__header";
-    header.textContent = notification.sender
-        ? `${notification.sender.first_name} ${notification.sender.last_name}`
-        : "Користувач";
+        // Create icon div
+        const iconDiv = document.createElement("div");
+        iconDiv.className = "message__icon";
+        // if (notification.sender && notification.sender.avatar) {
+        //     iconDiv.style.backgroundImage = `url(${
+        //         notification.sender.avatar !== "default-avatar.png"
+        //             ? notification.sender.avatar
+        //             : "assets/img/default-avatar.png"
+        //     })`;
+        // }
 
-    // Create message text
-    const messageText = document.createElement("p");
-    messageText.className = "message_text__text";
-    messageText.textContent = notification.content;
+        // Create text div
+        const textDiv = document.createElement("div");
+        textDiv.className = "message__text";
 
-    // Assemble elements
-    textDiv.appendChild(header);
-    textDiv.appendChild(messageText);
-    notificationDiv.appendChild(iconDiv);
-    notificationDiv.appendChild(textDiv);
+        // Create header with sender info
+        const header = document.createElement("h3");
+        header.className = "message_text__header";
 
-    // Add click event
-    notificationDiv.addEventListener("click", () => {
-        markNotificationAsRead(notification._id);
-        navigateToChatRoom(notification.chatRoom._id);
-    });
+        if (notification.sender && notification.sender.first_name && notification.sender.last_name) {
+            header.textContent = `${notification.sender.first_name} ${notification.sender.last_name}`;
+        } else {
+            header.textContent = "Користувач";
+            console.warn("Notification missing sender info:", notification);
+        }
 
-    return notificationDiv;
+        // Create message text
+        const messageText = document.createElement("p");
+        messageText.className = "message_text__text";
+        messageText.textContent = notification.content || "Нове сповіщення";
+
+        // Assemble elements
+        textDiv.appendChild(header);
+        textDiv.appendChild(messageText);
+        notificationDiv.appendChild(iconDiv);
+        notificationDiv.appendChild(textDiv);
+
+        // Add click event with safety check for chatRoom
+        notificationDiv.addEventListener("click", () => {
+            if (notification._id) {
+                markNotificationAsRead(notification._id);
+            }
+
+            if (notification.chatRoom && notification.chatRoom._id) {
+                navigateToChatRoom(notification.chatRoom._id);
+            } else if (notification.chatRoom && typeof notification.chatRoom === "string") {
+                // Handle case where chatRoom is just a string ID
+                navigateToChatRoom(notification.chatRoom);
+            } else {
+                console.warn("Cannot navigate: notification missing chatRoom info", notification);
+                // Fallback to messages page without specific room
+                window.location.href = "messages.html";
+            }
+        });
+
+        return notificationDiv;
+    } catch (error) {
+        console.error("Error creating notification element:", error, notification);
+
+        // Create a fallback notification element
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "notification__massage";
+        errorDiv.innerHTML = `
+            <div class="message__icon"></div>
+            <div class="message__text">
+                <h3 class="message_text__header">Нове сповіщення</h3>
+                <p class="message_text__text">Отримано повідомлення</p>
+            </div>
+        `;
+
+        // Add simple click event to navigate to messages
+        errorDiv.addEventListener("click", () => {
+            window.location.href = "messages.html";
+        });
+
+        return errorDiv;
+    }
 }
 
 // Mark notification as read

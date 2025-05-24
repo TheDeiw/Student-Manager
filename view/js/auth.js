@@ -39,6 +39,10 @@ function updateUIBasedOnLoginStatus(isLoggedIn, user = null) {
     const tableEditButtons = document.querySelectorAll(".table__edit");
     const tableDeleteButtons = document.querySelectorAll(".table__delete");
 
+    // Get Messages and Tasks menu items
+    const messagesMenuItem = document.querySelector(".menu__item[data-menu-type='messages']");
+    const tasksMenuItem = document.querySelector(".menu__item[data-menu-type='tasks']");
+
     if (isLoggedIn && user) {
         if (loginButton) loginButton.style.display = "none";
         if (notificationBell) notificationBell.style.display = "block";
@@ -50,6 +54,10 @@ function updateUIBasedOnLoginStatus(isLoggedIn, user = null) {
             addStudentButton.style.opacity = "1";
             deleteMultipleButton.style.opacity = "1";
         }
+
+        // Show Messages and Tasks menu items when logged in
+        if (messagesMenuItem) messagesMenuItem.style.display = "list-item";
+        if (tasksMenuItem) tasksMenuItem.style.display = "list-item";
 
         document.querySelectorAll('.main_table tbody input[type="checkbox"]:checked').forEach((checkbox) => {
             const row = checkbox.closest("tr");
@@ -70,6 +78,10 @@ function updateUIBasedOnLoginStatus(isLoggedIn, user = null) {
             addStudentButton.style.opacity = "0.5";
             deleteMultipleButton.style.opacity = "0.5";
         }
+
+        // Hide Messages and Tasks menu items when not logged in
+        if (messagesMenuItem) messagesMenuItem.style.display = "none";
+        if (tasksMenuItem) tasksMenuItem.style.display = "none";
 
         tableEditButtons.forEach((btn) => (btn.style.pointerEvents = "none"));
         tableDeleteButtons.forEach((btn) => (btn.style.pointerEvents = "none"));

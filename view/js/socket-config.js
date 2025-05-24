@@ -3,17 +3,44 @@
  * This file centralizes the Socket.IO connection settings
  */
 
-// Create a function to get a consistent socket connection
+// Global socket configuration
+let sharedSocket = null;
+
+// Function to get or create a socket connection
 function getSocketConnection() {
-    // Always use explicit server URL to avoid 404 errors
-    return io("http://localhost:3000", {
-        withCredentials: false,
-        transports: ["websocket", "polling"],
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000,
-        timeout: 20000,
-    });
+    if (sharedSocket === null) {
+        console.log("Creating new Socket.IO connection");
+
+        try {
+            sharedSocket = io("http://localhost:3000", {
+                withCredentials: false,
+                transports: ["websocket", "polling"],
+            });
+
+            // Add global error handling
+            sharedSocket.on("connect_error", (err) => {
+                console.error("Socket.IO connection error:", err.message);
+                // Reset connection on error to allow reconnect attempt
+                // sharedSocket = null;
+            });
+
+            sharedSocket.on("connect", () => {
+                console.log("Socket.IO connected successfully with ID:", sharedSocket.id);
+            });
+
+            sharedSocket.on("disconnect", (reason) => {
+                console.log("Socket.IO disconnected:", reason);
+            });
+        } catch (e) {
+            console.error("Failed to create Socket.IO connection:", e);
+            return null;
+        }
+    } else {
+        console.log("Reusing existing Socket.IO connection");
+    }
+
+    return sharedSocket;
 }
 
-// Export the socket function
+// Make function available globally
 window.getSocketConnection = getSocketConnection;
